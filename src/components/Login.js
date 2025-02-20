@@ -1,7 +1,7 @@
 // src/components/Login.js
 import React from 'react';
 import { supabase } from '../supabaseClient';
-import './Login.css'; // Import the new CSS file for styling
+import 'src/components/Login.css'; // Import the new CSS file for styling
 import logo from '../../discord-icon.png';
 
 const Login = () => {
