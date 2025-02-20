@@ -78,7 +78,7 @@ function App() {
       <Sidebar isLoggedIn={isLoggedIn} />
       <div className="main-content">
         <h1>Welcome to CryptoKnow</h1>
-        {user ? <p>Logged in as: {user.user_metadata.full_name}</p> : null}
+        {user ? <p>Hello, {user.user_metadata.full_name}</p> : null}
         <button onClick={isLoggedIn ? handleLogout : handleLogin}>
           {isLoggedIn ? 'Log Out' : 'Log In with Discord'}
         </button>
