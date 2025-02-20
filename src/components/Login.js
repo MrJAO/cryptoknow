@@ -19,7 +19,7 @@ const Login = () => {
 
   return (
     <button className="discord-login-button" onClick={handleDiscordLogin}>
-      <img src="/discord-icon.png" alt="Discord Logo" className="discord-icon" />
+      <img src="/discord.png" alt="Discord Logo" className="discord-icon" />
       Log in with Discord
     </button>
   );
