@@ -26,7 +26,7 @@
 
 /* Logo styling */
 .logo {
-  max-width: 80%;
+  width: 120px; /* Adjust this value if needed */
   height: auto;
 }
 
