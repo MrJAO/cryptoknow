@@ -1,30 +1,24 @@
-/* Sidebar.css */
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: 220px;
-  background-color: #1a1a1a; /* dark theme background */
-  color: white;
-  font-family: 'Syne', sans-serif;
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
-  box-sizing: border-box;
+import React from 'react';
+import './Sidebar.css';
+
+function Sidebar({ isLoggedIn }) {
+  return (
+    <div className="sidebar">
+      <button className="nav-button">CryptoKnow</button>
+      {isLoggedIn && (
+        <>
+          <button className="nav-button">To Do List</button>
+          <button className="nav-button">Available Airdrops</button>
+        </>
+      )}
+      <button className="nav-button">How To</button>
+      <button className="nav-button">Available Checkers</button>
+      <button className="nav-button">Completed Airdrops</button>
+      <button className="nav-button">Leaderboard</button>
+      <button className="nav-button">Harvests</button>
+      <button className="nav-button">About</button>
+    </div>
+  );
 }
 
-.nav-button {
-  background: none;
-  border: none;
-  color: white;
-  text-align: left;
-  padding: 12px 0;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.nav-button:hover {
-  background-color: #333;
-}
+export default Sidebar;
