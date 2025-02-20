@@ -17,7 +17,7 @@ function Sidebar({ isLoggedIn }) {
           <button className="nav-button">Available Airdrops</button>
         </>
       )}
-      <button className="nav-button">How To</button>
+      <button className="nav-button">Search</button>
       <button className="nav-button">Available Checkers</button>
       <button className="nav-button">Completed Airdrops</button>
       <button className="nav-button">Leaderboard</button>
