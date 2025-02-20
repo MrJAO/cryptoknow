@@ -5,9 +5,8 @@ body {
   background-color: #121212;
   color: white;
   font-family: 'Syne', sans-serif;
-}
 
-/* src/components/Login.css */
+  /* src/components/Login.css */
 .discord-login-button {
   display: flex;
   align-items: center;
@@ -27,3 +26,6 @@ body {
   background-color: #5b6eae;
   transform: scale(1.03);
 }
+}
+
+
