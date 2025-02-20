@@ -9,3 +9,30 @@
   width: 100%;
   box-sizing: border-box;
 }
+
+/* Discord login button styles */
+.discord-login-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #7289da; /* Discord's brand color */
+  color: white;
+  border: none;
+  padding: 14px 28px;
+  font-size: 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  margin-top: 1rem;
+}
+
+.discord-login-button:hover {
+  background-color: #5b6eae;
+  transform: scale(1.03);
+}
+
+.discord-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+}
