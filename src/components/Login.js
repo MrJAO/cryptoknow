@@ -1,7 +1,7 @@
 // src/components/Login.js
 import React from 'react';
 import { supabase } from '../supabaseClient';
-import './Login.css'; // Make sure this is the correct relative path
+import './styles.css';
 
 const Login = () => {
   const handleDiscordLogin = async () => {
