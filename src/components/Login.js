@@ -2,7 +2,7 @@
 import React from 'react';
 import { supabase } from '../supabaseClient';
 import 'src/components/Login.css'; // Import the new CSS file for styling
-import logo from '../../discord-icon.png';
+import logo from 'src/assets/discord-icon.png';
 
 const Login = () => {
   const handleDiscordLogin = async () => {
