@@ -2,7 +2,7 @@
 import React from 'react';
 import { supabase } from '../supabaseClient';
 import './Login.css'; // Make sure this is the correct relative path
-import logo from 'src/assets/discord.png';
+import logo from '../../assets/02_Cat General (Transparent).png'; // Adjust path if needed
 
 const Login = () => {
   const handleDiscordLogin = async () => {
