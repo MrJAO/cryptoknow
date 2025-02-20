@@ -22,7 +22,7 @@ function Sidebar({ isLoggedIn }) {
       <button className="nav-button">Completed Airdrops</button>
       <button className="nav-button">Leaderboard</button>
       <button className="nav-button">Harvests</button>
-      <button className="nav-button">About</button>
+      <button className="nav-button">FAQs</button>
     </div>
   );
 }
