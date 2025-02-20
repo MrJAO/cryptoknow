@@ -6,3 +6,24 @@ body {
   color: white;
   font-family: 'Syne', sans-serif;
 }
+
+/* src/components/Login.css */
+.discord-login-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #5865F2; /* Discord's brand color */
+  color: white;
+  border: none;
+  padding: 14px 28px;
+  font-size: 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  margin-top: 1rem;
+}
+
+.discord-login-button:hover {
+  background-color: #5b6eae;
+  transform: scale(1.03);
+}
