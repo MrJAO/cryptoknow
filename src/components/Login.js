@@ -4,11 +4,9 @@ import { supabase } from '../supabaseClient';
 
 const Login = () => {
   const handleDiscordLogin = async () => {
+    // Initiate login with Discord provider
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'discord',
-      options: {
-        redirectTo: 'https://cryptoknow.space'
-      }
     });
     if (error) {
       console.error('Error during login:', error.message);
@@ -16,7 +14,7 @@ const Login = () => {
   };
 
   return (
-    <button className="discord-login-button" onClick={handleDiscordLogin}>
+    <button onClick={handleDiscordLogin}>
       Log in with Discord
     </button>
   );
