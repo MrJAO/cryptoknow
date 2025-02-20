@@ -12,7 +12,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #7289da; /* Discord's brand color */
+  .discord-login-button {
+  background-color: red !important;
+} /* Discord's brand color */
   color: white;
   border: none;
   padding: 14px 28px;
