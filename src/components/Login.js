@@ -2,7 +2,7 @@
 import React from 'react';
 import { supabase } from '../supabaseClient';
 import discordIcon from '../assets/discord-icon.png';
-import './Login.css'; // Ensure this path is correct
+import '../styles.css'; // Import the global styles from the src folder
 
 const Login = () => {
   const handleDiscordLogin = async () => {
