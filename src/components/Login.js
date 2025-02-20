@@ -1,8 +1,6 @@
 // src/components/Login.js
 import React from 'react';
 import { supabase } from '../supabaseClient';
-import discordIcon from '../assets/discord-icon.png';
-import './App.css';
 
 const Login = () => {
   const handleDiscordLogin = async () => {
@@ -19,7 +17,6 @@ const Login = () => {
 
   return (
     <button className="discord-login-button" onClick={handleDiscordLogin}>
-      <img src={discordIcon} alt="Discord Icon" className="discord-icon" />
       Log in with Discord
     </button>
   );
