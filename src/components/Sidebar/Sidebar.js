@@ -1,9 +1,15 @@
 import React from 'react';
 import './Sidebar.css';
+import logo from '../../assets/02_Cat General (Transparent).png'; // Adjust path if needed
 
 function Sidebar({ isLoggedIn }) {
   return (
     <div className="sidebar">
+      {/* Logo at the top */}
+      <div className="logo-container">
+        <img src={logo} alt="Website Logo" className="logo" />
+      </div>
+
       <button className="nav-button">CryptoKnow</button>
       {isLoggedIn && (
         <>
