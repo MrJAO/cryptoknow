@@ -39,7 +39,7 @@ const Login = () => {
 
   return (
     <button style={buttonStyle} onClick={handleDiscordLogin}>
-      <img src="/discord-icon.svg" alt="Discord Icon" style={iconStyle} />
+      <img src="/assets/discord-icon-svgrepo-com.svg" alt="Discord Icon" style={iconStyle} />
       Log in with Discord
     </button>
   );
