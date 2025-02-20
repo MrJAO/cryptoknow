@@ -14,6 +14,22 @@
   box-sizing: border-box;
 }
 
+/* Logo container styling */
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #333;
+}
+
+/* Logo styling */
+.logo {
+  max-width: 80%;
+  height: auto;
+}
+
 .nav-button {
   background: none;
   border: none;
@@ -23,6 +39,7 @@
   font-size: 16px;
   cursor: pointer;
   transition: background-color 0.3s;
+  letter-spacing: 0.5px; /* slightly more spacing for a modern feel */
 }
 
 .nav-button:hover {
