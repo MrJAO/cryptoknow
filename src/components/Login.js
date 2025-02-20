@@ -1,6 +1,7 @@
 // src/components/Login.js
 import React from 'react';
 import { supabase } from '../supabaseClient';
+import './Login.css'; // Import the CSS file for styling
 
 const Login = () => {
   const handleDiscordLogin = async () => {
@@ -8,7 +9,6 @@ const Login = () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'discord',
       options: {
-        // Replace with your production URL or 'http://localhost:3000' for local testing
         redirectTo: 'https://cryptoknow.space'
       }
     });
@@ -18,7 +18,8 @@ const Login = () => {
   };
 
   return (
-    <button onClick={handleDiscordLogin}>
+    <button className="discord-login-button" onClick={handleDiscordLogin}>
+      <img src="/discord-icon.svg" alt="Discord Icon" className="discord-icon" />
       Log in with Discord
     </button>
   );
