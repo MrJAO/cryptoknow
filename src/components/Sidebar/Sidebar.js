@@ -11,14 +11,14 @@ function Sidebar({ isLoggedIn }) {
       </div>
 
       <button className="nav-button">CryptoKnow</button>
+      <button className="nav-button">Search</button>
       {isLoggedIn && (
         <>
           <button className="nav-button">To Do List</button>
           <button className="nav-button">Available Airdrops</button>
+          <button className="nav-button">Available Checkers</button>
         </>
       )}
-      <button className="nav-button">Search</button>
-      <button className="nav-button">Available Checkers</button>
       <button className="nav-button">Completed Airdrops</button>
       <button className="nav-button">Leaderboard</button>
       <button className="nav-button">Harvests</button>
