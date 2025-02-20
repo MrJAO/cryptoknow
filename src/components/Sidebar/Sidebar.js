@@ -1,6 +1,6 @@
 import React from 'react';
 import './Sidebar.css';
-import logo from '../../assets/Catana Adventure.png'; // Adjust path if needed
+import logo from '../../assets/Cryptoknow Logo - Final.png'; // Adjust path if needed
 
 function Sidebar({ isLoggedIn }) {
   return (
