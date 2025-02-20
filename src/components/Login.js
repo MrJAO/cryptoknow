@@ -1,15 +1,15 @@
 // src/components/Login.js
 import React from 'react';
 import { supabase } from '../supabaseClient';
-import 'src/components/Login.css'; // Import the new CSS file for styling
-import logo from 'src/assets/discord-icon.png';
+import './Login.css'; // Use a relative path since Login.css is in the same folder
+import discordIcon from '../assets/discord-icon.png'; // Adjust the path relative to Login.js
 
 const Login = () => {
   const handleDiscordLogin = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'discord',
       options: {
-        redirectTo: 'https://cryptoknow.space' // Update this URL as needed
+        redirectTo: 'https://cryptoknow.space'
       }
     });
     if (error) {
@@ -19,7 +19,7 @@ const Login = () => {
 
   return (
     <button className="discord-login-button" onClick={handleDiscordLogin}>
-      <img src={logo} alt="Discord Logo" className="logo" />
+      <img src={discordIcon} alt="Discord Logo" className="discord-icon" />
       Log in with Discord
     </button>
   );
