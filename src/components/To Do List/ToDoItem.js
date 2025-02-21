@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { supabase } from '../../supabaseClient';
-import { Card, CardContent } from '../../components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Card, CardContent } from '../../components/ui/card'; // Fixed import path
+import { Button } from '../../components/ui/button'; // Fixed import path
+import { Checkbox } from '../../components/ui/checkbox'; // Fixed import path
 import './ToDoItem.css';
 
 const ToDoItem = ({ task, onDelete, onMarkDone }) => {
