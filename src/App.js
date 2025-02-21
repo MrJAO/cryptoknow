@@ -48,7 +48,7 @@ function App() {
     };
     checkSession();
 
-    const { subscription } = supabase.auth.onAuthStateChange((event, session) => {
+    const authListener = supabase.auth.onAuthStateChange((event, session) => {
       const currentUser = session?.user || null;
       setUser(currentUser);
       setIsLoggedIn(!!currentUser);
@@ -56,7 +56,7 @@ function App() {
     });
 
     return () => {
-      subscription.unsubscribe();
+      authListener.data.subscription.unsubscribe();
     };
   }, []);
 
