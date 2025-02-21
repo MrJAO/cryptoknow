@@ -1,4 +1,4 @@
-// components/Home.js
+// components/Home/CryptoKnow.js
 import React from 'react';
 
 function Home() {
