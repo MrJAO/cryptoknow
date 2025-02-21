@@ -26,7 +26,7 @@ function CryptoKnow({ user }) {
         )}
       </div>
 
-      <p>Your hub for airdrops, leaderboards, and more!</p>
+      <p> Your Hub for Crypto Oppurtunities!</p>
       {/* Additional content can be added below */}
     </div>
   );
