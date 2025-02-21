@@ -1,34 +1,36 @@
 /* src/components/ToDoItem.css */
-.todo-item {
+.todo-card {
+  margin: 10px 0;
+  background-color: #1a1a1a;
+  color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
+}
+
+.todo-content {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 16px;
-  border-bottom: 1px solid #444;
-  background-color: #1a1a1a;
-  color: white;
-  font-family: 'Syne', sans-serif;
+  padding: 12px;
 }
 
-.todo-item input[type="checkbox"] {
-  margin-right: 10px;
+.todo-checkbox {
+  margin-right: 12px;
 }
 
-.todo-item span {
+.todo-text {
   flex: 1;
+  font-family: 'Syne', sans-serif;
+  font-size: 16px;
 }
 
-.todo-item span.done {
+.todo-text.done {
   text-decoration: line-through;
-  color: limegreen; /* Indicates finished */
+  color: limegreen;
 }
 
 .delete-button {
-  background: transparent;
-  border: none;
   color: red;
-  font-size: 18px;
-  cursor: pointer;
   transition: transform 0.2s;
 }
 
