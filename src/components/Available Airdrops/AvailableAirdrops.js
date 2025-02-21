@@ -1,8 +1,6 @@
 // AvailableAirdrops.js
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../supabaseClient';
-import { Card, CardContent } from '../ui/card';
-import { Button } from '../ui/button';
 
 const AvailableAirdrops = () => {
   const [airdrops, setAirdrops] = useState([]);
@@ -47,18 +45,28 @@ const AvailableAirdrops = () => {
       <h2 className="text-2xl font-bold mb-4">Available Airdrops</h2>
       <div className="grid gap-4 md:grid-cols-2">
         {airdrops.map((airdrop) => (
-          <Card key={airdrop.id}>
-            <CardContent>
-              <h3 className="text-lg font-semibold">{airdrop.project_name}</h3>
-              <p>Chain: {airdrop.chain}</p>
-              <a href={airdrop.task_link} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Task Link</a>
-              {addedProjects.includes(airdrop.project_name) ? (
-                <span className="text-green-500 font-bold">Already Added</span>
-              ) : (
-                <Button className="mt-2" onClick={() => handleAddToDo(airdrop)}>Add to My List</Button>
-              )}
-            </CardContent>
-          </Card>
+          <div key={airdrop.id} className="border p-4 rounded-lg shadow-md">
+            <h3 className="text-lg font-semibold">{airdrop.project_name}</h3>
+            <p>Chain: {airdrop.chain}</p>
+            <a 
+              href={airdrop.task_link} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-blue-500 hover:underline"
+            >
+              Task Link
+            </a>
+            {addedProjects.includes(airdrop.project_name) ? (
+              <span className="text-green-500 font-bold block mt-2">Already Added</span>
+            ) : (
+              <button 
+                onClick={() => handleAddToDo(airdrop)} 
+                className="mt-2 bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+              >
+                Add to My List
+              </button>
+            )}
+          </div>
         ))}
       </div>
     </div>
