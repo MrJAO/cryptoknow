@@ -1,9 +1,9 @@
 // ToDoItem.js
 import React, { useState } from 'react';
 import { supabase } from '../../supabaseClient';
-import { Card, CardContent } from '../../components/ui/card';
-import { Button } from '../../components/ui/button';
-import { Checkbox } from '../../components/ui/checkbox';
+import { Card, CardContent } from '../ui/card';
+import { Button } from '../ui/button';
+import { Checkbox } from '../ui/checkbox';
 
 const ToDoItem = ({ task, onDelete, onMarkDone }) => {
   const [isDone, setIsDone] = useState(false);
