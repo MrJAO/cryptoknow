@@ -1,29 +1,26 @@
+// ToDoList.js
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../supabaseClient';
 import ToDoItem from './ToDoItem';
-import { Card, CardContent } from '../../components/ui/card'; // Fixed import path
-import { Button } from '../../components/ui/button'; // Fixed import path
+import { Card, CardContent } from '../../components/ui/card';
+import { Button } from '../../components/ui/button';
 
 const ToDoList = ({ currentUser }) => {
   const [tasks, setTasks] = useState([]);
   const [doneTasks, setDoneTasks] = useState({});
-
-  const fetchTasks = async () => {
-    if (!currentUser) return;
-    const discord_username = currentUser.user_metadata?.full_name || '';
-    const { data, error } = await supabase.from('to_do_list').select('*').eq('discord_username', discord_username);
-    if (error) {
-      console.error("Error fetching tasks:", error);
-    } else {
-      setTasks(data);
-    }
-  };
 
   useEffect(() => {
     if (currentUser) {
       fetchTasks();
     }
   }, [currentUser]);
+
+  const fetchTasks = async () => {
+    if (!currentUser) return;
+    const discord_username = currentUser.user_metadata?.full_name || '';
+    const { data, error } = await supabase.from('to_do_list').select('*').eq('discord_username', discord_username);
+    if (!error) setTasks(data);
+  };
 
   const handleMarkDone = (taskId, isDone) => {
     setDoneTasks((prev) => ({ ...prev, [taskId]: isDone }));
@@ -51,18 +48,16 @@ const ToDoList = ({ currentUser }) => {
     const inserts = finishedTasks.map(task => ({ discord_username, project_name: task.project_name }));
 
     const { error } = await supabase.from('finished_daily_tasks').insert(inserts);
-    if (error) {
-      console.error("Error submitting finished tasks:", error.message);
-    } else {
+    if (!error) {
       alert("Finished tasks submitted! They will be refreshed daily.");
       setDoneTasks({});
     }
   };
 
   return (
-    <Card className="todo-list">
+    <Card>
       <CardContent>
-        <h2>Your To-Do List</h2>
+        <h2 className="text-xl font-semibold mb-4">Your To-Do List</h2>
         {tasks.length === 0 ? (
           <p>No tasks added yet.</p>
         ) : (
@@ -70,7 +65,7 @@ const ToDoList = ({ currentUser }) => {
             <ToDoItem key={task.id} task={task} onDelete={handleDeleteTask} onMarkDone={handleMarkDone} />
           ))
         )}
-        <Button className="submit-button" onClick={handleSubmitFinishedTasks}>Submit Finished Tasks</Button>
+        <Button onClick={handleSubmitFinishedTasks} className="mt-4 w-full">Submit Finished Tasks</Button>
       </CardContent>
     </Card>
   );
