@@ -3,11 +3,24 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
+  padding: 10px 16px;
   border-bottom: 1px solid #444;
   background-color: #1a1a1a;
   color: white;
   font-family: 'Syne', sans-serif;
+}
+
+.todo-item input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+.todo-item span {
+  flex: 1;
+}
+
+.todo-item span.done {
+  text-decoration: line-through;
+  color: limegreen; /* Indicates finished */
 }
 
 .delete-button {
