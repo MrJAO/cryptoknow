@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 import Sidebar from './components/Sidebar/Sidebar';
-import Home from './components/Home/Home';
+import Home from './components/Home/CryptoKnow';
 import ToDoList from './components/To Do List/ToDoList';
 import AvailableAirdrops from './components/Available Airdrops/AvailableAirdrops';
 import AvailableCheckers from './components/AvailableCheckers/AvailableCheckers';
