@@ -1,19 +1,17 @@
 // src/App.js
 import React, { useState, useEffect } from 'react';
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+import { BrowserRouter, Routes, Route } from 'react-router-dom'; // ✅ Corrected import
+import { createClient } from '@supabase/supabase-js';
 import Sidebar from './components/Sidebar/Sidebar';
 import Home from './components/Home/CryptoKnow';
-import ToDoList from './components/To Do List/ToDoList';
-import AvailableAirdrops from './components/Available Airdrops/AvailableAirdrops';
+import ToDoList from './components/ToDoList/ToDoList'; // ✅ Fixed folder name
+import AvailableAirdrops from './components/AvailableAirdrops/AvailableAirdrops';
 import AvailableCheckers from './components/AvailableCheckers/AvailableCheckers';
 import CompletedAirdrops from './components/CompletedAirdrops/CompletedAirdrops';
 import Leaderboard from './components/Leaderboard/Leaderboard';
 import Harvests from './components/Harvests/Harvests';
 import FAQs from './components/FAQs/FAQs';
 import './App.css';
-
-// Access React Router DOM from the global window object
-const { BrowserRouter, Routes, Route } = window.ReactRouterDOM;
 
 // Initialize Supabase
 const supabaseUrl = "https://sudquzoonuxtvmjhvjpr.supabase.co";
@@ -38,7 +36,6 @@ const saveUserToDatabase = async (user) => {
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
-  // activeTab state is no longer needed since routing is used
 
   useEffect(() => {
     const checkSession = async () => {
@@ -84,7 +81,6 @@ function App() {
       <div className="app">
         <Sidebar isLoggedIn={isLoggedIn} />
         <div className="main-content">
-          {/* Routing: When the user visits the root, show Home (CryptoKnow), etc. */}
           <Routes>
             <Route path="/" element={<Home user={user} />} />
             <Route path="/to-do-list" element={<ToDoList user={user} />} />
@@ -95,7 +91,6 @@ function App() {
             <Route path="/harvests" element={<Harvests />} />
             <Route path="/faqs" element={<FAQs />} />
           </Routes>
-          {/* Login/Logout button remains outside the routing area */}
           <button onClick={isLoggedIn ? handleLogout : handleLogin}>
             {isLoggedIn ? 'Log Out' : 'Log In with Discord'}
           </button>
