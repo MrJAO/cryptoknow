@@ -1,8 +1,8 @@
 // AvailableAirdrops.js
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../supabaseClient';
-import { Card, CardContent } from '../../components/ui/card';
-import { Button } from '../../components/ui/button';
+import { Card, CardContent } from '../ui/card';
+import { Button } from '../ui/button';
 
 const AvailableAirdrops = () => {
   const [airdrops, setAirdrops] = useState([]);
