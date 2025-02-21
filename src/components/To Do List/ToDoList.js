@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../supabaseClient';
 import ToDoItem from './ToDoItem';
-import { Card, CardHeader, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '../../components/ui/card';
 import { Button } from '@/components/ui/button';
 
 const ToDoList = ({ currentUser }) => {
