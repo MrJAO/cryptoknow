@@ -1,3 +1,4 @@
+// src/App.js
 import React, { useState, useEffect } from 'react';
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 import Sidebar from './components/Sidebar/Sidebar';
@@ -10,6 +11,9 @@ import Leaderboard from './components/Leaderboard/Leaderboard';
 import Harvests from './components/Harvests/Harvests';
 import FAQs from './components/FAQs/FAQs';
 import './App.css';
+
+// Access React Router DOM from the global window object
+const { BrowserRouter, Routes, Route } = window.ReactRouterDOM;
 
 // Initialize Supabase
 const supabaseUrl = "https://sudquzoonuxtvmjhvjpr.supabase.co";
@@ -34,7 +38,7 @@ const saveUserToDatabase = async (user) => {
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
-  const [activeTab, setActiveTab] = useState('home'); // Default to Home
+  // activeTab state is no longer needed since routing is used
 
   useEffect(() => {
     const checkSession = async () => {
@@ -60,7 +64,7 @@ function App() {
   }, []);
 
   const handleLogin = async () => {
-    const { data, error } = await supabase.auth.signInWithOAuth({
+    const { error } = await supabase.auth.signInWithOAuth({
       provider: 'discord',
       options: {
         redirectTo: 'https://cryptoknow.space'
@@ -75,31 +79,29 @@ function App() {
     setIsLoggedIn(false);
   };
 
-  // Function to render different components based on activeTab
-  const renderContent = () => {
-    switch (activeTab) {
-      case 'home': return <Home />;
-      case 'to-do-list': return <ToDoList />;
-      case 'available-airdrops': return <AvailableAirdrops />;
-      case 'available-checkers': return <AvailableCheckers />;
-      case 'completed-airdrops': return <CompletedAirdrops />;
-      case 'leaderboard': return <Leaderboard />;
-      case 'harvests': return <Harvests />;
-      case 'faqs': return <FAQs />;
-      default: return <Home />;
-    }
-  };
-
   return (
-    <div className="app">
-      <Sidebar isLoggedIn={isLoggedIn} setActiveTab={setActiveTab} />
-      <div className="main-content">
-        {renderContent()}
-        <button onClick={isLoggedIn ? handleLogout : handleLogin}>
-          {isLoggedIn ? 'Log Out' : 'Log In with Discord'}
-        </button>
+    <BrowserRouter>
+      <div className="app">
+        <Sidebar isLoggedIn={isLoggedIn} />
+        <div className="main-content">
+          {/* Routing: When the user visits the root, show Home (CryptoKnow), etc. */}
+          <Routes>
+            <Route path="/" element={<Home user={user} />} />
+            <Route path="/to-do-list" element={<ToDoList user={user} />} />
+            <Route path="/available-airdrops" element={<AvailableAirdrops />} />
+            <Route path="/available-checkers" element={<AvailableCheckers />} />
+            <Route path="/completed-airdrops" element={<CompletedAirdrops />} />
+            <Route path="/leaderboard" element={<Leaderboard />} />
+            <Route path="/harvests" element={<Harvests />} />
+            <Route path="/faqs" element={<FAQs />} />
+          </Routes>
+          {/* Login/Logout button remains outside the routing area */}
+          <button onClick={isLoggedIn ? handleLogout : handleLogin}>
+            {isLoggedIn ? 'Log Out' : 'Log In with Discord'}
+          </button>
+        </div>
       </div>
-    </div>
+    </BrowserRouter>
   );
 }
 
