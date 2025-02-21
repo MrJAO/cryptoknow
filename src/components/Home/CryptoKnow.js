@@ -15,8 +15,7 @@ function CryptoKnow({ user }) {
         alignItems: 'center',
         padding: '20px 10px'
       }}>
-        <h1>Welcome to CryptoKnow</h1>
-		<h2> Your Hub for Crypto Oppurtunities! </h2>
+        <h1>Welcome to CryptoKnow Your Hub for Crypto Oppurtunities!</h1>
         {user ? (
           <p style={{ margin: 0, fontSize: '1.2rem' }}>
             Hello, {user.user_metadata?.full_name || user.email}
