@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../supabaseClient';
 import ToDoItem from './ToDoItem';
-import { Card, CardContent } from '../../components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '../../components/ui/card'; // Fixed import path
+import { Button } from '../../components/ui/button'; // Fixed import path
 
 const ToDoList = ({ currentUser }) => {
   const [tasks, setTasks] = useState([]);
@@ -61,10 +61,8 @@ const ToDoList = ({ currentUser }) => {
 
   return (
     <Card className="todo-list">
-      <CardHeader>
-        <h2>Your To-Do List</h2>
-      </CardHeader>
       <CardContent>
+        <h2>Your To-Do List</h2>
         {tasks.length === 0 ? (
           <p>No tasks added yet.</p>
         ) : (
