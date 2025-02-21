@@ -1,4 +1,3 @@
-// components/Home/CryptoKnow.js
 import React from 'react';
 import Login from '../Login/Login';  // Adjust relative path if needed
 import banner from '../../assets/banner.jpg'; // Replace with your banner image path
