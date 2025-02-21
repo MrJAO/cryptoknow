@@ -1,28 +1,29 @@
 import React from 'react';
 import './Sidebar.css';
-import logo from '../../assets/Cryptoknow Logo - Final.webp'; // Adjust path if needed
+import logo from '../../assets/Cryptoknow Logo - Final.webp';
 
-function Sidebar({ isLoggedIn }) {
+function Sidebar({ isLoggedIn, setActiveTab }) {
   return (
     <div className="sidebar">
-      {/* Logo at the top */}
       <div className="logo-container">
         <img src={logo} alt="Website Logo" className="logo" />
       </div>
 
-      <button className="nav-button">CryptoKnow</button>
-      <button className="nav-button">Search</button>
+      <button className="nav-button" onClick={() => setActiveTab('home')}>CryptoKnow</button>
+      <button className="nav-button" onClick={() => setActiveTab('search')}>Search</button>
+
       {isLoggedIn && (
         <>
-          <button className="nav-button">To Do List</button>
-          <button className="nav-button">Available Airdrops</button>
-          <button className="nav-button">Available Checkers</button>
+          <button className="nav-button" onClick={() => setActiveTab('to-do-list')}>To Do List</button>
+          <button className="nav-button" onClick={() => setActiveTab('available-airdrops')}>Available Airdrops</button>
+          <button className="nav-button" onClick={() => setActiveTab('available-checkers')}>Available Checkers</button>
         </>
       )}
-      <button className="nav-button">Completed Airdrops</button>
-      <button className="nav-button">Leaderboard</button>
-      <button className="nav-button">Harvests</button>
-      <button className="nav-button">FAQs</button>
+
+      <button className="nav-button" onClick={() => setActiveTab('completed-airdrops')}>Completed Airdrops</button>
+      <button className="nav-button" onClick={() => setActiveTab('leaderboard')}>Leaderboard</button>
+      <button className="nav-button" onClick={() => setActiveTab('harvests')}>Harvests</button>
+      <button className="nav-button" onClick={() => setActiveTab('faqs')}>FAQs</button>
     </div>
   );
 }
