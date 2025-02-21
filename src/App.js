@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 import Sidebar from './components/Sidebar/Sidebar';
+import Home from './components/Home';
+import ToDoList from './components/ToDoList';
+import AvailableAirdrops from './components/AvailableAirdrops';
+import AvailableCheckers from './components/AvailableCheckers';
+import CompletedAirdrops from './components/CompletedAirdrops';
+import Leaderboard from './components/Leaderboard';
+import Harvests from './components/Harvests';
+import FAQs from './components/FAQs';
 import './App.css';
 
 // Initialize Supabase
@@ -10,7 +18,6 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // Function to save user data to the "users" table
 const saveUserToDatabase = async (user) => {
-  // Extract the Discord username from user metadata. Adjust the key as needed.
   const discordUsername = user.user_metadata?.user_name || user.user_metadata?.full_name || '';
   const { data, error } = await supabase
     .from('users')
@@ -19,19 +26,17 @@ const saveUserToDatabase = async (user) => {
       discord_username: discordUsername,
       email: user.email,
     });
-  if (error) {
-    console.error('Error saving user:', error.message);
-  } else {
-    console.log('User saved:', data);
-  }
+
+  if (error) console.error('Error saving user:', error.message);
+  else console.log('User saved:', data);
 };
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
+  const [activeTab, setActiveTab] = useState('home'); // Default to Home
 
   useEffect(() => {
-    // Check if user is already logged in
     const checkSession = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
@@ -42,14 +47,11 @@ function App() {
     };
     checkSession();
 
-    // Listen for auth state changes and save the user info when logged in
     const { subscription } = supabase.auth.onAuthStateChange((event, session) => {
       const currentUser = session?.user || null;
       setUser(currentUser);
       setIsLoggedIn(!!currentUser);
-      if (currentUser) {
-        saveUserToDatabase(currentUser);
-      }
+      if (currentUser) saveUserToDatabase(currentUser);
     });
 
     return () => {
@@ -61,7 +63,7 @@ function App() {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'discord',
       options: {
-        redirectTo: 'https://cryptoknow.space' // Update this if needed
+        redirectTo: 'https://cryptoknow.space'
       }
     });
     if (error) console.error("Login Error:", error);
@@ -73,12 +75,26 @@ function App() {
     setIsLoggedIn(false);
   };
 
+  // Function to render different components based on activeTab
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'home': return <Home />;
+      case 'to-do-list': return <ToDoList />;
+      case 'available-airdrops': return <AvailableAirdrops />;
+      case 'available-checkers': return <AvailableCheckers />;
+      case 'completed-airdrops': return <CompletedAirdrops />;
+      case 'leaderboard': return <Leaderboard />;
+      case 'harvests': return <Harvests />;
+      case 'faqs': return <FAQs />;
+      default: return <Home />;
+    }
+  };
+
   return (
     <div className="app">
-      <Sidebar isLoggedIn={isLoggedIn} />
+      <Sidebar isLoggedIn={isLoggedIn} setActiveTab={setActiveTab} />
       <div className="main-content">
-        <h1>Welcome to CryptoKnow</h1>
-        {user ? <p>Hello, {user.user_metadata.full_name}</p> : null}
+        {renderContent()}
         <button onClick={isLoggedIn ? handleLogout : handleLogin}>
           {isLoggedIn ? 'Log Out' : 'Log In with Discord'}
         </button>
