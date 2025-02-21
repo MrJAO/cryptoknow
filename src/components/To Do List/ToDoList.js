@@ -2,8 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../supabaseClient';
 import ToDoItem from './ToDoItem';
-import { Card, CardContent } from '../ui/card';
-import { Button } from '../ui/button';
 
 const ToDoList = ({ currentUser }) => {
   const [tasks, setTasks] = useState([]);
@@ -55,19 +53,22 @@ const ToDoList = ({ currentUser }) => {
   };
 
   return (
-    <Card>
-      <CardContent>
-        <h2 className="text-xl font-semibold mb-4">Your To-Do List</h2>
-        {tasks.length === 0 ? (
-          <p>No tasks added yet.</p>
-        ) : (
-          tasks.map(task => (
-            <ToDoItem key={task.id} task={task} onDelete={handleDeleteTask} onMarkDone={handleMarkDone} />
-          ))
-        )}
-        <Button onClick={handleSubmitFinishedTasks} className="mt-4 w-full">Submit Finished Tasks</Button>
-      </CardContent>
-    </Card>
+    <div className="border p-4 rounded-lg shadow-md">
+      <h2 className="text-xl font-semibold mb-4">Your To-Do List</h2>
+      {tasks.length === 0 ? (
+        <p>No tasks added yet.</p>
+      ) : (
+        tasks.map(task => (
+          <ToDoItem key={task.id} task={task} onDelete={handleDeleteTask} onMarkDone={handleMarkDone} />
+        ))
+      )}
+      <button 
+        onClick={handleSubmitFinishedTasks} 
+        className="mt-4 w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600"
+      >
+        Submit Finished Tasks
+      </button>
+    </div>
   );
 };
 
