@@ -1,13 +1,35 @@
 // components/Home/CryptoKnow.js
 import React from 'react';
+import Login from '../Login/Login';  // Adjust relative path if needed
+import banner from '../../assets/banner.jpg'; // Replace with your banner image path
 
-function Home() {
+function CryptoKnow({ user }) {
   return (
     <div>
-      <h1>Welcome to CryptoKnow</h1>
+      {/* Banner image at the top */}
+      <img src={banner} alt="Banner" style={{ width: '100%', objectFit: 'cover' }} />
+
+      {/* Header section with title and login/greeting */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: '20px 10px'
+      }}>
+        <h1>Welcome to CryptoKnow</h1>
+        {user ? (
+          <p style={{ margin: 0, fontSize: '1.2rem' }}>
+            Hello, {user.user_metadata?.full_name || user.email}
+          </p>
+        ) : (
+          <Login />
+        )}
+      </div>
+
       <p>Your hub for airdrops, leaderboards, and more!</p>
+      {/* Additional content can be added below */}
     </div>
   );
 }
 
-export default Home;
+export default CryptoKnow;
