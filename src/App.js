@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 import Sidebar from './components/Sidebar/Sidebar';
-import Home from './components/Home';
-import ToDoList from './components/ToDoList';
-import AvailableAirdrops from './components/AvailableAirdrops';
-import AvailableCheckers from './components/AvailableCheckers';
-import CompletedAirdrops from './components/CompletedAirdrops';
-import Leaderboard from './components/Leaderboard';
-import Harvests from './components/Harvests';
-import FAQs from './components/FAQs';
+import Home from './components/Home/Home';
+import ToDoList from './components/To Do List/ToDoList';
+import AvailableAirdrops from './components/Available Airdrops/AvailableAirdrops';
+import AvailableCheckers from './components/AvailableCheckers/AvailableCheckers';
+import CompletedAirdrops from './components/CompletedAirdrops/CompletedAirdrops';
+import Leaderboard from './components/Leaderboard/Leaderboard';
+import Harvests from './components/Harvests/Harvests';
+import FAQs from './components/FAQs/FAQs';
 import './App.css';
 
 // Initialize Supabase
