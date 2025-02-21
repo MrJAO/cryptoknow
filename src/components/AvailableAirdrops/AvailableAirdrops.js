@@ -1,6 +1,7 @@
 // AvailableAirdrops.js
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../supabaseClient';
+import { subscribeToAirdrops } from '../../utils/supabaseSubscription'; // Import real-time subscription
 
 const AvailableAirdrops = () => {
   const [airdrops, setAirdrops] = useState([]);
@@ -12,19 +13,20 @@ const AvailableAirdrops = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         setUser(user);
-        const { data: tasks } = await supabase.from('to_do_list').select('project_name').eq('discord_username', user.user_metadata?.full_name || '');
+        const { data: tasks } = await supabase
+          .from('to_do_list')
+          .select('project_name')
+          .eq('discord_username', user.user_metadata?.full_name || '');
         setAddedProjects(tasks.map((t) => t.project_name));
       }
     };
     getCurrentUserAndTasks();
   }, []);
 
+  // ✅ Subscribe to real-time airdrops updates
   useEffect(() => {
-    const fetchAirdrops = async () => {
-      const { data } = await supabase.from('available_airdrops').select('*');
-      setAirdrops(data);
-    };
-    fetchAirdrops();
+    const unsubscribe = subscribeToAirdrops(setAirdrops);
+    return unsubscribe; // Cleanup on unmount
   }, []);
 
   const handleAddToDo = async (airdrop) => {
