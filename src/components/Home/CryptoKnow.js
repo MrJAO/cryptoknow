@@ -1,6 +1,6 @@
 import React from 'react';
 import Login from '../Login/Login';  // Adjust relative path if needed
-import banner from '../../assets/Cryptoknow Logo - Final.webp'; // Replace with your banner image path
+import banner from '../../assets/CryptoKnow Banner.webp'; // Replace with your banner image path
 
 function CryptoKnow({ user }) {
   return (
