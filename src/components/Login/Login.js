@@ -1,6 +1,6 @@
 // src/components/Login.js
 import React from 'react';
-import { supabase } from '../supabaseClient';
+import { supabase } from '../../supabaseClient';
 
 const Login = () => {
   const handleDiscordLogin = async () => {
