@@ -78,25 +78,28 @@ const AvailableAirdrops = () => {
                     <span className="text-red-500 font-semibold">Ended</span>
                   )}
                 </td>
-                <td className="px-6 py-4 flex gap-2">
-                  <a
-                    href={airdrop.task_link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-blue-500 text-white font-semibold py-1 px-3 rounded hover:bg-blue-600 transition duration-300"
-                  >
-                    🌍 Task
-                  </a>
-                  {addedProjects.includes(airdrop.project_name) ? (
-                    <span className="text-green-600 font-semibold">✅ Added</span>
-                  ) : (
-                    <button
-                      onClick={() => handleAddToDo(airdrop)}
-                      className="bg-green-500 text-white font-semibold py-1 px-3 rounded hover:bg-green-600 transition duration-300"
+                {/* Buttons with proper spacing */}
+                <td className="px-6 py-4">
+                  <div className="flex justify-start items-center gap-4">
+                    <a
+                      href={airdrop.task_link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-blue-500 text-white font-semibold py-1 px-3 rounded hover:bg-blue-600 transition duration-300"
                     >
-                      ➕ Add
-                    </button>
-                  )}
+                      🌍 Task
+                    </a>
+                    {addedProjects.includes(airdrop.project_name) ? (
+                      <span className="text-green-600 font-semibold">✅ Added</span>
+                    ) : (
+                      <button
+                        onClick={() => handleAddToDo(airdrop)}
+                        className="bg-green-500 text-white font-semibold py-1 px-3 rounded hover:bg-green-600 transition duration-300"
+                      >
+                        ➕ Add
+                      </button>
+                    )}
+                  </div>
                 </td>
               </tr>
             ))}
