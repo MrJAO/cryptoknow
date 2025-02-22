@@ -6,7 +6,7 @@ const ToDoItem = ({ task, onDelete, onMarkDone, doneTasks, isEven, finishedTasks
   const isDone = doneTasks[task.id] || false;
 
   useEffect(() => {
-    if (finishedTasks.some(finished => finished.project_name === task.project_name)) {
+    if (finishedTasks[task.project_name]) { // Fix: Check existence in object
       setIsDisabled(true);
     }
   }, [finishedTasks, task.project_name]);
