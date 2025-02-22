@@ -1,11 +1,11 @@
 import { supabase } from "../supabaseClient"; // Adjust path if needed
 
 export const subscribeToAirdrops = (setAirdrops) => {
-  // Fetch initial data excluding "id"
+  // Fetch initial data (exclude "id" explicitly)
   const fetchAirdrops = async () => {
     const { data, error } = await supabase
       .from("available_airdrops")
-      .select("*, id!hidden"); // ✅ Excludes id
+      .select("project_name, task_link, chain, airdrop_type, device_needed, status"); // ✅ Excludes "id"
 
     if (error) {
       console.error("Error fetching airdrops:", error);
