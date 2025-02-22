@@ -46,43 +46,53 @@ const AvailableAirdrops = () => {
   };
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">Available Airdrops</h2>
-      <div className="grid gap-4 md:grid-cols-2">
+    <div className="p-6 max-w-5xl mx-auto">
+      <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">🚀 Available Airdrops</h2>
+      
+      <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         {airdrops.map((airdrop, index) => (
-          <div key={airdrop.task_link || index} className="border p-4 rounded-lg shadow-md">
-            <h3 className="text-lg font-semibold">{airdrop.project_name}</h3>
-            <p><strong>Chain:</strong> {airdrop.chain}</p>
-            <p><strong>Airdrop Type:</strong> {airdrop.airdrop_type}</p>
-            <p><strong>Device Needed:</strong> {airdrop.device_needed}</p>
-            <p>
-              <strong>Status:</strong>{" "}
-              {airdrop.status ? (
-                <span className="text-green-500 font-bold">Ongoing</span>
-              ) : (
-                <span className="text-red-500 font-bold">Ended</span>
-              )}
-            </p>
-            <a
-              href={airdrop.task_link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-500 hover:underline"
-            >
-              Task Link
-            </a>
-            {addedProjects.includes(airdrop.project_name) ? (
-              <span className="text-green-500 font-bold block mt-2">
-                Already Added
-              </span>
-            ) : (
-              <button
-                onClick={() => handleAddToDo(airdrop)}
-                className="mt-2 bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+          <div
+            key={airdrop.task_link || index}
+            className="border border-gray-300 rounded-xl shadow-lg p-6 bg-white hover:shadow-xl transition duration-300 ease-in-out"
+          >
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">{airdrop.project_name}</h3>
+            <div className="text-sm text-gray-700">
+              <p><strong>🔗 Chain:</strong> {airdrop.chain}</p>
+              <p><strong>🎁 Airdrop Type:</strong> {airdrop.airdrop_type}</p>
+              <p><strong>📱 Device Needed:</strong> {airdrop.device_needed}</p>
+              <p>
+                <strong>📢 Status:</strong>{" "}
+                {airdrop.status ? (
+                  <span className="text-green-600 font-semibold">Ongoing</span>
+                ) : (
+                  <span className="text-red-500 font-semibold">Ended</span>
+                )}
+              </p>
+            </div>
+
+            <div className="mt-4">
+              <a
+                href={airdrop.task_link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-300 ease-in-out"
               >
-                Add to My List
-              </button>
-            )}
+                🌍 Task Link
+              </a>
+            </div>
+
+            <div className="mt-4">
+              {addedProjects.includes(airdrop.project_name) ? (
+                <span className="text-green-600 font-semibold">✅ Already Added</span>
+              ) : (
+                <button
+                  onClick={() => handleAddToDo(airdrop)}
+                  className="w-full mt-2 bg-green-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-600 transition duration-300 ease-in-out"
+                >
+                  ➕ Add to My List
+                </button>
+              )}
+            </div>
           </div>
         ))}
       </div>
