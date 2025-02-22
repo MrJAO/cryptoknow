@@ -1,8 +1,8 @@
 import React from 'react';
 import { supabase } from '../../supabaseClient';
 
-const ToDoItem = ({ task, onDelete, onMarkDone, doneTasks }) => {
-  const isDone = doneTasks[task.id] || false;
+const ToDoItem = ({ task, onDelete, onMarkDone, doneTasks, isEven }) => {
+  const isDone = doneTasks[task.id] || false; 
 
   const handleCheckboxToggle = () => {
     onMarkDone(task.id, !isDone);
@@ -21,27 +21,35 @@ const ToDoItem = ({ task, onDelete, onMarkDone, doneTasks }) => {
   };
 
   return (
-    <tr className="border">
-      <td className="border p-2">{task.project_name}</td>
-      <td className="border p-2">
-        <a href={task.task_link} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
-          {task.task_link ? "Task Link" : "N/A"}
-        </a>
-      </td>
-      <td className="border p-2">{task.chain || "N/A"}</td>
-      <td className="border p-2">{task.airdrop_type || "N/A"}</td>
-      <td className="border p-2">{task.device_needed || "N/A"}</td>
-      <td className="border p-2 flex gap-2">
+    <tr className={`${isEven ? 'bg-gray-100' : 'bg-white'} hover:bg-gray-200 transition duration-200`}>
+      <td className="border p-3 flex items-center space-x-2">
         <input 
           type="checkbox" 
           checked={isDone} 
           onChange={handleCheckboxToggle} 
+          className="w-5 h-5 cursor-pointer"
         />
+        <span>{task.project_name}</span>
+      </td>
+      <td className="border p-3">
+        <a 
+          href={task.task_link} 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="text-blue-500 hover:underline"
+        >
+          View Task
+        </a>
+      </td>
+      <td className="border p-3">{task.chain}</td>
+      <td className="border p-3">{task.airdrop_type}</td>
+      <td className="border p-3">{task.device_needed}</td>
+      <td className="border p-3">
         <button 
           onClick={handleDelete} 
-          className="ml-2 text-red-500"
+          className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition duration-200"
         >
-          Delete
+          ✖
         </button>
       </td>
     </tr>
