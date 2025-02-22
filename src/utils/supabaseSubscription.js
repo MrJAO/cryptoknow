@@ -1,9 +1,12 @@
 import { supabase } from "../supabaseClient"; // Adjust path if needed
 
 export const subscribeToAirdrops = (setAirdrops) => {
-  // Fetch initial data
+  // Fetch initial data excluding "id"
   const fetchAirdrops = async () => {
-    const { data, error } = await supabase.from("available_airdrops").select("*"); // ✅ Fixed table name
+    const { data, error } = await supabase
+      .from("available_airdrops")
+      .select("*, id!hidden"); // ✅ Excludes id
+
     if (error) {
       console.error("Error fetching airdrops:", error);
     } else {
@@ -18,7 +21,7 @@ export const subscribeToAirdrops = (setAirdrops) => {
     .channel("available_airdrops")
     .on(
       "postgres_changes",
-      { event: "INSERT", schema: "public", table: "available_airdrops" }, // ✅ Fixed table name
+      { event: "INSERT", schema: "public", table: "available_airdrops" },
       (payload) => {
         console.log("New airdrop received:", payload);
         setAirdrops((prev) => [...prev, payload.new]);
