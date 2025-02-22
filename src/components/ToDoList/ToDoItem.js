@@ -1,13 +1,20 @@
-// ToDoItem.js
 import React, { useState } from 'react';
 import { supabase } from '../../supabaseClient';
 
 const ToDoItem = ({ task, onDelete, onMarkDone }) => {
-  const [isDone, setIsDone] = useState(false);
+  const [isDone, setIsDone] = useState(task.is_done || false);
 
-  const handleCheckboxToggle = () => {
-    setIsDone(!isDone);
-    onMarkDone(task.id, !isDone);
+  const handleCheckboxToggle = async () => {
+    const updatedDoneStatus = !isDone;
+    setIsDone(updatedDoneStatus);
+    onMarkDone(task.id, updatedDoneStatus);
+
+    const { error } = await supabase
+      .from('to_do_list')
+      .update({ is_done: updatedDoneStatus })
+      .eq('id', task.id);
+
+    if (error) console.error('Error updating task:', error.message);
   };
 
   const handleDelete = async () => {
