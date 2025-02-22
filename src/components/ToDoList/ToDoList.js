@@ -26,7 +26,7 @@ const ToDoList = ({ currentUser }) => {
 
     const { data, error } = await supabase
       .from('to_do_list')
-      .select('id, project_name, task_link, chain, airdrop_type, device_needed') // Updated to select required columns
+      .select('id, project_name, task_link, chain, airdrop_type, device_needed') // ✅ Ensures all columns are selected
       .eq('discord_username', discord_username);
 
     if (error) {
