@@ -10,14 +10,19 @@ const ToDoList = ({ currentUser }) => {
     if (currentUser) {
       fetchTasks();
     }
-  }, [currentUser]); // ✅ Removed unnecessary 'tasks' dependency
+  }, [currentUser]);
 
   const fetchTasks = async () => {
     if (!currentUser) return;
 
-    const discord_username = currentUser.user_metadata?.user_name || ''; // ✅ FIXED
+    const discord_username = currentUser.user_metadata?.user_name || currentUser.user_metadata?.full_name || '';
 
-    console.log("Fetching tasks for:", discord_username); // ✅ Debugging log
+    if (!discord_username) {
+      console.error("No Discord username found for current user.");
+      return;
+    }
+
+    console.log("Fetching tasks for:", discord_username);
 
     const { data, error } = await supabase
       .from('to_do_list')
@@ -48,7 +53,7 @@ const ToDoList = ({ currentUser }) => {
   const handleSubmitFinishedTasks = async () => {
     if (!currentUser) return;
 
-    const discord_username = currentUser.user_metadata?.user_name || ''; // ✅ FIXED
+    const discord_username = currentUser.user_metadata?.user_name || currentUser.user_metadata?.full_name || '';
     console.log("Submitting tasks for:", discord_username);
 
     const finishedTasks = tasks.filter(task => doneTasks[task.id]);
@@ -81,7 +86,7 @@ const ToDoList = ({ currentUser }) => {
             task={task} 
             onDelete={handleDeleteTask} 
             onMarkDone={handleMarkDone} 
-            doneTasks={doneTasks} // ✅ Pass this
+            doneTasks={doneTasks} 
           />
         ))
       )}

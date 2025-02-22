@@ -18,24 +18,7 @@ const supabaseUrl = "https://sudquzoonuxtvmjhvjpr.supabase.co";
 const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN1ZHF1em9vbnV4dHZtamh2anByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDAwNDg0ODMsImV4cCI6MjA1NTYyNDQ4M30.-9gQ6aQXagta6ZxxPNUw5qu40X0O04VfuoC3R63ZFss";
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-const saveUserToDatabase = async (user) => {
-  if (!user) return;
-
-  const discordUsername = user.user_metadata?.user_name || user.user_metadata?.full_name || '';
-  
-  const { data, error } = await supabase
-    .from('users')
-    .upsert({
-      id: user.id,
-      discord_username: discordUsername,
-      email: user.email,
-    });
-
-  if (error) console.error('❌ Error saving user:', error.message);
-  else console.log('✅ User saved:', data);
-};
-
-function App() {
+const App = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -48,9 +31,10 @@ function App() {
         console.log("⚠️ No user found in session.");
       }
     };
+
     fetchUser();
 
-    // 🔥 FIXED: Correctly listen for auth state changes
+    // 🔥 FIX: Ensure proper cleanup for auth state listener
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       const currentUser = session?.user || null;
       setUser(currentUser);
@@ -61,9 +45,26 @@ function App() {
     });
 
     return () => {
-      authListener.subscription.unsubscribe();
+      authListener?.unsubscribe(); // ✅ Properly unsubscribe
     };
   }, []);
+
+  const saveUserToDatabase = async (user) => {
+    if (!user) return;
+
+    const discordUsername = user.user_metadata?.user_name || user.user_metadata?.full_name || '';
+
+    const { data, error } = await supabase
+      .from('users')
+      .upsert({
+        id: user.id,
+        discord_username: discordUsername,
+        email: user.email,
+      });
+
+    if (error) console.error('❌ Error saving user:', error.message);
+    else console.log('✅ User saved:', data);
+  };
 
   const handleLogin = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
@@ -104,6 +105,6 @@ function App() {
       </div>
     </BrowserRouter>
   );
-}
+};
 
 export default App;
