@@ -15,7 +15,7 @@ const ToDoList = ({ currentUser }) => {
   const fetchTasks = async () => {
     if (!currentUser) return;
 
-    const discord_username = currentUser.user_metadata?.user_name || ''; // ✅ Changed from full_name to user_name
+    const discord_username = currentUser.user_metadata?.discord_username_name || ''; // ✅ Changed from full_name to user_name
     console.log("Fetching tasks for:", discord_username); // ✅ Debugging log
 
     const { data, error } = await supabase
@@ -24,10 +24,12 @@ const ToDoList = ({ currentUser }) => {
       .eq('discord_username', discord_username);
 
     if (error) {
-      console.error("Error fetching tasks:", error.message); // ✅ Added error log
-    } else {
-      setTasks(data);
-    }
+	  console.error("Error fetching tasks:", error.message);
+	} else {
+	  console.log("Fetched tasks:", data); // ✅ Debugging log
+	  setTasks(data || []); // ✅ Prevents `null` assignment
+	}
+
   };
 
   const handleMarkDone = (taskId, isDone) => {
@@ -74,8 +76,15 @@ const ToDoList = ({ currentUser }) => {
         <p>No tasks added yet.</p>
       ) : (
         tasks.map(task => (
-          <ToDoItem key={task.id} task={task} onDelete={handleDeleteTask} onMarkDone={handleMarkDone} />
-        ))
+			<ToDoItem 
+				key={task.id} 
+				task={task} 
+				onDelete={handleDeleteTask} 
+				onMarkDone={handleMarkDone} 
+				doneTasks={doneTasks} // ✅ Pass this
+			/>
+		))
+
       )}
       <button 
         onClick={handleSubmitFinishedTasks} 
