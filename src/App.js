@@ -52,7 +52,10 @@ function App() {
       const currentUser = session?.user || null;
       setUser(currentUser);
       setIsLoggedIn(!!currentUser);
-      if (currentUser) saveUserToDatabase(currentUser);
+      if (currentUser) {
+        saveUserToDatabase(currentUser);
+        console.log("User updated:", currentUser);
+      }
     });
 
     return () => {
@@ -91,9 +94,20 @@ function App() {
             <Route path="/harvests" element={<Harvests />} />
             <Route path="/faqs" element={<FAQs />} />
           </Routes>
-          <button onClick={isLoggedIn ? handleLogout : handleLogin}>
-            {isLoggedIn ? 'Log Out' : 'Log In with Discord'}
-          </button>
+
+          {/* Centered Login/Logout Button */}
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center', 
+            width: '100%', // Ensure full width for centering
+            marginTop: '20px' 
+          }}>
+            <button onClick={isLoggedIn ? handleLogout : handleLogin}>
+              {isLoggedIn ? 'Log Out' : 'Log In with Discord'}
+            </button>
+          </div>
+
         </div>
       </div>
     </BrowserRouter>
