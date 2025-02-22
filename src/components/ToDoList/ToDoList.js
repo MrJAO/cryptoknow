@@ -76,40 +76,42 @@ const ToDoList = ({ currentUser }) => {
 
   return (
     <div className="border p-4 rounded-lg shadow-md bg-white">
-      <h2 className="text-xl font-semibold mb-4 text-center text-gray-800">Your To-Do List</h2>
+      <h2 className="text-2xl font-semibold mb-4 text-center text-gray-800">Your To-Do List</h2>
       {tasks.length === 0 ? (
         <p className="text-center text-gray-500">No tasks added yet.</p>
       ) : (
-        <table className="w-full border-collapse border border-gray-300 shadow-md rounded-lg overflow-hidden">
-          <thead>
-            <tr className="bg-gray-200 text-gray-700 text-left">
-              <th className="border p-3">Project Name</th>
-              <th className="border p-3">Task Link</th>
-              <th className="border p-3">Chain</th>
-              <th className="border p-3">Airdrop Type</th>
-              <th className="border p-3">Device Needed</th>
-              <th className="border p-3">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tasks.map((task, index) => (
-              <ToDoItem 
-                key={task.id} 
-                task={task} 
-                onDelete={handleDeleteTask} 
-                onMarkDone={handleMarkDone} 
-                doneTasks={doneTasks} 
-                isEven={index % 2 === 0} // Helps with alternating row colors
-              />
-            ))}
-          </tbody>
-        </table>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse border border-gray-300 shadow-md rounded-lg overflow-hidden">
+            <thead>
+              <tr className="bg-gray-700 text-white text-left">
+                <th className="border p-3">Project Name</th>
+                <th className="border p-3">Task Link</th>
+                <th className="border p-3">Chain</th>
+                <th className="border p-3">Airdrop Type</th>
+                <th className="border p-3">Device Needed</th>
+                <th className="border p-3">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tasks.map((task, index) => (
+                <ToDoItem 
+                  key={task.id} 
+                  task={task} 
+                  onDelete={handleDeleteTask} 
+                  onMarkDone={handleMarkDone} 
+                  doneTasks={doneTasks} 
+                  isEven={index % 2 === 0} // Helps with alternating row colors
+                />
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
       <button 
         onClick={handleSubmitFinishedTasks} 
-        className="mt-4 w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition duration-200"
+        className="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-200 font-semibold"
       >
-        Submit Finished Tasks
+        ✅ Submit Finished Tasks
       </button>
     </div>
   );

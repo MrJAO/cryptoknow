@@ -22,32 +22,34 @@ const ToDoItem = ({ task, onDelete, onMarkDone, doneTasks, isEven }) => {
 
   return (
     <tr className={`${isEven ? 'bg-gray-100' : 'bg-white'} hover:bg-gray-200 transition duration-200`}>
-      <td className="border p-3 flex items-center space-x-2">
+      <td className="border p-3 flex items-center space-x-3">
         <input 
           type="checkbox" 
           checked={isDone} 
           onChange={handleCheckboxToggle} 
-          className="w-5 h-5 cursor-pointer"
+          className="w-5 h-5 cursor-pointer accent-blue-500"
         />
-        <span>{task.project_name}</span>
+        <span className={`text-gray-800 ${isDone ? 'line-through text-gray-500' : ''}`}>
+          {task.project_name}
+        </span>
       </td>
       <td className="border p-3">
         <a 
           href={task.task_link} 
           target="_blank" 
           rel="noopener noreferrer" 
-          className="text-blue-500 hover:underline"
+          className="text-blue-500 hover:underline font-medium"
         >
           View Task
         </a>
       </td>
-      <td className="border p-3">{task.chain}</td>
-      <td className="border p-3">{task.airdrop_type}</td>
-      <td className="border p-3">{task.device_needed}</td>
-      <td className="border p-3">
+      <td className="border p-3 text-gray-700">{task.chain}</td>
+      <td className="border p-3 text-gray-700">{task.airdrop_type}</td>
+      <td className="border p-3 text-gray-700">{task.device_needed}</td>
+      <td className="border p-3 text-center">
         <button 
           onClick={handleDelete} 
-          className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition duration-200"
+          className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition duration-200 shadow-md"
         >
           ✖
         </button>
