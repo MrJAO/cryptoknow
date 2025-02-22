@@ -23,13 +23,13 @@ function FAQs() {
   };
 
   return (
-    <div style={{ maxWidth: "800px", margin: "auto", padding: "20px" }}>
-      <h1 style={{ textAlign: "center", marginBottom: "20px" }}>Frequently Asked Questions</h1>
-      <table style={{ width: "100%", borderCollapse: "collapse" }}>
+    <div style={{ maxWidth: "1000px", margin: "auto", padding: "20px" }}>
+      <h1 style={{ textAlign: "center", marginBottom: "20px", fontSize: "2em" }}>Frequently Asked Questions</h1>
+      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "1.5em" }}>
         <thead>
           <tr style={{ background: "#333", color: "#fff", textAlign: "left" }}>
-            <th style={{ padding: "10px", width: "80%" }}>Question</th>
-            <th style={{ padding: "10px", width: "20%" }}>Expand</th>
+            <th style={{ padding: "15px", width: "80%" }}>Question</th>
+            <th style={{ padding: "15px", width: "20%" }}>Expand</th>
           </tr>
         </thead>
         <tbody>
@@ -39,18 +39,19 @@ function FAQs() {
                 style={{ 
                   borderBottom: "1px solid #ddd", 
                   cursor: "pointer", 
-                  background: openIndex === index ? "#f1f1f1" : "#fff"
+                  background: openIndex === index ? "#666" : "#444",
+                  color: "#fff"
                 }}
                 onClick={() => toggleFAQ(index)}
               >
-                <td style={{ padding: "10px", fontWeight: "bold" }}>{faq.question}</td>
-                <td style={{ padding: "10px", textAlign: "center" }}>
+                <td style={{ padding: "15px", fontWeight: "bold" }}>{faq.question}</td>
+                <td style={{ padding: "15px", textAlign: "center" }}>
                   {openIndex === index ? "▲" : "▼"}
                 </td>
               </tr>
               {openIndex === index && (
                 <tr>
-                  <td colSpan="2" style={{ padding: "10px", background: "#444", color: "#fff", borderBottom: "1px solid #ddd" }}>
+                  <td colSpan="2" style={{ padding: "15px", background: "#222", color: "#fff", borderBottom: "1px solid #ddd" }}>
                     {faq.answer}
                   </td>
                 </tr>
