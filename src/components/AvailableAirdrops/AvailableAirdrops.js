@@ -46,55 +46,62 @@ const AvailableAirdrops = () => {
   };
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
+    <div className="p-6 max-w-6xl mx-auto">
       <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">🚀 Available Airdrops</h2>
-      
-      <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-        {airdrops.map((airdrop, index) => (
-          <div
-            key={airdrop.task_link || index}
-            className="border border-gray-300 rounded-xl shadow-lg p-6 bg-white hover:shadow-xl transition duration-300 ease-in-out"
-          >
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">{airdrop.project_name}</h3>
-            <div className="text-sm text-gray-700">
-              <p><strong>🔗 Chain:</strong> {airdrop.chain}</p>
-              <p><strong>🎁 Airdrop Type:</strong> {airdrop.airdrop_type}</p>
-              <p><strong>📱 Device Needed:</strong> {airdrop.device_needed}</p>
-              <p>
-                <strong>📢 Status:</strong>{" "}
-                {airdrop.status ? (
-                  <span className="text-green-600 font-semibold">Ongoing</span>
-                ) : (
-                  <span className="text-red-500 font-semibold">Ended</span>
-                )}
-              </p>
-            </div>
 
-            <div className="mt-4">
-              <a
-                href={airdrop.task_link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-300 ease-in-out"
-              >
-                🌍 Task Link
-              </a>
-            </div>
+      <div className="overflow-x-auto shadow-md rounded-lg">
+        <table className="w-full border-collapse bg-white text-left">
+          {/* Table Header */}
+          <thead className="bg-gray-800 text-white uppercase">
+            <tr>
+              <th className="px-6 py-3 border-b">Project Name</th>
+              <th className="px-6 py-3 border-b">Chain</th>
+              <th className="px-6 py-3 border-b">Airdrop Type</th>
+              <th className="px-6 py-3 border-b">Device Needed</th>
+              <th className="px-6 py-3 border-b">Status</th>
+              <th className="px-6 py-3 border-b">Actions</th>
+            </tr>
+          </thead>
 
-            <div className="mt-4">
-              {addedProjects.includes(airdrop.project_name) ? (
-                <span className="text-green-600 font-semibold">✅ Already Added</span>
-              ) : (
-                <button
-                  onClick={() => handleAddToDo(airdrop)}
-                  className="w-full mt-2 bg-green-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-600 transition duration-300 ease-in-out"
-                >
-                  ➕ Add to My List
-                </button>
-              )}
-            </div>
-          </div>
-        ))}
+          {/* Table Body */}
+          <tbody>
+            {airdrops.map((airdrop, index) => (
+              <tr key={index} className="border-b hover:bg-gray-100 transition">
+                <td className="px-6 py-4">{airdrop.project_name}</td>
+                <td className="px-6 py-4">{airdrop.chain}</td>
+                <td className="px-6 py-4">{airdrop.airdrop_type}</td>
+                <td className="px-6 py-4">{airdrop.device_needed}</td>
+                <td className="px-6 py-4">
+                  {airdrop.status ? (
+                    <span className="text-green-600 font-semibold">Ongoing</span>
+                  ) : (
+                    <span className="text-red-500 font-semibold">Ended</span>
+                  )}
+                </td>
+                <td className="px-6 py-4 flex gap-2">
+                  <a
+                    href={airdrop.task_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-blue-500 text-white font-semibold py-1 px-3 rounded hover:bg-blue-600 transition duration-300"
+                  >
+                    🌍 Task
+                  </a>
+                  {addedProjects.includes(airdrop.project_name) ? (
+                    <span className="text-green-600 font-semibold">✅ Added</span>
+                  ) : (
+                    <button
+                      onClick={() => handleAddToDo(airdrop)}
+                      className="bg-green-500 text-white font-semibold py-1 px-3 rounded hover:bg-green-600 transition duration-300"
+                    >
+                      ➕ Add
+                    </button>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
