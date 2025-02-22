@@ -54,7 +54,8 @@ const AvailableAirdrops = () => {
           {/* Table Header */}
           <thead className="bg-gray-800 text-white uppercase">
             <tr>
-              <th className="px-6 py-3 border-b">Project Name & Task</th>
+              <th className="px-6 py-3 border-b">Project Name</th>
+              <th className="px-6 py-3 border-b">Task Link</th>
               <th className="px-6 py-3 border-b">Chain</th>
               <th className="px-6 py-3 border-b">Airdrop Type</th>
               <th className="px-6 py-3 border-b">Device Needed</th>
@@ -67,9 +68,11 @@ const AvailableAirdrops = () => {
           <tbody>
             {airdrops.map((airdrop, index) => (
               <tr key={index} className="border-b hover:bg-gray-100 transition">
-                {/* Project Name & Task Link in One Column */}
-                <td className="px-6 py-4 flex items-center gap-3">
-                  <span className="font-semibold">{airdrop.project_name}</span>
+                {/* Project Name */}
+                <td className="px-6 py-4 font-semibold">{airdrop.project_name}</td>
+
+                {/* Task Link */}
+                <td className="px-6 py-4">
                   <a
                     href={airdrop.task_link}
                     target="_blank"
@@ -79,9 +82,17 @@ const AvailableAirdrops = () => {
                     🌍 Task
                   </a>
                 </td>
+
+                {/* Chain */}
                 <td className="px-6 py-4">{airdrop.chain}</td>
+
+                {/* Airdrop Type */}
                 <td className="px-6 py-4">{airdrop.airdrop_type}</td>
+
+                {/* Device Needed */}
                 <td className="px-6 py-4">{airdrop.device_needed}</td>
+
+                {/* Status */}
                 <td className="px-6 py-4">
                   {airdrop.status ? (
                     <span className="text-green-600 font-semibold">Ongoing</span>
@@ -89,6 +100,7 @@ const AvailableAirdrops = () => {
                     <span className="text-red-500 font-semibold">Ended</span>
                   )}
                 </td>
+
                 {/* Actions (Add to List) */}
                 <td className="px-6 py-4">
                   {addedProjects.includes(airdrop.project_name) ? (
