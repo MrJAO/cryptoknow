@@ -15,7 +15,7 @@ export const subscribeToAirdrops = (setAirdrops) => {
     .channel("available_airdrops")
     .on(
       "postgres_changes", 
-      { event: "INSERT", schema: "public", table: "Available Airdrops" }, 
+      { event: "INSERT", schema: "public", table: "AvailableAirdrops" }, 
       (payload) => {
         console.log("New airdrop received:", payload);
         setAirdrops((prev) => [...prev, payload.new]);
