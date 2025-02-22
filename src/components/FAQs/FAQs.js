@@ -23,37 +23,44 @@ function FAQs() {
   };
 
   return (
-    <div style={{ maxWidth: "600px", margin: "auto", padding: "20px" }}>
-      <h1>Frequently Asked Questions</h1>
-      <div>
-        {faqs.map((faq, index) => (
-          <div key={index} style={{ marginBottom: "10px", borderBottom: "1px solid #ccc", paddingBottom: "10px" }}>
-            <button 
-              onClick={() => toggleFAQ(index)} 
-              style={{ 
-                width: "100%", 
-                textAlign: "left", 
-                background: "none", 
-                border: "none", 
-                fontSize: "18px", 
-                cursor: "pointer", 
-                padding: "10px",
-                fontWeight: "bold" 
-              }}
-            >
-              {faq.question} {openIndex === index ? "▲" : "▼"}
-            </button>
-            {openIndex === index && (
-              <p style={{ padding: "10px", background: "#f9f9f9", borderRadius: "5px" }}>
-                {faq.answer}
-              </p>
-            )}
-          </div>
-        ))}
-      </div>
+    <div style={{ maxWidth: "800px", margin: "auto", padding: "20px" }}>
+      <h1 style={{ textAlign: "center", marginBottom: "20px" }}>Frequently Asked Questions</h1>
+      <table style={{ width: "100%", borderCollapse: "collapse" }}>
+        <thead>
+          <tr style={{ background: "#333", color: "#fff", textAlign: "left" }}>
+            <th style={{ padding: "10px", width: "80%" }}>Question</th>
+            <th style={{ padding: "10px", width: "20%" }}>Expand</th>
+          </tr>
+        </thead>
+        <tbody>
+          {faqs.map((faq, index) => (
+            <React.Fragment key={index}>
+              <tr 
+                style={{ 
+                  borderBottom: "1px solid #ddd", 
+                  cursor: "pointer", 
+                  background: openIndex === index ? "#f1f1f1" : "#fff"
+                }}
+                onClick={() => toggleFAQ(index)}
+              >
+                <td style={{ padding: "10px", fontWeight: "bold" }}>{faq.question}</td>
+                <td style={{ padding: "10px", textAlign: "center" }}>
+                  {openIndex === index ? "▲" : "▼"}
+                </td>
+              </tr>
+              {openIndex === index && (
+                <tr>
+                  <td colSpan="2" style={{ padding: "10px", background: "#fafafa", borderBottom: "1px solid #ddd" }}>
+                    {faq.answer}
+                  </td>
+                </tr>
+              )}
+            </React.Fragment>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
 
 export default FAQs;
-
