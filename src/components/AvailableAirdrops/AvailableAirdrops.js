@@ -16,7 +16,7 @@ const AvailableAirdrops = () => {
           .from("to_do_list")
           .select("project_name")
           .eq("discord_username", user.user_metadata?.full_name || "");
-        setAddedProjects(tasks.map((t) => t.project_name));
+        setAddedProjects(tasks?.map((t) => t.project_name) || []);
       }
     };
     getCurrentUserAndTasks();
@@ -49,10 +49,20 @@ const AvailableAirdrops = () => {
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-4">Available Airdrops</h2>
       <div className="grid gap-4 md:grid-cols-2">
-        {airdrops.map((airdrop) => (
-          <div key={airdrop.project_name} className="border p-4 rounded-lg shadow-md">
+        {airdrops.map((airdrop, index) => (
+          <div key={airdrop.task_link || index} className="border p-4 rounded-lg shadow-md">
             <h3 className="text-lg font-semibold">{airdrop.project_name}</h3>
-            <p>Chain: {airdrop.chain}</p>
+            <p><strong>Chain:</strong> {airdrop.chain}</p>
+            <p><strong>Airdrop Type:</strong> {airdrop.airdrop_type}</p>
+            <p><strong>Device Needed:</strong> {airdrop.device_needed}</p>
+            <p>
+              <strong>Status:</strong>{" "}
+              {airdrop.status ? (
+                <span className="text-green-500 font-bold">Ongoing</span>
+              ) : (
+                <span className="text-red-500 font-bold">Ended</span>
+              )}
+            </p>
             <a
               href={airdrop.task_link}
               target="_blank"
