@@ -30,20 +30,36 @@ const AvailableAirdrops = () => {
     };
   }, []);
 
-  const handleAddToDo = async (airdrop) => {
-    if (!user) {
-      alert("Please log in to add a task.");
-      return;
-    }
-    const discord_username = user.user_metadata?.full_name || "";
-    const { error } = await supabase
-      .from("to_do_list")
-      .insert([{ discord_username, project_name: airdrop.project_name }]);
-    if (!error) {
-      alert("Added to your To-Do List!");
-      setAddedProjects((prev) => [...prev, airdrop.project_name]);
-    }
-  };
+	  const handleAddToDo = async (airdrop) => {
+	  if (!user) {
+		alert("Please log in to add a task.");
+		return;
+	  }
+
+	  const discord_username = user.user_metadata?.full_name || "";
+
+	  // Insert into the "to_do_list" table
+	  const { error } = await supabase
+		.from("to_do_list")
+		.insert([{ 
+		  discord_username, 
+		  project_name: airdrop.project_name, 
+		  task_link: airdrop.task_link, 
+		  chain: airdrop.chain,
+		  airdrop_type: airdrop.airdrop_type,
+		  device_needed: airdrop.device_needed,
+		  status: airdrop.status
+		}]);
+
+	  if (error) {
+		console.error("Error adding to To-Do List:", error);
+		alert("Failed to add. Please try again.");
+	  } else {
+		alert("Added to your To-Do List!");
+		setAddedProjects((prev) => [...prev, airdrop.project_name]); // Update UI
+	  }
+	};
+
 
   return (
     <div className="p-6 max-w-6xl mx-auto">

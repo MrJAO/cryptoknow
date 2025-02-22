@@ -18,16 +18,28 @@ export const subscribeToAirdrops = (setAirdrops) => {
 
   // Subscribe to real-time updates
   const channel = supabase
-    .channel("available_airdrops")
-    .on(
-      "postgres_changes",
-      { event: "INSERT", schema: "public", table: "available_airdrops" },
-      (payload) => {
-        console.log("New airdrop received:", payload);
-        setAirdrops((prev) => [...prev, payload.new]);
-      }
-    )
-    .subscribe();
+  .channel("available_airdrops")
+  .on(
+    "postgres_changes",
+    { event: "*", schema: "public", table: "available_airdrops" },
+    (payload) => {
+      console.log("Airdrop update received:", payload);
+      setAirdrops((prev) => {
+        if (payload.eventType === "INSERT") {
+          return [...prev, payload.new]; // Add new item
+        } else if (payload.eventType === "UPDATE") {
+          return prev.map((item) =>
+            item.project_name === payload.new.project_name ? payload.new : item
+          ); // Update item
+        } else if (payload.eventType === "DELETE") {
+          return prev.filter((item) => item.project_name !== payload.old.project_name);
+        }
+        return prev;
+      });
+    }
+  )
+  .subscribe();
+
 
   return () => {
     supabase.removeChannel(channel); // Cleanup on unmount
