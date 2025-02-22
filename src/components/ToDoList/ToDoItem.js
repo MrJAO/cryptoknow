@@ -19,7 +19,28 @@ const ToDoItem = ({ task, onDelete, onMarkDone, doneTasks, isEven, finishedTasks
 
   const handleDelete = async () => {
     if (window.confirm(`Are you sure you want to remove "${task.project_name}"?`)) {
-      const { error } = await supabase.from('to_do_list').delete().eq('id', task.id);
+      // Fetch the user's Discord username
+      const { data: userData, error: userError } = await supabase
+        .from('to_do_list')
+        .select('discord_username')
+        .eq('id', task.id)
+        .single();
+
+      if (userError || !userData) {
+        console.error("Error fetching user data:", userError?.message);
+        alert("Failed to retrieve user data. Try again.");
+        return;
+      }
+
+      const discordUsername = userData.discord_username;
+      
+      // Delete all entries with the same project_name and discord_username
+      const { error } = await supabase
+        .from('to_do_list')
+        .delete()
+        .eq('project_name', task.project_name)
+        .eq('discord_username', discordUsername);
+
       if (!error) {
         onDelete(task.id);
       } else {
