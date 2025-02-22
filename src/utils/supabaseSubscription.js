@@ -3,7 +3,7 @@ import { supabase } from "../supabaseClient"; // Adjust path if needed
 export const subscribeToAirdrops = (setAirdrops) => {
   // Fetch initial data
   const fetchAirdrops = async () => {
-    const { data, error } = await supabase.from("Available Airdrops").select("*");
+    const { data, error } = await supabase.from("AvailableAirdrops").select("*");
     if (error) console.error("Error fetching airdrops:", error);
     else setAirdrops(data);
   };
