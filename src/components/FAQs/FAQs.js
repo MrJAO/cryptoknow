@@ -50,7 +50,7 @@ function FAQs() {
               </tr>
               {openIndex === index && (
                 <tr>
-                  <td colSpan="2" style={{ padding: "10px", background: "#fafafa", borderBottom: "1px solid #ddd" }}>
+                  <td colSpan="2" style={{ padding: "10px", background: "#444", color: "#fff", borderBottom: "1px solid #ddd" }}>
                     {faq.answer}
                   </td>
                 </tr>
