@@ -1,11 +1,20 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { supabase } from '../../supabaseClient';
 
-const ToDoItem = ({ task, onDelete, onMarkDone, doneTasks, isEven }) => {
-  const isDone = doneTasks[task.id] || false; 
+const ToDoItem = ({ task, onDelete, onMarkDone, doneTasks, isEven, finishedTasks }) => {
+  const [isDisabled, setIsDisabled] = useState(false);
+  const isDone = doneTasks[task.id] || false;
+
+  useEffect(() => {
+    if (finishedTasks.some(finished => finished.project_name === task.project_name)) {
+      setIsDisabled(true);
+    }
+  }, [finishedTasks, task.project_name]);
 
   const handleCheckboxToggle = () => {
-    onMarkDone(task.id, !isDone);
+    if (!isDisabled) {
+      onMarkDone(task.id, !isDone);
+    }
   };
 
   const handleDelete = async () => {
@@ -23,13 +32,17 @@ const ToDoItem = ({ task, onDelete, onMarkDone, doneTasks, isEven }) => {
   return (
     <tr className={`${isEven ? 'bg-gray-100' : 'bg-white'} hover:bg-gray-200 transition duration-200`}>
       <td className="border p-3 flex items-center space-x-3">
-        <input 
-          type="checkbox" 
-          checked={isDone} 
-          onChange={handleCheckboxToggle} 
-          className="w-5 h-5 cursor-pointer accent-blue-500"
-        />
-        <span className={`text-gray-800 ${isDone ? 'line-through text-gray-500' : ''}`}>
+        {isDisabled ? (
+          <span className="text-green-500 font-semibold">✔ Done</span>
+        ) : (
+          <input 
+            type="checkbox" 
+            checked={isDone} 
+            onChange={handleCheckboxToggle} 
+            className="w-5 h-5 cursor-pointer accent-blue-500"
+          />
+        )}
+        <span className={`text-gray-800 ${isDone || isDisabled ? 'line-through text-gray-500' : ''}`}>
           {task.project_name}
         </span>
       </td>

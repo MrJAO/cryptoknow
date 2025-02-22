@@ -5,10 +5,12 @@ import ToDoItem from './ToDoItem';
 const ToDoList = ({ currentUser }) => {
   const [tasks, setTasks] = useState([]);
   const [doneTasks, setDoneTasks] = useState({});
+  const [finishedTasks, setFinishedTasks] = useState({});
 
   useEffect(() => {
     if (currentUser) {
       fetchTasks();
+      fetchFinishedTasks();
     }
   }, [currentUser]);
 
@@ -26,7 +28,7 @@ const ToDoList = ({ currentUser }) => {
 
     const { data, error } = await supabase
       .from('to_do_list')
-      .select('id, project_name, task_link, chain, airdrop_type, device_needed') // Selecting required columns
+      .select('id, project_name, task_link, chain, airdrop_type, device_needed')
       .eq('discord_username', discord_username);
 
     if (error) {
@@ -34,6 +36,25 @@ const ToDoList = ({ currentUser }) => {
     } else {
       console.log("✅ Fetched tasks:", data);
       setTasks(data || []);
+    }
+  };
+
+  const fetchFinishedTasks = async () => {
+    if (!currentUser) return;
+
+    const discord_username = currentUser.user_metadata?.user_name || currentUser.user_metadata?.full_name || '';
+    
+    const { data, error } = await supabase
+      .from('finished_daily_tasks')
+      .select('project_name')
+      .eq('discord_username', discord_username);
+
+    if (error) {
+      console.error("❌ Error fetching finished tasks:", error.message);
+    } else {
+      const finished = {};
+      data.forEach(task => { finished[task.project_name] = true; });
+      setFinishedTasks(finished);
     }
   };
 
@@ -56,19 +77,20 @@ const ToDoList = ({ currentUser }) => {
     const discord_username = currentUser.user_metadata?.user_name || currentUser.user_metadata?.full_name || '';
     console.log("Submitting tasks for:", discord_username);
 
-    const finishedTasks = tasks.filter(task => doneTasks[task.id]);
+    const newFinishedTasks = tasks.filter(task => doneTasks[task.id] && !finishedTasks[task.project_name]);
 
-    if (finishedTasks.length === 0) {
-      alert("No tasks have been marked as finished.");
+    if (newFinishedTasks.length === 0) {
+      alert("No new tasks have been marked as finished.");
       return;
     }
 
-    const inserts = finishedTasks.map(task => ({ discord_username, project_name: task.project_name }));
+    const inserts = newFinishedTasks.map(task => ({ discord_username, project_name: task.project_name }));
 
     const { error } = await supabase.from('finished_daily_tasks').insert(inserts);
     if (!error) {
       alert("✅ Finished tasks submitted! They will be refreshed daily.");
       setDoneTasks({});
+      fetchFinishedTasks(); // Refresh finished tasks
     } else {
       console.error("❌ Error submitting tasks:", error.message);
     }
@@ -100,6 +122,7 @@ const ToDoList = ({ currentUser }) => {
                   onDelete={handleDeleteTask} 
                   onMarkDone={handleMarkDone} 
                   doneTasks={doneTasks} 
+                  finishedTasks={finishedTasks} 
                   isEven={index % 2 === 0} // Helps with alternating row colors
                 />
               ))}
