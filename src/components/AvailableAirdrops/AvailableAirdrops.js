@@ -1,4 +1,3 @@
-// AvailableAirdrops.js
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../supabaseClient';
 import { subscribeToAirdrops } from '../../utils/supabaseSubscription'; // Import real-time subscription
@@ -25,8 +24,10 @@ const AvailableAirdrops = () => {
 
   // ✅ Subscribe to real-time airdrops updates
   useEffect(() => {
-    const unsubscribe = subscribeToAirdrops(setAirdrops);
-    return unsubscribe; // Cleanup on unmount
+    const channel = subscribeToAirdrops(setAirdrops);
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const handleAddToDo = async (airdrop) => {

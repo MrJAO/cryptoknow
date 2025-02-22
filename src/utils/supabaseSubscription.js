@@ -11,15 +11,19 @@ export const subscribeToAirdrops = (setAirdrops) => {
   fetchAirdrops();
 
   // Subscribe to real-time updates
-  const subscription = supabase
-    .from("Available Airdrops")
-    .on("INSERT", (payload) => {
-      console.log("New airdrop received:", payload);
-      setAirdrops((prev) => [...prev, payload.new]);
-    })
+  const channel = supabase
+    .channel("available_airdrops")
+    .on(
+      "postgres_changes", 
+      { event: "INSERT", schema: "public", table: "Available Airdrops" }, 
+      (payload) => {
+        console.log("New airdrop received:", payload);
+        setAirdrops((prev) => [...prev, payload.new]);
+      }
+    )
     .subscribe();
 
   return () => {
-    subscription.unsubscribe();
+    supabase.removeChannel(channel); // Cleanup on unmount
   };
 };
