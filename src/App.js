@@ -1,6 +1,7 @@
+// src/App.js
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { supabase } from './supabaseClient'; // Import Supabase client
+import { createClient } from '@supabase/supabase-js';
 import Sidebar from './components/Sidebar/Sidebar';
 import Home from './components/Home/CryptoKnow';
 import ToDoList from './components/ToDoList/ToDoList';
@@ -12,26 +13,20 @@ import Harvests from './components/Harvests/Harvests';
 import FAQs from './components/FAQs/FAQs';
 import './App.css';
 
+// Initialize Supabase
+const supabaseUrl = "https://sudquzoonuxtvmjhvjpr.supabase.co";
+const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN1ZHF1em9vbnV4dHZtamh2anByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDAwNDg0ODMsImV4cCI6MjA1NTYyNDQ4M30.-9gQ6aQXagta6ZxxPNUw5qu40X0O04VfuoC3R63ZFss";
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
 const saveUserToDatabase = async (user) => {
-  const discordUsername = user.user_metadata?.user_name || '';
-  const token = user?.access_token; // Fetch user auth token
-
-  if (!token) {
-    console.error('No access token found!');
-    return;
-  }
-
+  const discordUsername = user.user_metadata?.user_name || user.user_metadata?.full_name || '';
   const { data, error } = await supabase
     .from('users')
-    .upsert(
-      {
-        id: user.id,
-        discord_username: discordUsername,
-        email: user.email,
-      },
-      { returning: "minimal" } // Optimize performance
-    )
-    .eq('id', user.id);
+    .upsert({
+      id: user.id,
+      discord_username: discordUsername,
+      email: user.email,
+    });
 
   if (error) console.error('Error saving user:', error.message);
   else console.log('User saved:', data);
@@ -43,9 +38,7 @@ function App() {
 
   useEffect(() => {
     const checkSession = async () => {
-      const { data: { user }, error } = await supabase.auth.getUser();
-      if (error) console.error("Error fetching user session:", error.message);
-      
+      const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         setUser(user);
         setIsLoggedIn(true);
@@ -69,6 +62,22 @@ function App() {
     };
   }, []);
 
+  const handleLogin = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'discord',
+      options: {
+        redirectTo: 'https://cryptoknow.space'
+      }
+    });
+    if (error) console.error("Login Error:", error);
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    setIsLoggedIn(false);
+  };
+
   return (
     <BrowserRouter>
       <div className="app">
@@ -76,7 +85,7 @@ function App() {
         <div className="main-content">
           <Routes>
             <Route path="/" element={<Home user={user} />} />
-            <Route path="/to-do-list" element={<ToDoList currentUser={user} />} />
+            <Route path="/to-do-list" element={<ToDoList user={user} />} />
             <Route path="/available-airdrops" element={<AvailableAirdrops />} />
             <Route path="/available-checkers" element={<AvailableCheckers />} />
             <Route path="/completed-airdrops" element={<CompletedAirdrops />} />
@@ -84,6 +93,13 @@ function App() {
             <Route path="/harvests" element={<Harvests />} />
             <Route path="/faqs" element={<FAQs />} />
           </Routes>
+
+          {/* Centered Login/Logout Button */}
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', marginTop: '20px' }}>
+            <button onClick={isLoggedIn ? handleLogout : handleLogin}>
+              {isLoggedIn ? 'Log Out' : 'Log In with Discord'}
+            </button>
+          </div>
         </div>
       </div>
     </BrowserRouter>
