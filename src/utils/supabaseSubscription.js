@@ -3,9 +3,12 @@ import { supabase } from "../supabaseClient"; // Adjust path if needed
 export const subscribeToAirdrops = (setAirdrops) => {
   // Fetch initial data
   const fetchAirdrops = async () => {
-    const { data, error } = await supabase.from("AvailableAirdrops").select("*");
-    if (error) console.error("Error fetching airdrops:", error);
-    else setAirdrops(data);
+    const { data, error } = await supabase.from("available_airdrops").select("*"); // ✅ Fixed table name
+    if (error) {
+      console.error("Error fetching airdrops:", error);
+    } else {
+      setAirdrops(data);
+    }
   };
 
   fetchAirdrops();
@@ -14,8 +17,8 @@ export const subscribeToAirdrops = (setAirdrops) => {
   const channel = supabase
     .channel("available_airdrops")
     .on(
-      "postgres_changes", 
-      { event: "INSERT", schema: "public", table: "AvailableAirdrops" }, 
+      "postgres_changes",
+      { event: "INSERT", schema: "public", table: "available_airdrops" }, // ✅ Fixed table name
       (payload) => {
         console.log("New airdrop received:", payload);
         setAirdrops((prev) => [...prev, payload.new]);
