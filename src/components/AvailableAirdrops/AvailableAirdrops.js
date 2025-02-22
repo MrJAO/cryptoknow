@@ -54,7 +54,7 @@ const AvailableAirdrops = () => {
           {/* Table Header */}
           <thead className="bg-gray-800 text-white uppercase">
             <tr>
-              <th className="px-6 py-3 border-b">Project Name</th>
+              <th className="px-6 py-3 border-b">Project Name & Task</th>
               <th className="px-6 py-3 border-b">Chain</th>
               <th className="px-6 py-3 border-b">Airdrop Type</th>
               <th className="px-6 py-3 border-b">Device Needed</th>
@@ -67,7 +67,18 @@ const AvailableAirdrops = () => {
           <tbody>
             {airdrops.map((airdrop, index) => (
               <tr key={index} className="border-b hover:bg-gray-100 transition">
-                <td className="px-6 py-4">{airdrop.project_name}</td>
+                {/* Project Name & Task Link in One Column */}
+                <td className="px-6 py-4 flex items-center gap-3">
+                  <span className="font-semibold">{airdrop.project_name}</span>
+                  <a
+                    href={airdrop.task_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-blue-500 text-white font-semibold py-1 px-3 rounded hover:bg-blue-600 transition duration-300"
+                  >
+                    🌍 Task
+                  </a>
+                </td>
                 <td className="px-6 py-4">{airdrop.chain}</td>
                 <td className="px-6 py-4">{airdrop.airdrop_type}</td>
                 <td className="px-6 py-4">{airdrop.device_needed}</td>
@@ -78,28 +89,18 @@ const AvailableAirdrops = () => {
                     <span className="text-red-500 font-semibold">Ended</span>
                   )}
                 </td>
-                {/* Buttons with proper spacing */}
+                {/* Actions (Add to List) */}
                 <td className="px-6 py-4">
-                  <div className="flex justify-start items-center gap-4">
-                    <a
-                      href={airdrop.task_link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="bg-blue-500 text-white font-semibold py-1 px-3 rounded hover:bg-blue-600 transition duration-300"
+                  {addedProjects.includes(airdrop.project_name) ? (
+                    <span className="text-green-600 font-semibold">✅ Added</span>
+                  ) : (
+                    <button
+                      onClick={() => handleAddToDo(airdrop)}
+                      className="bg-green-500 text-white font-semibold py-1 px-3 rounded hover:bg-green-600 transition duration-300"
                     >
-                      🌍 Task
-                    </a>
-                    {addedProjects.includes(airdrop.project_name) ? (
-                      <span className="text-green-600 font-semibold">✅ Added</span>
-                    ) : (
-                      <button
-                        onClick={() => handleAddToDo(airdrop)}
-                        className="bg-green-500 text-white font-semibold py-1 px-3 rounded hover:bg-green-600 transition duration-300"
-                      >
-                        ➕ Add
-                      </button>
-                    )}
-                  </div>
+                      ➕ Add
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}
