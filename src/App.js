@@ -15,11 +15,14 @@ import './App.css';
 
 // Initialize Supabase
 const supabaseUrl = "https://sudquzoonuxtvmjhvjpr.supabase.co";
-const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN1ZHF1em9vbnV4dHZtamh2anByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDAwNDg0ODMsImV4cCI6MjA1NTYyNDQ4M30.-9gQ6aQXagta6ZxxPNUw5qu40X0O04VfuoC3R63ZFss";
+const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 const saveUserToDatabase = async (user) => {
+  if (!user) return;
+
   const discordUsername = user.user_metadata?.user_name || user.user_metadata?.full_name || '';
+  
   const { data, error } = await supabase
     .from('users')
     .upsert({
@@ -28,64 +31,61 @@ const saveUserToDatabase = async (user) => {
       email: user.email,
     });
 
-  if (error) console.error('Error saving user:', error.message);
-  else console.log('User saved:', data);
+  if (error) console.error('❌ Error saving user:', error.message);
+  else console.log('✅ User saved:', data);
 };
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const checkSession = async () => {
+    const fetchUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         setUser(user);
-        setIsLoggedIn(true);
         saveUserToDatabase(user);
+      } else {
+        console.log("⚠️ No user found in session.");
       }
     };
-    checkSession();
+    fetchUser();
 
-    const authListener = supabase.auth.onAuthStateChange((event, session) => {
+    // 🔥 FIXED: Correctly listen for auth state changes
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       const currentUser = session?.user || null;
       setUser(currentUser);
-      setIsLoggedIn(!!currentUser);
       if (currentUser) {
         saveUserToDatabase(currentUser);
-        console.log("User updated:", currentUser);
+        console.log("🔄 User updated:", currentUser);
       }
     });
 
     return () => {
-      authListener.data.subscription.unsubscribe();
+      authListener.subscription.unsubscribe();
     };
   }, []);
 
   const handleLogin = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'discord',
-      options: {
-        redirectTo: 'https://cryptoknow.space'
-      }
+      options: { redirectTo: 'https://cryptoknow.space' }
     });
-    if (error) console.error("Login Error:", error);
+    if (error) console.error("❌ Login Error:", error);
   };
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setUser(null);
-    setIsLoggedIn(false);
   };
 
   return (
     <BrowserRouter>
       <div className="app">
-        <Sidebar isLoggedIn={isLoggedIn} />
+        <Sidebar isLoggedIn={!!user} />
         <div className="main-content">
           <Routes>
             <Route path="/" element={<Home user={user} />} />
-            <Route path="/to-do-list" element={<ToDoList user={user} />} />
+            <Route path="/to-do-list" element={<ToDoList currentUser={user} />} />
             <Route path="/available-airdrops" element={<AvailableAirdrops />} />
             <Route path="/available-checkers" element={<AvailableCheckers />} />
             <Route path="/completed-airdrops" element={<CompletedAirdrops />} />
@@ -96,8 +96,8 @@ function App() {
 
           {/* Centered Login/Logout Button */}
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', marginTop: '20px' }}>
-            <button onClick={isLoggedIn ? handleLogout : handleLogin}>
-              {isLoggedIn ? 'Log Out' : 'Log In with Discord'}
+            <button onClick={user ? handleLogout : handleLogin}>
+              {user ? 'Log Out' : 'Log In with Discord'}
             </button>
           </div>
         </div>

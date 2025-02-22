@@ -10,12 +10,13 @@ const ToDoList = ({ currentUser }) => {
     if (currentUser) {
       fetchTasks();
     }
-  }, [currentUser, tasks]); // Added 'tasks' to trigger refresh
+  }, [currentUser]); // ✅ Removed unnecessary 'tasks' dependency
 
   const fetchTasks = async () => {
     if (!currentUser) return;
 
-    const discord_username = currentUser.user_metadata?.full_name || ''; // ✅ Changed from full_name to user_name
+    const discord_username = currentUser.user_metadata?.user_name || ''; // ✅ FIXED
+
     console.log("Fetching tasks for:", discord_username); // ✅ Debugging log
 
     const { data, error } = await supabase
@@ -24,12 +25,11 @@ const ToDoList = ({ currentUser }) => {
       .eq('discord_username', discord_username);
 
     if (error) {
-	  console.error("Error fetching tasks:", error.message);
-	} else {
-	  console.log("Fetched tasks:", data); // ✅ Debugging log
-	  setTasks(data || []); // ✅ Prevents `null` assignment
-	}
-
+      console.error("❌ Error fetching tasks:", error.message);
+    } else {
+      console.log("✅ Fetched tasks:", data);
+      setTasks(data || []);
+    }
   };
 
   const handleMarkDone = (taskId, isDone) => {
@@ -48,8 +48,8 @@ const ToDoList = ({ currentUser }) => {
   const handleSubmitFinishedTasks = async () => {
     if (!currentUser) return;
 
-    const discord_username = currentUser.user_metadata?.user_name || ''; // ✅ Fixed
-    console.log("Submitting tasks for:", discord_username); // ✅ Debugging log
+    const discord_username = currentUser.user_metadata?.user_name || ''; // ✅ FIXED
+    console.log("Submitting tasks for:", discord_username);
 
     const finishedTasks = tasks.filter(task => doneTasks[task.id]);
 
@@ -62,10 +62,10 @@ const ToDoList = ({ currentUser }) => {
 
     const { error } = await supabase.from('finished_daily_tasks').insert(inserts);
     if (!error) {
-      alert("Finished tasks submitted! They will be refreshed daily.");
+      alert("✅ Finished tasks submitted! They will be refreshed daily.");
       setDoneTasks({});
     } else {
-      console.error("Error submitting tasks:", error.message); // ✅ Debugging log
+      console.error("❌ Error submitting tasks:", error.message);
     }
   };
 
@@ -76,15 +76,14 @@ const ToDoList = ({ currentUser }) => {
         <p>No tasks added yet.</p>
       ) : (
         tasks.map(task => (
-			<ToDoItem 
-				key={task.id} 
-				task={task} 
-				onDelete={handleDeleteTask} 
-				onMarkDone={handleMarkDone} 
-				doneTasks={doneTasks} // ✅ Pass this
-			/>
-		))
-
+          <ToDoItem 
+            key={task.id} 
+            task={task} 
+            onDelete={handleDeleteTask} 
+            onMarkDone={handleMarkDone} 
+            doneTasks={doneTasks} // ✅ Pass this
+          />
+        ))
       )}
       <button 
         onClick={handleSubmitFinishedTasks} 
