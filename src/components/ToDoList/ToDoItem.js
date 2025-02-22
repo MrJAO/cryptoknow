@@ -1,19 +1,22 @@
-// ToDoItem.js
-import React, { useState } from 'react';
+import React from 'react';
 import { supabase } from '../../supabaseClient';
 
-const ToDoItem = ({ task, onDelete, onMarkDone }) => {
-  const [isDone, setIsDone] = useState(false);
+const ToDoItem = ({ task, onDelete, onMarkDone, doneTasks }) => {
+  const isDone = doneTasks[task.id] || false; // ✅ Pulling state from ToDoList.js
 
   const handleCheckboxToggle = () => {
-    setIsDone(!isDone);
-    onMarkDone(task.id, !isDone);
+    onMarkDone(task.id, !isDone); // ✅ No local state, syncs properly
   };
 
   const handleDelete = async () => {
     if (window.confirm(`Are you sure you want to remove "${task.project_name}"?`)) {
       const { error } = await supabase.from('to_do_list').delete().eq('id', task.id);
-      if (!error) onDelete(task.id);
+      if (!error) {
+        onDelete(task.id);
+      } else {
+        console.error("Error deleting task:", error.message); // ✅ Error handling
+        alert("Failed to delete task. Try again.");
+      }
     }
   };
 
