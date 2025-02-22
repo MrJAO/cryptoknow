@@ -15,7 +15,7 @@ const ToDoList = ({ currentUser }) => {
   const fetchTasks = async () => {
     if (!currentUser) return;
 
-    const discord_username = currentUser.user_metadata?.discord_username_name || ''; // ✅ Changed from full_name to user_name
+    const discord_username = currentUser.user_metadata?.full_name || ''; // ✅ Changed from full_name to user_name
     console.log("Fetching tasks for:", discord_username); // ✅ Debugging log
 
     const { data, error } = await supabase
