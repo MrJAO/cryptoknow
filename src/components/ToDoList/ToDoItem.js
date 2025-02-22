@@ -1,24 +1,17 @@
+// ToDoItem.js
 import React, { useState } from 'react';
 import { supabase } from '../../supabaseClient';
 
 const ToDoItem = ({ task, onDelete, onMarkDone }) => {
-  const [isDone, setIsDone] = useState(task.is_done || false);
+  const [isDone, setIsDone] = useState(false);
 
-  const handleCheckboxToggle = async () => {
-    const updatedDoneStatus = !isDone;
-    setIsDone(updatedDoneStatus);
-    onMarkDone(task.id, updatedDoneStatus);
-
-    const { error } = await supabase
-      .from('to_do_list')
-      .update({ is_done: updatedDoneStatus })
-      .eq('id', task.id);
-
-    if (error) console.error('Error updating task:', error.message);
+  const handleCheckboxToggle = () => {
+    setIsDone(!isDone);
+    onMarkDone(task.id, !isDone);
   };
 
   const handleDelete = async () => {
-    if (window.confirm(`Are you sure you want to remove "${task.project_name}"?`)) {
+    if (window.confirm(Are you sure you want to remove "${task.project_name}"?)) {
       const { error } = await supabase.from('to_do_list').delete().eq('id', task.id);
       if (!error) onDelete(task.id);
     }
@@ -32,7 +25,7 @@ const ToDoItem = ({ task, onDelete, onMarkDone }) => {
         onChange={handleCheckboxToggle} 
         className="mr-2"
       />
-      <span className={`${isDone ? 'line-through text-gray-400' : ''}`}>
+      <span className={${isDone ? 'line-through text-gray-400' : ''}}>
         {task.project_name}
       </span>
       <button 
