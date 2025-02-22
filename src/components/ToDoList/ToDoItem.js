@@ -11,7 +11,7 @@ const ToDoItem = ({ task, onDelete, onMarkDone }) => {
   };
 
   const handleDelete = async () => {
-    if (window.confirm(Are you sure you want to remove "${task.project_name}"?)) {
+    if (window.confirm(`Are you sure you want to remove "${task.project_name}"?`)) {
       const { error } = await supabase.from('to_do_list').delete().eq('id', task.id);
       if (!error) onDelete(task.id);
     }
@@ -25,7 +25,7 @@ const ToDoItem = ({ task, onDelete, onMarkDone }) => {
         onChange={handleCheckboxToggle} 
         className="mr-2"
       />
-      <span className={${isDone ? 'line-through text-gray-400' : ''}}>
+      <span className={`${isDone ? 'line-through text-gray-400' : ''}`}>
         {task.project_name}
       </span>
       <button 
