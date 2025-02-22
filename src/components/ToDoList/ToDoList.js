@@ -1,4 +1,3 @@
-// ToDoList.js
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../supabaseClient';
 import ToDoItem from './ToDoItem';
@@ -11,13 +10,24 @@ const ToDoList = ({ currentUser }) => {
     if (currentUser) {
       fetchTasks();
     }
-  }, [currentUser]);
+  }, [currentUser, tasks]); // Added 'tasks' to trigger refresh
 
   const fetchTasks = async () => {
     if (!currentUser) return;
-    const discord_username = currentUser.user_metadata?.full_name || '';
-    const { data, error } = await supabase.from('to_do_list').select('*').eq('discord_username', discord_username);
-    if (!error) setTasks(data);
+
+    const discord_username = currentUser.user_metadata?.user_name || ''; // ✅ Changed from full_name to user_name
+    console.log("Fetching tasks for:", discord_username); // ✅ Debugging log
+
+    const { data, error } = await supabase
+      .from('to_do_list')
+      .select('*')
+      .eq('discord_username', discord_username);
+
+    if (error) {
+      console.error("Error fetching tasks:", error.message); // ✅ Added error log
+    } else {
+      setTasks(data);
+    }
   };
 
   const handleMarkDone = (taskId, isDone) => {
@@ -35,7 +45,10 @@ const ToDoList = ({ currentUser }) => {
 
   const handleSubmitFinishedTasks = async () => {
     if (!currentUser) return;
-    const discord_username = currentUser.user_metadata?.full_name || '';
+
+    const discord_username = currentUser.user_metadata?.user_name || ''; // ✅ Fixed
+    console.log("Submitting tasks for:", discord_username); // ✅ Debugging log
+
     const finishedTasks = tasks.filter(task => doneTasks[task.id]);
 
     if (finishedTasks.length === 0) {
@@ -49,6 +62,8 @@ const ToDoList = ({ currentUser }) => {
     if (!error) {
       alert("Finished tasks submitted! They will be refreshed daily.");
       setDoneTasks({});
+    } else {
+      console.error("Error submitting tasks:", error.message); // ✅ Debugging log
     }
   };
 
