@@ -26,7 +26,7 @@ const ToDoList = ({ currentUser }) => {
 
     const { data, error } = await supabase
       .from('to_do_list')
-      .select('*')
+      .select('id, project_name, task_link, chain, airdrop_type, device_needed') // Updated to select required columns
       .eq('discord_username', discord_username);
 
     if (error) {
@@ -80,15 +80,29 @@ const ToDoList = ({ currentUser }) => {
       {tasks.length === 0 ? (
         <p>No tasks added yet.</p>
       ) : (
-        tasks.map(task => (
-          <ToDoItem 
-            key={task.id} 
-            task={task} 
-            onDelete={handleDeleteTask} 
-            onMarkDone={handleMarkDone} 
-            doneTasks={doneTasks} 
-          />
-        ))
+        <table className="w-full border-collapse border border-gray-300">
+          <thead>
+            <tr className="bg-gray-200">
+              <th className="border p-2">Project Name</th>
+              <th className="border p-2">Task Link</th>
+              <th className="border p-2">Chain</th>
+              <th className="border p-2">Airdrop Type</th>
+              <th className="border p-2">Device Needed</th>
+              <th className="border p-2">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {tasks.map(task => (
+              <ToDoItem 
+                key={task.id} 
+                task={task} 
+                onDelete={handleDeleteTask} 
+                onMarkDone={handleMarkDone} 
+                doneTasks={doneTasks} 
+              />
+            ))}
+          </tbody>
+        </table>
       )}
       <button 
         onClick={handleSubmitFinishedTasks} 
