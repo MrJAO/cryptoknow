@@ -22,6 +22,7 @@ function Sidebar({ isLoggedIn }) {
           <button className="nav-button" onClick={() => navigate('/available-airdrops')}>Available Airdrops</button>
           <button className="nav-button" onClick={() => navigate('/quests')}>Quests</button>
 		  <button className="nav-button" onClick={() => navigate('/available-opportunities')}>Available Opportunities</button>
+		  <button className="nav-button" onClick={() => navigate('/contribute')}>Contribute</button>
         </>
       )}
 
