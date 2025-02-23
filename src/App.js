@@ -6,8 +6,8 @@ import Sidebar from './components/Sidebar/Sidebar';
 import Home from './components/Home/CryptoKnow';
 import ToDoList from './components/ToDoList/ToDoList';
 import AvailableAirdrops from './components/AvailableAirdrops/AvailableAirdrops';
-import AvailableCheckers from './components/AvailableCheckers/AvailableCheckers';
-import CompletedAirdrops from './components/CompletedAirdrops/CompletedAirdrops';
+import Quests from './components/Quests/Quests';
+import AvailableOpportunities from './components/AvailableOpportunities/AvailableOpportunities';
 import Leaderboard from './components/Leaderboard/Leaderboard';
 import Harvests from './components/Harvests/Harvests';
 import FAQs from './components/FAQs/FAQs';
@@ -88,8 +88,8 @@ const App = () => {
             <Route path="/" element={<Home user={user} />} />
             <Route path="/to-do-list" element={<ToDoList currentUser={user} />} />
             <Route path="/available-airdrops" element={<AvailableAirdrops />} />
-            <Route path="/available-checkers" element={<AvailableCheckers />} />
-            <Route path="/completed-airdrops" element={<CompletedAirdrops />} />
+            <Route path="/quests" element={<Quests />} />
+            <Route path="/available-opportunities" element={<AvailableOpportunities />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="/harvests" element={<Harvests />} />
             <Route path="/faqs" element={<FAQs />} />
