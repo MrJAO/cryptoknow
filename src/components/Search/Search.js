@@ -37,4 +37,20 @@ function Search() {
             fontSize: "18px",
             cursor: "pointer",
             background: selectedOption === "crypto" ? "#007bff" : "#fff",
-            color: selectedOption === "crypto
+            color: selectedOption === "crypto" ? "#fff" : "#000",
+            border: "1px solid #007bff",
+            borderRadius: "5px",
+          }}
+        >
+          Crypto Files
+        </button>
+      </div>
+
+      {/* Render content below based on selected option */}
+      {selectedOption === "guides" && <Guides />}
+      {/* {selectedOption === "crypto" && <CryptoFiles />} */}
+    </div>
+  );
+}
+
+export default Search;
