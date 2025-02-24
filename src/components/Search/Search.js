@@ -4,10 +4,13 @@ import { supabase } from "../../supabaseClient";
 function Search() {
   const [selectedOption, setSelectedOption] = useState("guides"); // Default to "guides"
   const [guides, setGuides] = useState([]);
+  const [cryptoFiles, setCryptoFiles] = useState([]);
 
   useEffect(() => {
     if (selectedOption === "guides") {
       fetchGuides();
+    } else if (selectedOption === "crypto") {
+      fetchCryptoFiles();
     }
   }, [selectedOption]);
 
@@ -18,6 +21,20 @@ function Search() {
     } else {
       setGuides(data);
     }
+  };
+
+  const fetchCryptoFiles = async () => {
+    const { data, error } = await supabase.from("crypto_files").select("*");
+    if (error) {
+      console.error("Error fetching crypto files:", error);
+    } else {
+      setCryptoFiles(data);
+    }
+  };
+
+  // Function to display accuracy with emoji
+  const getAccuracyEmoji = (accuracy) => {
+    return accuracy === "Accurate" ? "✔️ Accurate" : "🟠 Can't Confirm";
   };
 
   return (
@@ -99,9 +116,40 @@ function Search() {
         )}
 
         {selectedOption === "crypto" && (
-          <h2 style={{ textAlign: "center", marginTop: "20px" }}>
-            Crypto Files Coming Soon...
-          </h2>
+          <>
+            <h1 style={{ textAlign: "center", marginBottom: "20px" }}>Crypto Files</h1>
+            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+              <thead>
+                <tr style={{ background: "#333", color: "#fff", textAlign: "left" }}>
+                  <th style={{ padding: "10px", width: "30%" }}>Detail Name</th>
+                  <th style={{ padding: "10px", width: "30%" }}>Source Link</th>
+                  <th style={{ padding: "10px", width: "20%" }}>Source</th>
+                  <th style={{ padding: "10px", width: "20%" }}>Accuracy</th>
+                </tr>
+              </thead>
+              <tbody>
+                {cryptoFiles.map((file) => (
+                  <tr key={file.id} style={{ borderBottom: "1px solid #ddd" }}>
+                    <td style={{ padding: "10px", fontWeight: "bold" }}>{file.detail_name}</td>
+                    <td style={{ padding: "10px" }}>
+                      <a
+                        href={file.source_link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ color: "#007bff", textDecoration: "none" }}
+                      >
+                        Open Source
+                      </a>
+                    </td>
+                    <td style={{ padding: "10px" }}>{file.source}</td>
+                    <td style={{ padding: "10px", fontWeight: "bold" }}>
+                      {getAccuracyEmoji(file.accuracy)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
         )}
       </div>
     </div>
