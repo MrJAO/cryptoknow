@@ -68,86 +68,67 @@ function ContributeSubmissionForm({ discordUser }) {
 
   return (
     <div className="form-container">
-      <div className="info-banner">
-        ✅ Submissions are **first-come, first-served**. I will check from **oldest to newest** for fairness.
+      <div className="info-banner" style={{ textAlign: "center" }}>
+        ✅ Submissions are <strong>first-come, first-served</strong>. I will check from <strong>oldest to newest</strong> for fairness.
       </div>
 
-      <h2 className="form-title">📩 Submit a Contribution</h2>
+      <h2 className="form-title" style={{ textAlign: "center" }}>📩 Submit a Contribution</h2>
 
-      {message && <div className="message">{message}</div>}
+      {message && <div className="message" style={{ textAlign: "center" }}>{message}</div>}
 
-      <form onSubmit={handleSubmit} className="submission-form">
-        <div className="form-group">
-          <label>👤 Discord Username:</label>
-          <input type="text" value={formData.discord_username} disabled className="disabled" />
-        </div>
-
-        <div className="form-group">
-          <label>📌 Project Name: *</label>
-          <input
-            type="text"
-            name="project_name"
-            value={formData.project_name}
-            onChange={handleChange}
-            required
-            placeholder="Enter project name"
-          />
-        </div>
-
-        <div className="form-group">
-          <label>💰 Airdrop Type: *</label>
-          <select name="airdrop_type" value={formData.airdrop_type} onChange={handleChange} required>
-            <option value="">Select Airdrop Type</option>
-            <option value="Retroactive">Token</option>
-            <option value="Testnet">NFT</option>
-            <option value="PlayToAirdrop">Points</option>
-            <option value="Other">Other</option>
-          </select>
-          {formData.airdrop_type === "Other" && (
-            <input
-              type="text"
-              name="custom_airdrop_type"
-              value={formData.custom_airdrop_type}
-              onChange={handleChange}
-              placeholder="Enter custom Airdrop Type"
-            />
-          )}
-        </div>
-
-        <div className="form-group">
-          <label>🔗 Chain: *</label>
-          <select name="chain" value={formData.chain} onChange={handleChange} required>
-            <option value="">Select Chain</option>
-            <option value="Ethereum">Ethereum</option>
-            <option value="BSC">BSC</option>
-            <option value="Polygon">Polygon</option>
-            <option value="Solana">Solana</option>
-            <option value="Other">Other</option>
-          </select>
-          {formData.chain === "Other" && (
-            <input
-              type="text"
-              name="custom_chain"
-              value={formData.custom_chain}
-              onChange={handleChange}
-              placeholder="Enter custom Chain"
-            />
-          )}
-        </div>
-
-        <div className="form-group">
-          <label>🔗 Submission Link: *</label>
-          <input
-            type="url"
-            name="link"
-            value={formData.link}
-            onChange={handleChange}
-            required
-            placeholder="Enter the project link"
-          />
-        </div>
-
-        <button type="submit">🚀 Submit</button>
+      <form onSubmit={handleSubmit} className="submission-form" style={{ display: "flex", justifyContent: "center" }}>
+        <table className="form-table">
+          <tbody>
+            <tr>
+              <td><label>👤 Discord Username:</label></td>
+              <td><input type="text" value={formData.discord_username} disabled className="disabled" /></td>
+            </tr>
+            <tr>
+              <td><label>📌 Project Name: *</label></td>
+              <td><input type="text" name="project_name" value={formData.project_name} onChange={handleChange} required placeholder="Enter project name" /></td>
+            </tr>
+            <tr>
+              <td><label>💰 Airdrop Type: *</label></td>
+              <td>
+                <select name="airdrop_type" value={formData.airdrop_type} onChange={handleChange} required>
+                  <option value="">Select Airdrop Type</option>
+                  <option value="Retroactive">Token</option>
+                  <option value="Testnet">NFT</option>
+                  <option value="PlayToAirdrop">Points</option>
+                  <option value="Other">Other</option>
+                </select>
+                {formData.airdrop_type === "Other" && (
+                  <input type="text" name="custom_airdrop_type" value={formData.custom_airdrop_type} onChange={handleChange} placeholder="Enter custom Airdrop Type" />
+                )}
+              </td>
+            </tr>
+            <tr>
+              <td><label>🔗 Chain: *</label></td>
+              <td>
+                <select name="chain" value={formData.chain} onChange={handleChange} required>
+                  <option value="">Select Chain</option>
+                  <option value="Ethereum">Ethereum</option>
+                  <option value="BSC">BSC</option>
+                  <option value="Polygon">Polygon</option>
+                  <option value="Solana">Solana</option>
+                  <option value="Other">Other</option>
+                </select>
+                {formData.chain === "Other" && (
+                  <input type="text" name="custom_chain" value={formData.custom_chain} onChange={handleChange} placeholder="Enter custom Chain" />
+                )}
+              </td>
+            </tr>
+            <tr>
+              <td><label>🔗 Submission Link: *</label></td>
+              <td><input type="url" name="link" value={formData.link} onChange={handleChange} required placeholder="Enter the project link" /></td>
+            </tr>
+            <tr>
+              <td colSpan="2" style={{ textAlign: "center" }}>
+                <button type="submit">🚀 Submit</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </form>
     </div>
   );
