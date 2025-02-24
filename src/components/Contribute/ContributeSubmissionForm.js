@@ -16,13 +16,13 @@ function ContributeSubmissionForm({ discordUser }) {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    if (discordUser) {
+    if (discordUser && !formData.discord_username) {
       setFormData((prevData) => ({
         ...prevData,
         discord_username: discordUser,
       }));
     }
-  }, [discordUser]);
+  }, [discordUser, formData.discord_username]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -34,10 +34,23 @@ function ContributeSubmissionForm({ discordUser }) {
     const finalAirdropType = formData.airdrop_type === "Other" ? formData.custom_airdrop_type : formData.airdrop_type;
     const finalChain = formData.chain === "Other" ? formData.custom_chain : formData.chain;
 
+    if (!formData.discord_username) {
+      setMessage("⚠️ Discord username is missing. Please log in again.");
+      return;
+    }
+
     if (!formData.project_name || !formData.link || !finalAirdropType || !finalChain) {
       setMessage("⚠️ Please fill in all required fields.");
       return;
     }
+
+    console.log("Submitting:", {
+      discord_username: formData.discord_username,
+      project_name: formData.project_name,
+      link: formData.link,
+      airdrop_type: finalAirdropType,
+      chain: finalChain,
+    });
 
     const { error } = await supabase.from("contribute_submission").insert([
       {
