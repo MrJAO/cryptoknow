@@ -4,14 +4,16 @@
   top: 0;
   left: 0;
   height: 100vh;
-  width: 220px;
-  background-color: #1a1a1a; /* dark theme background */
+  width: 240px;
+  background-color: #121212; /* Slightly darker for a sleeker look */
   color: white;
   font-family: 'Syne', sans-serif;
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  padding: 25px 20px;
   box-sizing: border-box;
+  border-right: 2px solid #333; /* Subtle divider */
+  transition: width 0.3s ease-in-out;
 }
 
 /* Logo container styling */
@@ -21,27 +23,64 @@
   align-items: center;
   padding-bottom: 20px;
   margin-bottom: 20px;
-  border-bottom: 1px solid #333;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1); /* Softer border for contrast */
 }
 
 /* Logo styling */
 .logo {
-  width: 120px; /* Adjust this value if needed */
+  width: 130px; /* Slightly larger */
   height: auto;
+  transition: transform 0.3s ease-in-out;
 }
 
+.logo:hover {
+  transform: scale(1.1);
+}
+
+/* Navigation buttons */
 .nav-button {
   background: none;
   border: none;
   color: white;
   text-align: left;
-  padding: 12px 0;
-  font-size: 16px;
+  padding: 14px 15px;
+  font-size: 17px;
+  font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.3s;
-  letter-spacing: 0.5px; /* slightly more spacing for a modern feel */
+  transition: background 0.3s, color 0.3s, transform 0.2s ease-in-out;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 6px;
 }
 
 .nav-button:hover {
-  background-color: #333;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffcc00; /* Highlight color */
+  transform: scale(1.05);
+}
+
+/* Active button styling */
+.nav-button.active {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #ffcc00;
+  font-weight: 600;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 200px;
+    padding: 20px 15px;
+  }
+
+  .logo {
+    width: 110px;
+  }
+
+  .nav-button {
+    font-size: 15px;
+    padding: 12px;
+  }
 }
