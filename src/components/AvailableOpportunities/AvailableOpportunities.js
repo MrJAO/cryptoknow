@@ -20,6 +20,26 @@ function AvailableOpportunities() {
   return (
     <div style={{ textAlign: "center", padding: "20px" }}>
       <h1>Available Opportunities</h1>
+
+      {/* Disclaimer */}
+      <div
+        style={{
+          background: "#ffcc00",
+          color: "#333",
+          padding: "15px",
+          fontSize: "18px",
+          fontWeight: "bold",
+          borderRadius: "5px",
+          maxWidth: "800px",
+          margin: "20px auto",
+          textAlign: "center",
+          border: "2px solid #ff9900",
+        }}
+      >
+        ⚠️ Disclaimer: Investing or interacting with these opportunities comes with risk.
+        Always do your own research. This is NOT financial advice.
+      </div>
+
       <div
         style={{
           width: "100%",
@@ -33,7 +53,7 @@ function AvailableOpportunities() {
           style={{
             width: "100%",
             borderCollapse: "collapse",
-            minWidth: "600px", // Ensures table structure remains intact on small screens
+            minWidth: "600px",
           }}
         >
           <thead>
