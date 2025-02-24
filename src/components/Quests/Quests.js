@@ -21,12 +21,22 @@ function Quests({ discordUser }) {
   };
 
   return (
-    <div>
+    <div style={{ maxWidth: "600px", margin: "0 auto", padding: "20px" }}>
       <h1>Quests</h1>
-      {!hasTwitterUsername ? (
-        <TwitterUsernameForm discordUser={discordUser} onUsernameSaved={setHasTwitterUsername} />
-      ) : (
-        <TwitterQuestForm discordUser={discordUser} />
+      
+      <div style={{ marginBottom: "20px", border: "1px solid #ddd", padding: "15px", borderRadius: "10px" }}>
+        {!hasTwitterUsername ? (
+          <TwitterUsernameForm discordUser={discordUser} onUsernameSaved={setHasTwitterUsername} />
+        ) : (
+          <p>✅ Twitter Username is set. You can now do Twitter quests.</p>
+        )}
+      </div>
+
+      {hasTwitterUsername && (
+        <div>
+          <TwitterQuestForm discordUser={discordUser} />
+          {/* You can add more quest types here, each wrapped in its own div */}
+        </div>
       )}
     </div>
   );

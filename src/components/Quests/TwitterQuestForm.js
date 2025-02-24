@@ -60,12 +60,13 @@ function TwitterQuestForm({ discordUser }) {
   };
 
   return (
-    <div>
-      <h2>Twitter Quest Submission</h2>
+    <div style={{ border: "1px solid #ddd", padding: "15px", borderRadius: "10px", marginBottom: "20px" }}>
+      <h2>Twitter Quest</h2>
       {message && <p>{message}</p>}
       <form onSubmit={handleSubmit}>
         <label>Twitter Username:</label>
         <input type="text" value={formData.twitter_username} disabled />
+        
         <label>Quest Details:</label>
         <textarea
           name="quest_details"
@@ -74,7 +75,10 @@ function TwitterQuestForm({ discordUser }) {
           required
           placeholder="Enter quest details"
         />
-        <button type="submit">Submit</button>
+        
+        <div style={{ textAlign: "right", marginTop: "10px" }}>
+          <button type="submit">Submit Quest</button>
+        </div>
       </form>
     </div>
   );
