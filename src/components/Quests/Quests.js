@@ -90,8 +90,8 @@ const Quests = () => {
             <input type="text" name="discord_username" value={formData.discord_username} disabled style={{ width: "100%", padding: "8px", borderRadius: "5px", background: "#333", color: "white", border: "1px solid #555" }} />
           </div>
           <div>
-            <label>Twitter Username</label>
-            <input type="text" name="twitter_username" value={formData.twitter_username} onChange={handleChange} placeholder="Enter your Twitter username" required style={{ width: "100%", padding: "8px", borderRadius: "5px", background: "#333", color: "white", border: "1px solid #555" }} />
+            <label>Twitter Username (without @)</label>
+            <input type="text" name="twitter_username" value={formData.twitter_username} onChange={handleChange} placeholder="e.g CryptoModJAO" required style={{ width: "100%", padding: "8px", borderRadius: "5px", background: "#333", color: "white", border: "1px solid #555" }} />
           </div>
           <button type="submit" disabled={loading} style={{ padding: "10px", background: "#28a745", color: "white", border: "none", borderRadius: "5px", cursor: "pointer" }}>
             {loading ? "Submitting..." : "Submit"}
