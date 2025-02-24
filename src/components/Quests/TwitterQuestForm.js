@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { supabase } from "../../supabaseClient";
+import { useState, useEffect } from "react";
+import { supabase } from "../supabaseClient";
 
-function TwitterQuestForm() {
+const TwitterQuestForm = () => {
+  const [user, setUser] = useState(null);
   const [formData, setFormData] = useState({
     discord_username: "",
     twitter_username: "",
     quest_details: "",
   });
-
   const [message, setMessage] = useState("");
 
   useEffect(() => {
@@ -19,37 +19,44 @@ function TwitterQuestForm() {
         setMessage("⚠️ Failed to fetch user. Please log in again.");
       } else if (data?.user) {
         const discordUsername = data.user.user_metadata?.user_name || data.user.user_metadata?.full_name || "";
-        
+        setUser(data.user);
         setFormData((prevData) => ({
           ...prevData,
           discord_username: discordUsername,
         }));
 
-        fetchTwitterUsername(discordUsername);
+        if (discordUsername) {
+          fetchTwitterUsername(discordUsername);
+        }
       }
     };
 
     fetchUser();
   }, []);
 
-  // Fetch Twitter username from the database
   const fetchTwitterUsername = async (discordUsername) => {
-    const { data } = await supabase
-      .from("user_twitter_usernames")
-      .select("twitter_username")
-      .eq("discord_username", discordUsername)
-      .single();
+    try {
+      const { data, error } = await supabase
+        .from("user_twitter_usernames")
+        .select("twitter_username")
+        .eq("discord_username", discordUsername)
+        .single();
 
-    if (data) {
-      setFormData((prevData) => ({
-        ...prevData,
-        twitter_username: data.twitter_username,
-      }));
+      if (error) {
+        console.error("Error fetching Twitter username:", error);
+        setMessage("⚠️ Could not retrieve Twitter username.");
+        return;
+      }
+
+      if (data) {
+        setFormData((prevData) => ({
+          ...prevData,
+          twitter_username: data.twitter_username,
+        }));
+      }
+    } catch (error) {
+      console.error("Unexpected error fetching Twitter username:", error);
     }
-  };
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
@@ -64,6 +71,8 @@ function TwitterQuestForm() {
       setMessage("⚠️ Please set up your Twitter username first.");
       return;
     }
+
+    console.log("Submitting data:", formData); // Debugging step
 
     const { error } = await supabase.from("twitter_quests").insert([
       {
@@ -83,31 +92,21 @@ function TwitterQuestForm() {
   };
 
   return (
-    <div style={{ border: "1px solid #ddd", padding: "15px", borderRadius: "10px", marginBottom: "20px" }}>
-      <h2>Twitter Quest</h2>
+    <div>
+      <h2>Twitter Quest Submission</h2>
       {message && <p>{message}</p>}
       <form onSubmit={handleSubmit}>
-        <label>Discord Username:</label>
-        <input type="text" value={formData.discord_username} disabled />
-
-        <label>Twitter Username:</label>
-        <input type="text" value={formData.twitter_username} disabled />
-
         <label>Quest Details:</label>
-        <textarea
-          name="quest_details"
+        <input
+          type="text"
           value={formData.quest_details}
-          onChange={handleChange}
+          onChange={(e) => setFormData({ ...formData, quest_details: e.target.value })}
           required
-          placeholder="Enter quest details"
         />
-        
-        <div style={{ textAlign: "right", marginTop: "10px" }}>
-          <button type="submit">Submit Quest</button>
-        </div>
+        <button type="submit">Submit Quest</button>
       </form>
     </div>
   );
-}
+};
 
 export default TwitterQuestForm;
