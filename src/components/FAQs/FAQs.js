@@ -24,6 +24,18 @@ function FAQs() {
 
   return (
     <div style={{ maxWidth: "1000px", margin: "auto", padding: "20px" }}>
+      <div style={{
+        background: "#ffcc00",
+        padding: "15px",
+        borderRadius: "5px",
+        textAlign: "center",
+        fontSize: "1.2em",
+        fontWeight: "bold",
+        marginBottom: "20px",
+        color: "#000"
+      }}>
+        ⚠️ DISCLAIMER: The information provided here is for educational purposes only and should not be considered financial advice. Always do your own research and proceed with caution. Your results depend on your own actions and decisions. ⚠️
+      </div>
       <h1 style={{ textAlign: "center", marginBottom: "20px", fontSize: "2em" }}>Frequently Asked Questions</h1>
       <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "1.5em" }}>
         <thead>
