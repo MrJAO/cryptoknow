@@ -5,6 +5,7 @@ function Search() {
   const [selectedOption, setSelectedOption] = useState("guides"); // Default to "guides"
   const [guides, setGuides] = useState([]);
   const [cryptoFiles, setCryptoFiles] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     if (selectedOption === "guides") {
@@ -35,6 +36,15 @@ function Search() {
   const getAccuracyEmoji = (accuracy) => {
     return accuracy === "Accurate" ? "✔️ Accurate" : "🟠 Can't Confirm";
   };
+
+  const filteredGuides = guides.filter((guide) =>
+    guide.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const filteredCryptoFiles = cryptoFiles.filter((file) =>
+    file.detail_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    file.source.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div style={{ textAlign: "center", padding: "20px" }}>
@@ -77,81 +87,91 @@ function Search() {
         </button>
       </div>
 
+      {/* Search Bar */}
+      <input
+        type="text"
+        placeholder="Search..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        style={{
+          width: "80%",
+          padding: "10px",
+          marginTop: "20px",
+          fontSize: "16px",
+          border: "1px solid #ccc",
+          borderRadius: "5px",
+        }}
+      />
+
       {/* Content Section */}
-      <div style={{ maxWidth: "90vw", margin: "auto", padding: "20px" }}>
+      <div style={{ maxWidth: "100%", margin: "auto", padding: "20px" }}>
         {selectedOption === "guides" && (
           <>
             <h1 style={{ textAlign: "center", marginBottom: "20px" }}>Guides</h1>
-            <div style={{ overflowX: "auto" }}>
-              <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                <thead>
-                  <tr style={{ background: "#333", color: "#fff", textAlign: "left" }}>
-                    <th style={{ padding: "10px", width: "40%" }}>Title</th>
-                    <th style={{ padding: "10px", width: "40%" }}>Guide Link</th>
-                    <th style={{ padding: "10px", width: "20%" }}>Importance</th>
+            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+              <thead>
+                <tr style={{ background: "#333", color: "#fff", textAlign: "left" }}>
+                  <th style={{ padding: "10px", width: "40%" }}>Title</th>
+                  <th style={{ padding: "10px", width: "40%" }}>Guide Link</th>
+                  <th style={{ padding: "10px", width: "20%" }}>Importance</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredGuides.map((guide) => (
+                  <tr key={guide.id} style={{ borderBottom: "1px solid #ddd" }}>
+                    <td style={{ padding: "10px", fontWeight: "bold" }}>{guide.title}</td>
+                    <td style={{ padding: "10px" }}>
+                      <a
+                        href={guide.guide_link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ color: "#007bff", textDecoration: "none" }}
+                      >
+                        Open Guide
+                      </a>
+                    </td>
+                    <td style={{ padding: "10px", fontWeight: "bold", color: "#ff8800" }}>
+                      {guide.importance}
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {guides.map((guide) => (
-                    <tr key={guide.id} style={{ borderBottom: "1px solid #ddd" }}>
-                      <td style={{ padding: "10px", fontWeight: "bold" }}>{guide.title}</td>
-                      <td style={{ padding: "10px" }}>
-                        <a
-                          href={guide.guide_link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{ color: "#007bff", textDecoration: "none" }}
-                        >
-                          Open Guide
-                        </a>
-                      </td>
-                      <td style={{ padding: "10px", fontWeight: "bold", color: "#ff8800" }}>
-                        {guide.importance}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                ))}
+              </tbody>
+            </table>
           </>
         )}
 
         {selectedOption === "crypto" && (
           <>
             <h1 style={{ textAlign: "center", marginBottom: "20px" }}>Crypto Files</h1>
-            <div style={{ overflowX: "auto" }}>
-              <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                <thead>
-                  <tr style={{ background: "#333", color: "#fff", textAlign: "left" }}>
-                    <th style={{ padding: "10px", width: "30%" }}>Detail Name</th>
-                    <th style={{ padding: "10px", width: "30%" }}>Source Link</th>
-                    <th style={{ padding: "10px", width: "20%" }}>Source</th>
-                    <th style={{ padding: "10px", width: "20%" }}>Accuracy</th>
+            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+              <thead>
+                <tr style={{ background: "#333", color: "#fff", textAlign: "left" }}>
+                  <th style={{ padding: "10px", width: "30%" }}>Detail Name</th>
+                  <th style={{ padding: "10px", width: "30%" }}>Source Link</th>
+                  <th style={{ padding: "10px", width: "20%" }}>Source</th>
+                  <th style={{ padding: "10px", width: "20%" }}>Accuracy</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredCryptoFiles.map((file) => (
+                  <tr key={file.id} style={{ borderBottom: "1px solid #ddd" }}>
+                    <td style={{ padding: "10px", fontWeight: "bold" }}>{file.detail_name}</td>
+                    <td style={{ padding: "10px" }}>
+                      <a
+                        href={file.source_link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ color: "#007bff", textDecoration: "none" }}
+                      >
+                        Open Source
+                      </a>
+                    </td>
+                    <td style={{ padding: "10px" }}>{file.source}</td>
+                    <td style={{ padding: "10px" }}>{getAccuracyEmoji(file.accuracy)}</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {cryptoFiles.map((file) => (
-                    <tr key={file.id} style={{ borderBottom: "1px solid #ddd" }}>
-                      <td style={{ padding: "10px", fontWeight: "bold" }}>{file.detail_name}</td>
-                      <td style={{ padding: "10px" }}>
-                        <a
-                          href={file.source_link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{ color: "#007bff", textDecoration: "none" }}
-                        >
-                          Open Source
-                        </a>
-                      </td>
-                      <td style={{ padding: "10px", fontWeight: "bold" }}>{file.source}</td>
-                      <td style={{ padding: "10px", fontWeight: "bold", color: "#ff8800" }}>
-                        {getAccuracyEmoji(file.accuracy)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                ))}
+              </tbody>
+            </table>
           </>
         )}
       </div>
