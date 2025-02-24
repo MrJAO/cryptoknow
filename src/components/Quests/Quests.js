@@ -107,8 +107,6 @@ const Quests = () => {
 
 const QuestsBox = () => {
   return (
-    <div style={{ padding: "20px", maxWidth: "600px", margin: "auto", textAlign: "center", color: "white" }}>
-      <h1 style={{ fontSize: "28px", fontWeight: "bold", marginBottom: "20px" }}>Available Quests</h1>
       <QuestBox
         title="Discord Quest"
         tableName="discord_quests"
