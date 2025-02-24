@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import { supabase } from "../../supabaseClient";
 import '../../App.css';
 
-function ContributeSubmissionForm({ discordUser }) {
+function ContributeSubmissionForm({ currentUser }) {
+  const discord_username = currentUser?.user_metadata?.user_name || currentUser?.user_metadata?.full_name || '';
+
   const [formData, setFormData] = useState({
-    discord_username: "",
+    discord_username: discord_username,  // Automatically set
     project_name: "",
     link: "",
     airdrop_type: "",
@@ -16,13 +18,14 @@ function ContributeSubmissionForm({ discordUser }) {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    if (discordUser && !formData.discord_username) {
-      setFormData((prevData) => ({
-        ...prevData,
-        discord_username: discordUser,
-      }));
-    }
-  }, [discordUser, formData.discord_username]);
+    console.log("Current User:", currentUser);  // Debugging: Ensure currentUser is received
+    console.log("Discord Username:", discord_username);  // Debugging: Check extracted username
+
+    setFormData((prevData) => ({
+      ...prevData,
+      discord_username: discord_username,
+    }));
+  }, [currentUser]); // Update when user logs in/out
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -31,26 +34,19 @@ function ContributeSubmissionForm({ discordUser }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const finalAirdropType = formData.airdrop_type === "Other" ? formData.custom_airdrop_type : formData.airdrop_type;
-    const finalChain = formData.chain === "Other" ? formData.custom_chain : formData.chain;
-
+    // Prevent submission if Discord username is missing
     if (!formData.discord_username) {
       setMessage("⚠️ Discord username is missing. Please log in again.");
       return;
     }
 
+    const finalAirdropType = formData.airdrop_type === "Other" ? formData.custom_airdrop_type : formData.airdrop_type;
+    const finalChain = formData.chain === "Other" ? formData.custom_chain : formData.chain;
+
     if (!formData.project_name || !formData.link || !finalAirdropType || !finalChain) {
       setMessage("⚠️ Please fill in all required fields.");
       return;
     }
-
-    console.log("Submitting:", {
-      discord_username: formData.discord_username,
-      project_name: formData.project_name,
-      link: formData.link,
-      airdrop_type: finalAirdropType,
-      chain: finalChain,
-    });
 
     const { error } = await supabase.from("contribute_submission").insert([
       {
@@ -68,7 +64,7 @@ function ContributeSubmissionForm({ discordUser }) {
     } else {
       setMessage("✅ Submission successful!");
       setFormData({
-        discord_username: discordUser,
+        discord_username: discord_username,  // Keep username after reset
         project_name: "",
         link: "",
         airdrop_type: "",
