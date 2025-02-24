@@ -2,11 +2,10 @@ import React, { useState, useEffect } from "react";
 import { supabase } from "../../supabaseClient";
 import '../../App.css';
 
-function ContributeSubmissionForm({ currentUser }) {
-  const discord_username = currentUser?.user_metadata?.user_name || currentUser?.user_metadata?.full_name || '';
-
+function ContributeSubmissionForm() {
+  const [user, setUser] = useState(null);
   const [formData, setFormData] = useState({
-    discord_username: discord_username,  // Automatically set
+    discord_username: "",
     project_name: "",
     link: "",
     airdrop_type: "",
@@ -14,18 +13,28 @@ function ContributeSubmissionForm({ currentUser }) {
     chain: "",
     custom_chain: "",
   });
-
   const [message, setMessage] = useState("");
 
+  // Fetch logged-in user from Supabase Auth
   useEffect(() => {
-    console.log("Current User:", currentUser);  // Debugging: Ensure currentUser is received
-    console.log("Discord Username:", discord_username);  // Debugging: Check extracted username
+    const fetchUser = async () => {
+      const { data, error } = await supabase.auth.getUser();
 
-    setFormData((prevData) => ({
-      ...prevData,
-      discord_username: discord_username,
-    }));
-  }, [currentUser]); // Update when user logs in/out
+      if (error) {
+        console.error("Error fetching user:", error);
+        setMessage("⚠️ Failed to fetch user. Please log in again.");
+      } else if (data?.user) {
+        const discordUsername = data.user.user_metadata?.user_name || data.user.user_metadata?.full_name || "";
+        setUser(data.user);
+        setFormData((prevData) => ({
+          ...prevData,
+          discord_username: discordUsername,
+        }));
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -34,7 +43,6 @@ function ContributeSubmissionForm({ currentUser }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Prevent submission if Discord username is missing
     if (!formData.discord_username) {
       setMessage("⚠️ Discord username is missing. Please log in again.");
       return;
@@ -64,7 +72,7 @@ function ContributeSubmissionForm({ currentUser }) {
     } else {
       setMessage("✅ Submission successful!");
       setFormData({
-        discord_username: discord_username,  // Keep username after reset
+        discord_username: formData.discord_username, // Retain username
         project_name: "",
         link: "",
         airdrop_type: "",
