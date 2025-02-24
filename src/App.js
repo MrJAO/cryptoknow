@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
 import Sidebar from './components/Sidebar/Sidebar';
 import Home from './components/Home/CryptoKnow';
-import Home from './components/Search/Search';
+import Search from './components/Search/Search';
 import ToDoList from './components/ToDoList/ToDoList';
 import AvailableAirdrops from './components/AvailableAirdrops/AvailableAirdrops';
 import Quests from './components/Quests/Quests';
