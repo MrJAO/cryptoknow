@@ -5,6 +5,7 @@ function TwitterUsernameForm({ discordUser, onUsernameSaved }) {
   const [twitterUsername, setTwitterUsername] = useState("");
   const [message, setMessage] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (discordUser) {
@@ -14,17 +15,36 @@ function TwitterUsernameForm({ discordUser, onUsernameSaved }) {
 
   // Fetch existing Twitter username
   const fetchTwitterUsername = async () => {
-    const { data } = await supabase
-      .from("user_twitter_usernames")
-      .select("twitter_username")
-      .eq("discord_username", discordUser)
-      .single();
+    setLoading(true);
 
-    if (data) {
-      setTwitterUsername(data.twitter_username);
-      setIsSubmitted(true);
-      onUsernameSaved(true); // Notify parent component that Twitter username exists
+    try {
+      // Timeout after 3 seconds to prevent infinite loading
+      const fetchUsername = supabase
+        .from("user_twitter_usernames")
+        .select("twitter_username")
+        .eq("discord_username", discordUser)
+        .single();
+
+      const timeout = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Timeout")), 3000)
+      );
+
+      const { data, error } = await Promise.race([fetchUsername, timeout]);
+
+      if (error) {
+        console.warn("Error fetching Twitter username:", error.message);
+      }
+
+      if (data) {
+        setTwitterUsername(data.twitter_username);
+        setIsSubmitted(true);
+        onUsernameSaved(true); // Notify parent component
+      }
+    } catch (err) {
+      console.error("Error fetching Twitter username:", err.message);
     }
+
+    setLoading(false);
   };
 
   const handleSubmit = async (e) => {
@@ -34,6 +54,8 @@ function TwitterUsernameForm({ discordUser, onUsernameSaved }) {
       setMessage("⚠️ Please enter your Twitter username.");
       return;
     }
+
+    setMessage("⏳ Saving...");
 
     const { error } = await supabase
       .from("user_twitter_usernames")
@@ -51,7 +73,11 @@ function TwitterUsernameForm({ discordUser, onUsernameSaved }) {
   return (
     <div>
       <h2>Set Up Your Twitter Username</h2>
-      {isSubmitted ? (
+
+      {/* Loading State */}
+      {loading ? (
+        <p>⏳ Checking existing username...</p>
+      ) : isSubmitted ? (
         <p>✅ Your Twitter username is: <strong>{twitterUsername}</strong></p>
       ) : (
         <form onSubmit={handleSubmit}>
@@ -62,10 +88,12 @@ function TwitterUsernameForm({ discordUser, onUsernameSaved }) {
             onChange={(e) => setTwitterUsername(e.target.value)}
             required
             placeholder="@yourTwitter"
+            disabled={isSubmitted} // Prevents re-editing after submission
           />
-          <button type="submit">Submit</button>
+          <button type="submit" disabled={isSubmitted}>Submit</button>
         </form>
       )}
+
       {message && <p>{message}</p>}
     </div>
   );
