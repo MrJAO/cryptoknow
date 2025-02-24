@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 import { supabase } from "../../supabaseClient";
 
 const QuestBox = ({ title, fields, tableName }) => {
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState(() =>
+    fields.reduce((acc, field) => ({ ...acc, [field.name]: "" }), {})
+  );
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -46,11 +48,21 @@ const QuestBox = ({ title, fields, tableName }) => {
     setMessage("");
 
     try {
-      const { error } = await supabase.from(tableName).upsert([formData]); // Insert data into the specified table
+      // Ensure discord_username exists before submitting
+      if (!formData.discord_username) {
+        setMessage("⚠️ Discord username is missing. Please refresh and try again.");
+        setLoading(false);
+        return;
+      }
+
+      const { error } = await supabase.from(tableName).insert([formData]); // Insert data into the specified table
 
       if (error) throw error;
 
       setMessage("✅ Quest submitted successfully!");
+      setFormData((prevData) =>
+        fields.reduce((acc, field) => ({ ...acc, [field.name]: field.disabled ? prevData[field.name] : "" }), {})
+      );
     } catch (error) {
       console.error("Error saving data:", error);
       setMessage("❌ Failed to submit. Please try again.");
