@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import TwitterUsernameForm from "./TwitterUsernameForm";
 import TwitterQuestForm from "./TwitterQuestForm";
-import { supabase } from "../../supabaseClient";
+import { supabase } from '../../supabaseClient';
 
 function Quests({ discordUser }) {
   const [hasTwitterUsername, setHasTwitterUsername] = useState(false);
