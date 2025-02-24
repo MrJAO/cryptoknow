@@ -15,7 +15,6 @@ function ContributeSubmissionForm({ discordUser }) {
 
   const [message, setMessage] = useState("");
 
-  // Auto-fill Discord username when the component loads
   useEffect(() => {
     if (discordUser) {
       setFormData((prevData) => ({
@@ -32,11 +31,9 @@ function ContributeSubmissionForm({ discordUser }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Determine final values: Use custom input if "Other" is selected
     const finalAirdropType = formData.airdrop_type === "Other" ? formData.custom_airdrop_type : formData.airdrop_type;
     const finalChain = formData.chain === "Other" ? formData.custom_chain : formData.chain;
 
-    // Validation: Ensure required fields are filled
     if (!formData.project_name || !formData.link || !finalAirdropType || !finalChain) {
       setMessage("⚠️ Please fill in all required fields.");
       return;
@@ -71,7 +68,6 @@ function ContributeSubmissionForm({ discordUser }) {
 
   return (
     <div className="form-container">
-      {/* Green Info Banner */}
       <div className="info-banner">
         ✅ Submissions are **first-come, first-served**. I will check from **oldest to newest** for fairness.
       </div>
@@ -81,13 +77,11 @@ function ContributeSubmissionForm({ discordUser }) {
       {message && <div className="message">{message}</div>}
 
       <form onSubmit={handleSubmit} className="submission-form">
-        {/* Auto-filled Discord Username */}
         <div className="form-group">
           <label>👤 Discord Username:</label>
-          <input type="text" value={formData.discord_username} disabled className="input-field disabled" />
+          <input type="text" value={formData.discord_username} disabled className="disabled" />
         </div>
 
-        {/* Project Name */}
         <div className="form-group">
           <label>📌 Project Name: *</label>
           <input
@@ -96,19 +90,17 @@ function ContributeSubmissionForm({ discordUser }) {
             value={formData.project_name}
             onChange={handleChange}
             required
-            className="input-field"
             placeholder="Enter project name"
           />
         </div>
 
-        {/* Airdrop Type */}
         <div className="form-group">
           <label>💰 Airdrop Type: *</label>
-          <select name="airdrop_type" value={formData.airdrop_type} onChange={handleChange} required className="input-field">
+          <select name="airdrop_type" value={formData.airdrop_type} onChange={handleChange} required>
             <option value="">Select Airdrop Type</option>
-            <option value="Token">Token</option>
-            <option value="NFT">NFT</option>
-            <option value="Points">Points</option>
+            <option value="Retroactive">Token</option>
+            <option value="Testnet">NFT</option>
+            <option value="PlayToAirdrop">Points</option>
             <option value="Other">Other</option>
           </select>
           {formData.airdrop_type === "Other" && (
@@ -118,15 +110,13 @@ function ContributeSubmissionForm({ discordUser }) {
               value={formData.custom_airdrop_type}
               onChange={handleChange}
               placeholder="Enter custom Airdrop Type"
-              className="input-field custom-input"
             />
           )}
         </div>
 
-        {/* Chain */}
         <div className="form-group">
           <label>🔗 Chain: *</label>
-          <select name="chain" value={formData.chain} onChange={handleChange} required className="input-field">
+          <select name="chain" value={formData.chain} onChange={handleChange} required>
             <option value="">Select Chain</option>
             <option value="Ethereum">Ethereum</option>
             <option value="BSC">BSC</option>
@@ -141,12 +131,10 @@ function ContributeSubmissionForm({ discordUser }) {
               value={formData.custom_chain}
               onChange={handleChange}
               placeholder="Enter custom Chain"
-              className="input-field custom-input"
             />
           )}
         </div>
 
-        {/* Link */}
         <div className="form-group">
           <label>🔗 Submission Link: *</label>
           <input
@@ -155,13 +143,11 @@ function ContributeSubmissionForm({ discordUser }) {
             value={formData.link}
             onChange={handleChange}
             required
-            className="input-field"
-            placeholder="Paste your contribution link"
+            placeholder="Enter the project link"
           />
         </div>
 
-        {/* Submit Button */}
-        <button type="submit" className="submit-btn">🚀 Submit</button>
+        <button type="submit">🚀 Submit</button>
       </form>
     </div>
   );
