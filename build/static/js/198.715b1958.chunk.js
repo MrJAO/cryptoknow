@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkcryptoknow=self.webpackChunkcryptoknow||[]).push([[198],{198:e=>{e.exports=function(){throw new Error("ws does not work in the browser. Browser clients must use the native WebSocket object")}}}]);
+//# sourceMappingURL=198.715b1958.chunk.js.map

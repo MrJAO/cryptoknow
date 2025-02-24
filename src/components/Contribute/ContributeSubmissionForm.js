@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "../../supabaseClient";
+import '../../App.css';
 
 function ContributeSubmissionForm({ discordUser }) {
   const [formData, setFormData] = useState({
@@ -119,7 +120,7 @@ function ContributeSubmissionForm({ discordUser }) {
             </tr>
             <tr>
               <td><label>🔗 Submission Link: *</label></td>
-              <td><input type="url" name="link" value={formData.link} onChange={handleChange} required placeholder="Enter the project link" /></td>
+              <td><input type="url" name="link" value={formData.link} onChange={handleChange} required placeholder="Enter the Project Link" /></td>
             </tr>
             <tr>
               <td colSpan="2" style={{ textAlign: "center" }}>

@@ -9,3 +9,34 @@
   width: 100%;
   box-sizing: border-box;
 }
+
+/* Form Styling */
+form {
+  background: #2a2a2a; /* Dark Grey Form Background */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  color: #fff;
+}
+
+input, select, textarea {
+  background: #333; /* Slightly Lighter Grey */
+  color: #fff;
+  border: 1px solid #444; /* Subtle Borders */
+  padding: 8px;
+  border-radius: 4px;
+}
+
+input::placeholder, textarea::placeholder {
+  color: #aaa; /* Lighter Grey Placeholder */
+}
+
+/* Centering the form */
+.form-container {
+  width: 50%;
+  margin: 40px auto;
+  padding: 20px;
+  background: #2a2a2a;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
