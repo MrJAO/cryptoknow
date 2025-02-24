@@ -53,7 +53,7 @@ function ContributeSubmissionForm({ discordUser }) {
       console.error("Submission Error:", error);
       setMessage("❌ Submission failed. Please try again.");
     } else {
-      setMessage("✅ Submission successful!");
+      setMessage("✅ Submission successful!!");
       setFormData({
         discord_username: discordUser,
         project_name: "",
