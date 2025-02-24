@@ -42,7 +42,7 @@ const Quests = () => {
     }));
   };
 
-  // Handle form submission
+  // Handle form submission with validation
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -57,13 +57,29 @@ const Quests = () => {
     }
 
     try {
-      const { error } = await supabase
+      // Step 1: Check if the Twitter username already exists
+      const { data: existingUser, error: checkError } = await supabase
         .from("user_twitter_usernames")
-        .upsert([{ discord_username, twitter_username }]); // Insert or update user data
+        .select("*")
+        .eq("twitter_username", twitter_username)
+        .maybeSingle();
 
-      if (error) throw error;
+      if (checkError) throw checkError;
 
-      setMessage("✅ Twitter username saved successfully!");
+      if (existingUser) {
+        setMessage("⚠️ This Twitter username is already linked to your account!");
+        setLoading(false);
+        return; // Stop further execution
+      }
+
+      // Step 2: Insert new username if it's not already linked
+      const { error: insertError } = await supabase
+        .from("user_twitter_usernames")
+        .insert([{ discord_username, twitter_username }]);
+
+      if (insertError) throw insertError;
+
+      setMessage("✅ Twitter username linked successfully!");
     } catch (error) {
       console.error("Error saving data:", error);
       setMessage("❌ Failed to save. Please try again.");
