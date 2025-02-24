@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
 import Sidebar from './components/Sidebar/Sidebar';
 import Home from './components/Home/CryptoKnow';
+import Home from './components/Search/Search';
 import ToDoList from './components/ToDoList/ToDoList';
 import AvailableAirdrops from './components/AvailableAirdrops/AvailableAirdrops';
 import Quests from './components/Quests/Quests';
@@ -86,6 +87,7 @@ const App = () => {
         <div className="main-content">
           <Routes>
             <Route path="/" element={<Home user={user} />} />
+			<Route path="/search" element={<Search />} />
             <Route path="/to-do-list" element={<ToDoList currentUser={user} />} />
             <Route path="/available-airdrops" element={<AvailableAirdrops />} />
             <Route path="/quests" element={<Quests />} />
