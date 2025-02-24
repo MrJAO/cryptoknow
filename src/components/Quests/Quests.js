@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import TwitterUsernameForm from "./TwitterUsernameForm";
 import TwitterQuestForm from "./TwitterQuestForm";
-import { supabase } from '../../supabaseClient';
+import { supabase } from "../../supabaseClient";
 
 function Quests({ discordUser }) {
-  const [hasTwitterUsername, setHasTwitterUsername] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [hasTwitterUsername, setHasTwitterUsername] = useState(null); // Set to `null` initially
+  const [loading, setLoading] = useState(true); // Track loading state
 
   useEffect(() => {
     if (discordUser) {
@@ -14,43 +14,43 @@ function Quests({ discordUser }) {
   }, [discordUser]);
 
   const checkTwitterUsername = async () => {
-    setLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from("user_twitter_usernames")
-        .select("twitter_username")
-        .eq("discord_username", discordUser)
-        .single();
+    setLoading(true); // Start loading
 
-      if (error && error.code !== "PGRST116") {
-        console.error("Error fetching Twitter username:", error);
-      }
+    const { data, error } = await supabase
+      .from("user_twitter_usernames")
+      .select("twitter_username")
+      .eq("discord_username", discordUser)
+      .single();
 
-      setHasTwitterUsername(!!data);
-    } catch (err) {
-      console.error("Unexpected error:", err);
+    if (error && error.code !== "PGRST116") {
+      console.error("Error fetching Twitter username:", error.message);
     }
-    setLoading(false);
+
+    setHasTwitterUsername(!!data); // `true` if data exists, `false` otherwise
+    setLoading(false); // Stop loading
   };
+
+  if (loading) {
+    return <p>⏳ Loading...</p>;
+  }
 
   return (
     <div style={{ maxWidth: "600px", margin: "0 auto", padding: "20px" }}>
       <h1>Quests</h1>
 
+      {/* First Quest: Twitter Username Onboarding */}
       <div style={{ marginBottom: "20px", border: "1px solid #ddd", padding: "15px", borderRadius: "10px" }}>
-        {loading ? (
-          <p>Loading...</p>
-        ) : !hasTwitterUsername ? (
+        {!hasTwitterUsername ? (
           <TwitterUsernameForm discordUser={discordUser} onUsernameSaved={() => setHasTwitterUsername(true)} />
         ) : (
           <p>✅ Twitter Username is set. You can now do Twitter quests.</p>
         )}
       </div>
 
+      {/* Show Twitter Quest Form Only After Twitter Username is Set */}
       {hasTwitterUsername && (
-        <div style={{ marginTop: "20px" }}>
+        <div>
           <TwitterQuestForm discordUser={discordUser} />
-          {/* Add more quest types here, each in a separate div */}
         </div>
       )}
     </div>
