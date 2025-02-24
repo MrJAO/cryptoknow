@@ -80,7 +80,6 @@ const Quests = () => {
 
   return (
     <div style={{ padding: "20px", maxWidth: "600px", margin: "auto", textAlign: "center", color: "white" }}>
-      <h1 style={{ fontSize: "28px", fontWeight: "bold", marginBottom: "20px" }}>Available Quests</h1>
       <div style={{ background: "#ffcc00", padding: "10px", borderRadius: "8px", marginBottom: "10px", color: "#333", fontWeight: "bold" }}>
         Important - Twitter Username
       </div>
@@ -107,6 +106,8 @@ const Quests = () => {
 
 const QuestsBox = () => {
   return (
+    <div style={{ padding: "20px", maxWidth: "600px", margin: "auto", textAlign: "center", color: "white" }}>
+      <h1 style={{ fontSize: "28px", fontWeight: "bold", marginBottom: "20px" }}>Available Quests</h1>
       <QuestBox
         title="Discord Quest"
         tableName="discord_quests"
