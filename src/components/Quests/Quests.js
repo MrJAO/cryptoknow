@@ -1,88 +1,99 @@
-import React, { useState, useEffect } from "react";
-import { supabase } from "../../supabaseClient";
+import { useEffect, useState } from "react";
+import { supabase } from "../supabaseClient";
 
-function Quests({ discordUser }) {
-  const [twitterUsername, setTwitterUsername] = useState("");
+const OnboardingQuest = () => {
+  const [formData, setFormData] = useState({
+    discord_username: "",
+    twitter_username: "",
+    user_status: "",
+  });
   const [message, setMessage] = useState("");
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [user, setUser] = useState(null);
 
+  // Fetch logged-in user from Supabase Auth
   useEffect(() => {
-    if (discordUser) {
-      fetchTwitterUsername();
-    }
-  }, [discordUser]);
+    const fetchUser = async () => {
+      const { data, error } = await supabase.auth.getUser();
 
-  const fetchTwitterUsername = async () => {
-    const { data, error } = await supabase
-      .from("user_twitter_usernames")
-      .select("twitter_username")
-      .eq("discord_username", discordUser)
-      .single();
+      if (error) {
+        console.error("Error fetching user:", error);
+        setMessage("⚠️ Failed to fetch user. Please log in again.");
+      } else if (data?.user) {
+        const discordUsername = data.user.user_metadata?.user_name || data.user.user_metadata?.full_name || "";
+        setUser(data.user);
+        setFormData((prevData) => ({
+          ...prevData,
+          discord_username: discordUsername,
+        }));
+      }
+    };
+    fetchUser();
+  }, []);
 
-    if (data) {
-      setTwitterUsername(data.twitter_username);
-      setIsSubmitted(true);
-    }
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!twitterUsername.trim()) {
-      setMessage("⚠️ Please enter your Twitter username.");
+    setMessage("🔍 Checking for duplicate submission...");
+
+    if (!formData.twitter_username || !formData.user_status) {
+      setMessage("⚠ Please fill in all fields.");
       return;
     }
 
-    const { error } = await supabase
-      .from("user_twitter_usernames")
-      .upsert({ discord_username: discordUser, twitter_username: twitterUsername });
+    try {
+      const response = await fetch("https://jupcatdemy.vercel.app/api/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          quest_id: "Onboarding",
+          quest_types: 3,
+          submissionData: formData,
+        }),
+      });
 
-    if (error) {
-      setMessage("❌ Failed to submit. Please try again.");
-    } else {
-      setMessage("✅ Twitter username saved successfully!");
-      setIsSubmitted(true);
+      const data = await response.json();
+      if (!response.ok) {
+        setMessage(`❌ Error: ${data.error || "Something went wrong"}`);
+      } else {
+        setMessage("✅ Submitted for review!");
+      }
+    } catch (error) {
+      console.error("❌ Submission Error:", error);
+      setMessage("⚠ Network error! Please try again.");
     }
   };
 
   return (
-    <div style={{ maxWidth: "600px", margin: "0 auto", padding: "20px" }}>
-      <h1 style={{ textAlign: "center" }}>Available Quests</h1>
-      
-      <div style={{ marginTop: "20px", border: "1px solid #ddd", padding: "15px", borderRadius: "10px" }}>
-        <h2>Important - Twitter Username</h2>
-        <p>Please enter your Twitter username before continuing with quests.</p>
-        
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead>
-            <tr>
-              <th style={{ textAlign: "left", paddingBottom: "10px" }}>Twitter Username</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                <form onSubmit={handleSubmit}>
-                  <input
-                    type="text"
-                    value={twitterUsername}
-                    onChange={(e) => setTwitterUsername(e.target.value)}
-                    required
-                    placeholder="Enter your Twitter username (without @)"
-                    disabled={isSubmitted}
-                    style={{ width: "100%", padding: "8px", marginBottom: "10px" }}
-                  />
-                  <button type="submit" disabled={isSubmitted} style={{ padding: "10px", width: "100%" }}>
-                    {isSubmitted ? "✅ Submitted" : "Submit"}
-                  </button>
-                </form>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        {message && <p>{message}</p>}
-      </div>
+    <div style={{ border: "2px solid #444", padding: "15px", borderRadius: "10px", width: "400px", background: "#1a1a1a", color: "white", textAlign: "center" }}>
+      <h2>Onboarding Quest</h2>
+      <form onSubmit={handleSubmit}>
+        {/* Discord Username (Auto-filled) */}
+        <div style={{ margin: "5px 0" }}>
+          <label>Enter your Discord Username:</label>
+          <input type="text" name="discord_username" value={formData.discord_username} readOnly style={{ width: "90%", padding: "5px", background: "#ccc" }} />
+        </div>
+        {/* Twitter Username */}
+        <div style={{ margin: "5px 0" }}>
+          <label>Enter your Twitter Username (without @):</label>
+          <input type="text" name="twitter_username" value={formData.twitter_username} onChange={handleChange} placeholder="e.g. User123" style={{ width: "90%", padding: "5px" }} />
+        </div>
+        {/* Are you new to the Jupiverse? */}
+        <div style={{ margin: "5px 0" }}>
+          <label>Are you new to the Jupiverse?</label>
+          <select name="user_status" value={formData.user_status} onChange={handleChange} style={{ width: "95%", padding: "5px" }}>
+            <option value="">Select an option</option>
+            <option value="New">New</option>
+            <option value="Existing Cat">Existing Cat</option>
+          </select>
+        </div>
+        <button type="submit" style={{ background: "#28a745", color: "white", padding: "10px", border: "none", borderRadius: "5px", cursor: "pointer" }}>Submit</button>
+      </form>
+      <p>{message}</p>
     </div>
   );
-}
+};
 
-export default Quests;
+export default OnboardingQuest;
