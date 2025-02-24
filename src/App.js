@@ -9,6 +9,7 @@ import ToDoList from './components/ToDoList/ToDoList';
 import AvailableAirdrops from './components/AvailableAirdrops/AvailableAirdrops';
 import Quests from './components/Quests/Quests';
 import AvailableOpportunities from './components/AvailableOpportunities/AvailableOpportunities';
+import Contribute from './components/Contribute/ContributeSubmissionForm';
 import Leaderboard from './components/Leaderboard/Leaderboard';
 import Harvests from './components/Harvests/Harvests';
 import FAQs from './components/FAQs/FAQs';
@@ -92,6 +93,7 @@ const App = () => {
             <Route path="/available-airdrops" element={<AvailableAirdrops />} />
             <Route path="/quests" element={<Quests />} />
             <Route path="/available-opportunities" element={<AvailableOpportunities />} />
+			<Route path="/contribute" element={<Contribute />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="/harvests" element={<Harvests />} />
             <Route path="/faqs" element={<FAQs />} />
