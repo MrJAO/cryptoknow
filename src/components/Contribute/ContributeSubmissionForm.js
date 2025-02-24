@@ -53,7 +53,7 @@ function ContributeSubmissionForm({ discordUser }) {
       console.error("Submission Error:", error);
       setMessage("❌ Submission failed. Please try again.");
     } else {
-      setMessage("✅ Submission successful!!");
+      setMessage("✅ Submission successful!");
       setFormData({
         discord_username: discordUser,
         project_name: "",
@@ -92,9 +92,9 @@ function ContributeSubmissionForm({ discordUser }) {
               <td>
                 <select name="airdrop_type" value={formData.airdrop_type} onChange={handleChange} required>
                   <option value="">Select Airdrop Type</option>
-                  <option value="Retroactive">Token</option>
-                  <option value="Testnet">NFT</option>
-                  <option value="PlayToAirdrop">Points</option>
+                  <option value="Retroactive">Retroactive</option>
+                  <option value="Testnet">Testnet</option>
+                  <option value="PlayToAirdrop">PlayToAirdrop</option>
                   <option value="Other">Other</option>
                 </select>
                 {formData.airdrop_type === "Other" && (
