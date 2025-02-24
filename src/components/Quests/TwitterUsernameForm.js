@@ -13,23 +13,23 @@ function TwitterUsernameForm({ discordUser, onUsernameSaved }) {
     }
   }, [discordUser]);
 
-  // Fetch existing Twitter username
+  // Fetch existing Twitter username (with a manual timeout failover)
   const fetchTwitterUsername = async () => {
     setLoading(true);
+    
+    const timeoutId = setTimeout(() => {
+      setLoading(false);
+      setMessage("⚠️ Failed to fetch Twitter username. Please refresh.");
+    }, 5000); // 5-second timeout
 
     try {
-      // Timeout after 3 seconds to prevent infinite loading
-      const fetchUsername = supabase
+      const { data, error } = await supabase
         .from("user_twitter_usernames")
         .select("twitter_username")
         .eq("discord_username", discordUser)
         .single();
 
-      const timeout = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error("Timeout")), 3000)
-      );
-
-      const { data, error } = await Promise.race([fetchUsername, timeout]);
+      clearTimeout(timeoutId); // Prevent timeout if successful
 
       if (error) {
         console.warn("Error fetching Twitter username:", error.message);
@@ -76,7 +76,7 @@ function TwitterUsernameForm({ discordUser, onUsernameSaved }) {
 
       {/* Loading State */}
       {loading ? (
-        <p>⏳ Checking existing username...</p>
+        <p>⏳ Checking existing username... (If stuck, refresh the page.)</p>
       ) : isSubmitted ? (
         <p>✅ Your Twitter username is: <strong>{twitterUsername}</strong></p>
       ) : (
