@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import QuestBox from "./QuestBox";
 import { supabase } from "../../supabaseClient";
-import "./QuestBox.css"; // Ensure CSS is imported
 
 const Quests = () => {
   const [formData, setFormData] = useState({
@@ -27,6 +26,7 @@ const Quests = () => {
           discord_username: discordUsername,
         }));
 
+        // Fetch user's linked Twitter username (if any)
         const { data: existingData, error: fetchError } = await supabase
           .from("user_twitter_usernames")
           .select("twitter_username")
@@ -67,6 +67,7 @@ const Quests = () => {
     }
 
     try {
+      // Check if Twitter username is already linked for this Discord user
       const { data: existingUser, error: checkError } = await supabase
         .from("user_twitter_usernames")
         .select("*")
@@ -81,6 +82,7 @@ const Quests = () => {
         return;
       }
 
+      // Insert new Twitter username for this Discord user
       const { error: insertError } = await supabase
         .from("user_twitter_usernames")
         .insert([{ discord_username, twitter_username }]);
@@ -140,8 +142,8 @@ const Quests = () => {
   ];
 
   return (
-    <div className="quests-container">
-      <div className="important-box">Important - Twitter Username</div>
+    <div className="quest-container">
+      <div className="quest-box">Important - Twitter Username</div>
       <div className="form-container">
         <form onSubmit={handleSubmit}>
           <label>Discord Username</label>

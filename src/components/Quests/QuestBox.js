@@ -86,12 +86,26 @@ const QuestBox = ({ title, fields, tableName }) => {
   return (
     <div className="quest-box">
       <h2>{title}</h2>
-      <form onSubmit={handleSubmit}>
-        {fields.map((field) => (
-          <input key={field.name} {...field} onChange={handleChange} />
-        ))}
-        <button type="submit">{loading ? "Submitting..." : "Submit"}</button>
-      </form>
+      <form onSubmit={handleSubmit} className="quests-form">
+          {fields.map((field) => (
+            <div key={field.name} className="form-group">
+              <label>{field.label}</label>
+              <input
+                type="text"
+                name={field.name}
+                value={formData[field.name] || ""}
+                onChange={handleChange}
+                placeholder={field.placeholder}
+                disabled={field.disabled}
+                required={field.required}
+                className="quest-input"
+              />
+            </div>
+          ))}
+          <button type="submit" disabled={loading} className="submit-button">
+            {loading ? "Submitting..." : "Submit"}
+          </button>
+        </form>
       {message && <p>{message}</p>}
     </div>
   );
