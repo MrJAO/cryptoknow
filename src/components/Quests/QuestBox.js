@@ -16,7 +16,10 @@ const QuestBox = ({ title, fields, tableName }) => {
       if (error) {
         console.error("Error fetching user:", error);
         setMessage("⚠️ Failed to fetch user. Please log in again.");
-      } else if (data?.user) {
+        return;
+      }
+
+      if (data?.user) {
         const discordUsername =
           data.user.user_metadata?.user_name ||
           data.user.user_metadata?.full_name ||
@@ -27,7 +30,8 @@ const QuestBox = ({ title, fields, tableName }) => {
           discord_username: discordUsername,
         }));
 
-        if (fields.some(field => field.name === "twitter_post")) {
+        // Check if quest requires Twitter username and auto-fill if found
+        if (fields.some((field) => field.name === "twitter_username")) {
           const { data: twitterData, error: twitterError } = await supabase
             .from("user_twitter_usernames")
             .select("twitter_username")
@@ -36,10 +40,10 @@ const QuestBox = ({ title, fields, tableName }) => {
 
           if (twitterError) {
             console.error("Error fetching Twitter username:", twitterError);
-          } else if (twitterData) {
+          } else if (twitterData?.twitter_username) {
             setFormData((prevData) => ({
               ...prevData,
-              twitter_post: twitterData.twitter_username,
+              twitter_username: twitterData.twitter_username,
             }));
           }
         }
@@ -47,7 +51,7 @@ const QuestBox = ({ title, fields, tableName }) => {
     };
 
     fetchUserData();
-  }, []);
+  }, [fields]); // Runs when fields change
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -62,7 +66,7 @@ const QuestBox = ({ title, fields, tableName }) => {
     setLoading(true);
 
     try {
-      const { data, error } = await supabase.from(tableName).insert([formData]);
+      const { error } = await supabase.from(tableName).insert([formData]);
 
       if (error) {
         console.error("Error submitting form:", error);
@@ -106,3 +110,5 @@ const QuestBox = ({ title, fields, tableName }) => {
     </div>
   );
 };
+
+export default QuestBox; // ✅ Ensure it's correctly exported as default
