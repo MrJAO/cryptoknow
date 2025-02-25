@@ -10,7 +10,7 @@ const QuestBox = ({ title, fields, tableName }) => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const fetchUserData = async () => {
       const { data, error } = await supabase.auth.getUser();
 
       if (error) {
@@ -26,10 +26,28 @@ const QuestBox = ({ title, fields, tableName }) => {
           ...prevData,
           discord_username: discordUsername,
         }));
+
+        // Fetch user's linked Twitter username if the quest requires it
+        if (fields.some(field => field.name === "twitter_post")) {
+          const { data: twitterData, error: twitterError } = await supabase
+            .from("user_twitter_usernames")
+            .select("twitter_username")
+            .eq("discord_username", discordUsername)
+            .maybeSingle();
+
+          if (twitterError) {
+            console.error("Error fetching Twitter username:", twitterError);
+          } else if (twitterData) {
+            setFormData((prevData) => ({
+              ...prevData,
+              twitter_post: twitterData.twitter_username,
+            }));
+          }
+        }
       }
     };
 
-    fetchUser();
+    fetchUserData();
   }, []);
 
   const handleChange = (e) => {
@@ -38,37 +56,6 @@ const QuestBox = ({ title, fields, tableName }) => {
       ...prevData,
       [name]: value,
     }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setMessage("");
-
-    try {
-      if (!formData.discord_username) {
-        setMessage("⚠️ Discord username is missing. Please refresh and try again.");
-        setLoading(false);
-        return;
-      }
-
-      const { error } = await supabase.from(tableName).insert([formData]);
-
-      if (error) throw error;
-
-      setMessage("✅ Quest submitted successfully!");
-      setFormData((prevData) =>
-        fields.reduce((acc, field) => ({
-          ...acc,
-          [field.name]: field.disabled ? prevData[field.name] : "",
-        }), {})
-      );
-    } catch (error) {
-      console.error("Error saving data:", error);
-      setMessage("❌ Failed to submit. Please try again.");
-    } finally {
-      setLoading(false);
-    }
   };
 
   return (
@@ -90,11 +77,7 @@ const QuestBox = ({ title, fields, tableName }) => {
             />
           </div>
         ))}
-        <button type="submit" disabled={loading} className="quest-submit">
-          {loading ? "Submitting..." : "Submit"}
-        </button>
       </form>
-      {message && <p className={`quest-message ${message.includes("⚠️") || message.includes("❌") ? "error" : "success"}`}>{message}</p>}
     </div>
   );
 };

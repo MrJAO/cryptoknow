@@ -25,6 +25,22 @@ const Quests = () => {
           ...prevData,
           discord_username: discordUsername,
         }));
+
+        // Fetch user's linked Twitter username (if any)
+        const { data: existingData, error: fetchError } = await supabase
+          .from("user_twitter_usernames")
+          .select("twitter_username")
+          .eq("discord_username", discordUsername)
+          .maybeSingle();
+
+        if (fetchError) {
+          console.error("Error fetching linked Twitter:", fetchError);
+        } else if (existingData) {
+          setFormData((prevData) => ({
+            ...prevData,
+            twitter_username: existingData.twitter_username,
+          }));
+        }
       }
     };
     fetchUser();
@@ -51,24 +67,28 @@ const Quests = () => {
     }
 
     try {
+      // Check if Twitter username is already linked for this Discord user
       const { data: existingUser, error: checkError } = await supabase
         .from("user_twitter_usernames")
         .select("*")
-        .eq("twitter_username", twitter_username)
+        .eq("discord_username", discord_username)
         .maybeSingle();
 
       if (checkError) throw checkError;
+
       if (existingUser) {
-        setMessage("⚠️ This Twitter username is already linked to your account!");
+        setMessage("⚠️ You have already linked a Twitter username!");
         setLoading(false);
         return;
       }
 
+      // Insert new Twitter username for this Discord user
       const { error: insertError } = await supabase
         .from("user_twitter_usernames")
         .insert([{ discord_username, twitter_username }]);
 
       if (insertError) throw insertError;
+
       setMessage("✅ Twitter username linked successfully!");
     } catch (error) {
       console.error("Error saving data:", error);
@@ -98,43 +118,6 @@ const Quests = () => {
           </button>
         </form>
         {message && <p style={{ marginTop: "10px", color: message.includes("⚠️") || message.includes("❌") ? "red" : "green" }}>{message}</p>}
-      </div>
-      {/* Removed the incorrect <QuestsBox /> */}
-    </div>
-  );
-};
-
-const QuestsBox = () => {
-  return (
-    <div style={{ padding: "20px", maxWidth: "1200px", margin: "auto", textAlign: "center", color: "white" }}>
-      <h1 style={{ fontSize: "28px", fontWeight: "bold", marginBottom: "20px" }}>
-        Available Quests
-      </h1>
-      <div style={{ display: "flex", justifyContent: "space-between", gap: "20px", flexWrap: "wrap" }}>
-        <QuestBox
-          title="Discord Quest"
-          tableName="discord_quests"
-          fields={[
-            { name: "discord_username", label: "Discord Username", placeholder: "", disabled: true, required: true },
-            { name: "answer", label: "Your Answer", placeholder: "Enter your answer", disabled: false, required: true },
-          ]}
-        />
-        <QuestBox
-          title="Other Quest"
-          tableName="other_quests"
-          fields={[
-            { name: "discord_username", label: "Discord Username", placeholder: "", disabled: true, required: true },
-            { name: "task_input", label: "Task Details", placeholder: "Describe your task", disabled: false, required: true },
-          ]}
-        />
-        <QuestBox
-          title="Twitter Quest"
-          tableName="twitter_quests"
-          fields={[
-            { name: "discord_username", label: "Discord Username", placeholder: "", disabled: true, required: true },
-            { name: "twitter_post", label: "Tweet Link", placeholder: "Paste your tweet link", disabled: false, required: true },
-          ]}
-        />
       </div>
     </div>
   );
