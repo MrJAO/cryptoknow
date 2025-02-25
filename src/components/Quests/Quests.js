@@ -142,8 +142,8 @@ const Quests = () => {
   ];
 
   return (
-    <div className="quests-container">
-      <div className="important-box">Important - Twitter Username</div>
+    <div className="quest-container">
+      <div className="quest-box">Important - Twitter Username</div>
       <div className="quest-container">
         <form onSubmit={handleSubmit}>
           <label>Discord Username</label>
