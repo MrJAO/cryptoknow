@@ -106,11 +106,11 @@ const Quests = () => {
 
 const QuestsBox = () => {
   return (
-    <div style={{ padding: "20px", maxWidth: "900px", margin: "auto", textAlign: "left", color: "white" }}>
-      <h1 style={{ fontSize: "28px", fontWeight: "bold", marginBottom: "20px", textAlign: "center" }}>
+    <div style={{ padding: "20px", maxWidth: "1000px", margin: "auto", textAlign: "center", color: "white" }}>
+      <h1 style={{ fontSize: "28px", fontWeight: "bold", marginBottom: "20px" }}>
         Available Quests
       </h1>
-      <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", gap: "20px", flexWrap: "nowrap" }}>
         <QuestBox
           title="Discord Quest"
           tableName="discord_quests"
@@ -125,6 +125,14 @@ const QuestsBox = () => {
           fields={[
             { name: "discord_username", label: "Discord Username", placeholder: "", disabled: true, required: true },
             { name: "task_input", label: "Task Details", placeholder: "Describe your task", disabled: false, required: true },
+          ]}
+        />
+        <QuestBox
+          title="Twitter Quest"
+          tableName="twitter_quests"
+          fields={[
+            { name: "discord_username", label: "Discord Username", placeholder: "", disabled: true, required: true },
+            { name: "twitter_post", label: "Tweet Link", placeholder: "Paste your tweet link", disabled: false, required: true },
           ]}
         />
       </div>
