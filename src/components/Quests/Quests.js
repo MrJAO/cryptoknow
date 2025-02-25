@@ -142,8 +142,8 @@ const Quests = () => {
   ];
 
   return (
-    <div style={{ padding: "20px", maxWidth: "600px", margin: "auto", textAlign: "center", color: "white" }}>
-      <div style={{ background: "#ffcc00", padding: "10px", borderRadius: "8px", marginBottom: "10px", color: "#333", fontWeight: "bold" }}>Important - Twitter Username</div>
+    <div className="quests-container">
+      <div className="important-box">Important - Twitter Username</div>
       <div className="quest-container">
         <form onSubmit={handleSubmit}>
           <label>Discord Username</label>
