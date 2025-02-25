@@ -1,87 +1,42 @@
-/* QuestBox.css */
-
-/* Container to align quests horizontally */
 .quests-container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+  text-align: center;
+}
+
+.important-box {
+  background: #ffcc00;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  color: #333;
+  font-weight: bold;
+}
+
+.quest-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px; /* Adjust for spacing */
-  justify-content: space-between;
+  justify-content: center;
+  gap: 20px;
 }
 
 .quest-box {
-  width: calc(50% - 8px); /* Adjust to fit two per row */
-  box-sizing: border-box;
-}
-
-.quest-box h2 {
-  color: #ffcc00;
-  margin-bottom: 10px;
-  font-size: 22px;
-  text-align: center;
-}
-
-.quest-box form {
+  background: #1a1a1a;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: left;
+  width: 45%;
+  min-width: 300px;
+  max-width: 400px;
+  min-height: 280px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  justify-content: space-between;
 }
 
-.quest-box label {
-  font-size: 14px;
-  color: #ddd;
-}
-
-.quest-box input {
-  width: 100%;
-  padding: 8px;
-  border-radius: 5px;
-  background: #333;
-  color: white;
-  border: 1px solid #555;
-}
-
-.quest-box input::placeholder {
-  color: #aaa;
-}
-
-.quest-box button {
-  padding: 10px;
-  background: #28a745;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.quest-box button:disabled {
-  background: #555;
-  cursor: not-allowed;
-}
-
-.quest-box p {
-  margin-top: 10px;
-  text-align: center;
-  font-size: 14px;
-}
-
-.quest-box p.success {
-  color: green;
-}
-
-.quest-box p.error {
-  color: red;
-}
-
-/* Responsive adjustments */
-@media (max-width: 900px) {
+@media (max-width: 768px) {
   .quest-box {
-    max-width: calc(50% - 20px); /* Max 2 per row */
-  }
-}
-
-@media (max-width: 600px) {
-  .quest-box {
-    max-width: 100%; /* Single column on small screens */
+    width: 90%;
   }
 }
