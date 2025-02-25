@@ -142,7 +142,7 @@ const Quests = () => {
   ];
 
   return (
-    <div className="quest-container">
+    <div className="quests-container">
       <div className="quest-box">Important - Twitter Username</div>
       <div className="form-container">
         <form onSubmit={handleSubmit}>
