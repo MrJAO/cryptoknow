@@ -26,6 +26,7 @@ const Quests = () => {
           discord_username: discordUsername,
         }));
 
+        // Fetch user's linked Twitter username (if any)
         const { data: existingData, error: fetchError } = await supabase
           .from("user_twitter_usernames")
           .select("twitter_username")
@@ -66,6 +67,7 @@ const Quests = () => {
     }
 
     try {
+      // Check if Twitter username is already linked for this Discord user
       const { data: existingUser, error: checkError } = await supabase
         .from("user_twitter_usernames")
         .select("*")
@@ -80,6 +82,7 @@ const Quests = () => {
         return;
       }
 
+      // Insert new Twitter username for this Discord user
       const { error: insertError } = await supabase
         .from("user_twitter_usernames")
         .insert([{ discord_username, twitter_username }]);
@@ -95,6 +98,7 @@ const Quests = () => {
     }
   };
 
+  // 🔥 Added Dummy Quests
   const quests = [
     {
       title: "Welcome to the Community!",
@@ -139,13 +143,32 @@ const Quests = () => {
   ];
 
   return (
-    <div className="quests-container">
-      <h2 className="quests-title">Available Quests</h2>
-      <div className="quests-list">
-        {quests.map((quest, index) => (
-          <QuestBox key={index} {...quest} />
-        ))}
+    <div style={{ padding: "20px", maxWidth: "600px", margin: "auto", textAlign: "center", color: "white" }}>
+      <div style={{ background: "#ffcc00", padding: "10px", borderRadius: "8px", marginBottom: "10px", color: "#333", fontWeight: "bold" }}>
+        Important - Twitter Username
       </div>
+      <div style={{ background: "#1a1a1a", padding: "20px", borderRadius: "10px", textAlign: "left" }}>
+        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+          <div>
+            <label>Discord Username</label>
+            <input type="text" name="discord_username" value={formData.discord_username} disabled style={{ width: "100%", padding: "8px", borderRadius: "5px", background: "#333", color: "white", border: "1px solid #555" }} />
+          </div>
+          <div>
+            <label>Twitter Username (without @)</label>
+            <input type="text" name="twitter_username" value={formData.twitter_username} onChange={handleChange} placeholder="e.g CryptoModJAO" required style={{ width: "100%", padding: "8px", borderRadius: "5px", background: "#333", color: "white", border: "1px solid #555" }} />
+          </div>
+          <button type="submit" disabled={loading} style={{ padding: "10px", background: "#28a745", color: "white", border: "none", borderRadius: "5px", cursor: "pointer" }}>
+            {loading ? "Submitting..." : "Submit"}
+          </button>
+        </form>
+        {message && <p style={{ marginTop: "10px", color: message.includes("⚠️") || message.includes("❌") ? "red" : "green" }}>{message}</p>}
+      </div>
+
+      {/* 🔥 Render Quests Below */}
+      <h2 style={{ marginTop: "20px", textAlign: "center" }}>Available Quests</h2>
+      {quests.map((quest, index) => (
+        <QuestBox key={index} {...quest} />
+      ))}
     </div>
   );
 };
