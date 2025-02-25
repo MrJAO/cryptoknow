@@ -1,21 +1,12 @@
 .quests-container {
-  max-width: 600px; /* Adjust width for better centering */
+  max-width: 600px;
   margin: auto;
   padding: 20px;
+  text-align: center;
 }
 
 .important-box {
-  background: #ffcc00;
-  padding: 12px;
-  border-radius: 8px;
-  margin-bottom: 15px;
-  color: #333;
-  font-weight: bold;
-  font-size: 1rem;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  background: #ffcc00, padding: 10px, borderRadius: 8px, marginBottom: 10px, color: #333, fontWeight: bold
 }
 
 .quest-container {
