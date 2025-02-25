@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from "react";
+import QuestBox from "./QuestBox";
 import { supabase } from "../../supabaseClient";
 
-const QuestBox = ({ title, fields, tableName }) => {
-  const [formData, setFormData] = useState(() =>
-    fields.reduce((acc, field) => ({ ...acc, [field.name]: "" }), {})
-  );
+const Quests = () => {
+  const [formData, setFormData] = useState({
+    discord_username: "",
+    twitter_username: "",
+  });
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Fetch logged-in user from Supabase Auth
     const fetchUser = async () => {
       const { data, error } = await supabase.auth.getUser();
-
       if (error) {
         console.error("Error fetching user:", error);
         setMessage("⚠️ Failed to fetch user. Please log in again.");
@@ -21,18 +21,15 @@ const QuestBox = ({ title, fields, tableName }) => {
           data.user.user_metadata?.user_name ||
           data.user.user_metadata?.full_name ||
           "";
-
         setFormData((prevData) => ({
           ...prevData,
-          discord_username: discordUsername, // Auto-fill Discord username
+          discord_username: discordUsername,
         }));
       }
     };
-
     fetchUser();
   }, []);
 
-  // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -41,101 +38,95 @@ const QuestBox = ({ title, fields, tableName }) => {
     }));
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setMessage("");
 
+    const { discord_username, twitter_username } = formData;
+    if (!twitter_username.trim()) {
+      setMessage("⚠️ Please enter your Twitter username.");
+      setLoading(false);
+      return;
+    }
+
     try {
-      // Ensure discord_username exists before submitting
-      if (!formData.discord_username) {
-        setMessage("⚠️ Discord username is missing. Please refresh and try again.");
+      const { data: existingUser, error: checkError } = await supabase
+        .from("user_twitter_usernames")
+        .select("*")
+        .eq("twitter_username", twitter_username)
+        .maybeSingle();
+
+      if (checkError) throw checkError;
+      if (existingUser) {
+        setMessage("⚠️ This Twitter username is already linked to your account!");
         setLoading(false);
         return;
       }
 
-      const { error } = await supabase.from(tableName).insert([formData]); // Insert data into the specified table
+      const { error: insertError } = await supabase
+        .from("user_twitter_usernames")
+        .insert([{ discord_username, twitter_username }]);
 
-      if (error) throw error;
-
-      setMessage("✅ Quest submitted successfully!");
-      setFormData((prevData) =>
-        fields.reduce((acc, field) => ({ ...acc, [field.name]: field.disabled ? prevData[field.name] : "" }), {})
-      );
+      if (insertError) throw insertError;
+      setMessage("✅ Twitter username linked successfully!");
     } catch (error) {
       console.error("Error saving data:", error);
-      setMessage("❌ Failed to submit. Please try again.");
+      setMessage("❌ Failed to save. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div
-      style={{
-        background: "#1a1a1a",
-        padding: "20px",
-        borderRadius: "10px",
-        textAlign: "left",
-        width: "100%",
-        maxWidth: "350px", // Matches your form layout
-        minHeight: "250px", // Ensures consistent height
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-      }}
-    >
-      <h2 style={{ color: "#ffcc00", marginBottom: "10px", fontSize: "20px" }}>{title}</h2>
-
-      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-        {/* Render Form Fields Dynamically */}
-        {fields.map((field) => (
-          <div key={field.name}>
-            <label>{field.label}</label>
-            <input
-              type="text"
-              name={field.name}
-              value={formData[field.name] || ""}
-              onChange={handleChange}
-              placeholder={field.placeholder}
-              disabled={field.disabled}
-              required={field.required}
-              style={{
-                width: "100%",
-                padding: "8px",
-                borderRadius: "5px",
-                background: "#333",
-                color: "white",
-                border: "1px solid #555",
-              }}
-            />
+    <div style={{ padding: "20px", maxWidth: "600px", margin: "auto", textAlign: "center", color: "white" }}>
+      <h1 style={{ fontSize: "28px", fontWeight: "bold", marginBottom: "20px" }}>Available Quests</h1>
+      <div style={{ background: "#ffcc00", padding: "10px", borderRadius: "8px", marginBottom: "10px", color: "#333", fontWeight: "bold" }}>
+        Important - Twitter Username
+      </div>
+      <div style={{ background: "#1a1a1a", padding: "20px", borderRadius: "10px", textAlign: "left" }}>
+        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+          <div>
+            <label>Discord Username</label>
+            <input type="text" name="discord_username" value={formData.discord_username} disabled style={{ width: "100%", padding: "8px", borderRadius: "5px", background: "#333", color: "white", border: "1px solid #555" }} />
           </div>
-        ))}
-
-        <button
-          type="submit"
-          disabled={loading}
-          style={{
-            padding: "10px",
-            background: "#28a745",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-        >
-          {loading ? "Submitting..." : "Submit"}
-        </button>
-      </form>
-
-      {message && (
-        <p style={{ marginTop: "10px", color: message.includes("⚠️") || message.includes("❌") ? "red" : "green" }}>
-          {message}
-        </p>
-      )}
+          <div>
+            <label>Twitter Username</label>
+            <input type="text" name="twitter_username" value={formData.twitter_username} onChange={handleChange} placeholder="Enter your Twitter username" required style={{ width: "100%", padding: "8px", borderRadius: "5px", background: "#333", color: "white", border: "1px solid #555" }} />
+          </div>
+          <button type="submit" disabled={loading} style={{ padding: "10px", background: "#28a745", color: "white", border: "none", borderRadius: "5px", cursor: "pointer" }}>
+            {loading ? "Submitting..." : "Submit"}
+          </button>
+        </form>
+        {message && <p style={{ marginTop: "10px", color: message.includes("⚠️") || message.includes("❌") ? "red" : "green" }}>{message}</p>}
+      </div>
+      <QuestsBox />
     </div>
   );
 };
 
-export default QuestBox;
+const QuestsBox = () => {
+  return (
+    <div style={{ padding: "20px", maxWidth: "600px", margin: "auto", textAlign: "center", color: "white" }}>
+      <h1 style={{ fontSize: "28px", fontWeight: "bold", marginBottom: "20px" }}>Available Quests</h1>
+      <QuestBox
+        title="Discord Quest"
+        tableName="discord_quests"
+        fields={[
+          { name: "discord_username", label: "Discord Username", placeholder: "", disabled: true, required: true },
+          { name: "answer", label: "Your Answer", placeholder: "Enter your answer", disabled: false, required: true },
+        ]}
+      />
+      <QuestBox
+        title="Other Quest"
+        tableName="other_quests"
+        fields={[
+          { name: "discord_username", label: "Discord Username", placeholder: "", disabled: true, required: true },
+          { name: "task_input", label: "Task Details", placeholder: "Describe your task", disabled: false, required: true },
+        ]}
+      />
+    </div>
+  );
+};
+
+export default Quests;
