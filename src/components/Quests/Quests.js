@@ -142,8 +142,8 @@ const Quests = () => {
   ];
 
   return (
-    <div className="quests-container">
-      <div className="important-box">Important - Twitter Username</div>
+    <div style={{ padding: "20px", maxWidth: "600px", margin: "auto", textAlign: "center", color: "white" }}>
+      <div style={{ background: "#ffcc00", padding: "10px", borderRadius: "8px", marginBottom: "10px", color: "#333", fontWeight: "bold" }}>Important - Twitter Username</div>
       <div className="quest-container">
         <form onSubmit={handleSubmit}>
           <label>Discord Username</label>
@@ -152,7 +152,7 @@ const Quests = () => {
           <input type="text" name="twitter_username" value={formData.twitter_username} onChange={handleChange} placeholder="e.g CryptoModJAO" required className="input-field" />
           <button type="submit" disabled={loading} className="submit-button">{loading ? "Submitting..." : "Submit"}</button>
         </form>
-        {message && <p className={`message ${message.includes("⚠️") || message.includes("❌") ? "error" : "success"}`}>{message}</p>}
+        {message && <p style={{ marginTop: "10px", color: message.includes("⚠️") || message.includes("❌") ? "red" : "green" }}>{message}</p>}
       </div>
       <h2 className="quests-title">Available Quests</h2>
       <div className="quest-container">
