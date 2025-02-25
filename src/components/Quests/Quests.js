@@ -140,21 +140,12 @@ const Quests = () => {
 
   return (
     <div className="quests-container">
-      <div className="important-box">Important - Twitter Username</div>
-      <div className="form-container">
-        <form onSubmit={handleSubmit}>
-          <label>Discord Username</label>
-          <input type="text" name="discord_username" value={formData.discord_username} disabled className="input-field" />
-          <label>Twitter Username (without @)</label>
-          <input type="text" name="twitter_username" value={formData.twitter_username} onChange={handleChange} placeholder="e.g CryptoModJAO" required className="input-field" />
-          <button type="submit" disabled={loading} className="submit-button">{loading ? "Submitting..." : "Submit"}</button>
-        </form>
-        {message && <p className={`message ${message.includes("⚠️") || message.includes("❌") ? "error" : "success"}`}>{message}</p>}
-      </div>
       <h2 className="quests-title">Available Quests</h2>
-      {quests.map((quest, index) => (
-        <QuestBox key={index} {...quest} />
-      ))}
+      <div className="quests-list">
+        {quests.map((quest, index) => (
+          <QuestBox key={index} {...quest} />
+        ))}
+      </div>
     </div>
   );
 };
