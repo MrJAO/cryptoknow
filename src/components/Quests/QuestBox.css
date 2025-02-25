@@ -4,24 +4,13 @@
 .quests-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
-  align-items: stretch;
+  gap: 16px; /* Adjust for spacing */
+  justify-content: space-between;
 }
 
 .quest-box {
-  background: #1a1a1a;
-  padding: 20px;
-  border-radius: 10px;
-  text-align: left;
-  width: 100%;
-  max-width: calc(33.33% - 20px); /* Max 3 per row */
-  min-width: 300px; /* Ensures proper spacing */
-  min-height: 300px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  width: calc(50% - 8px); /* Adjust to fit two per row */
+  box-sizing: border-box;
 }
 
 .quest-box h2 {
