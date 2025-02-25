@@ -143,8 +143,8 @@ const Quests = () => {
 
   return (
     <div className="quests-container">
-      <div className="quest-box">Important - Twitter Username</div>
-      <div className="form-container">
+      <div className="important-box">Important - Twitter Username</div>
+      <div className="quest-container">
         <form onSubmit={handleSubmit}>
           <label>Discord Username</label>
           <input type="text" name="discord_username" value={formData.discord_username} disabled className="input-field" />
