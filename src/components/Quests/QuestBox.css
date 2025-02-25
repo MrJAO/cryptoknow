@@ -6,7 +6,7 @@
 }
 
 .important-box {
-  background: #ffcc00, padding: 10px, borderRadius: 8px, marginBottom: 10px, color: #333, fontWeight: bold
+  background: #ffcc00; padding: 10px; borderRadius: 8px; marginBottom: 10px; color: #333; fontWeight: bold;
 }
 
 .quest-container {
