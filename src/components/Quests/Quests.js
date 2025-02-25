@@ -98,6 +98,50 @@ const Quests = () => {
     }
   };
 
+  // 🔥 Added Dummy Quests
+  const quests = [
+    {
+      title: "Welcome to the Community!",
+      tableName: "onboarding_pending_submissions",
+      fields: [
+        { name: "discord_username", label: "Discord Username", placeholder: "Enter your Discord username", required: true, disabled: true },
+        { name: "why_join", label: "Why did you join?", placeholder: "Tell us why you joined", required: true }
+      ]
+    },
+    {
+      title: "Twitter Follow Quest",
+      tableName: "twitter_pending_submissions",
+      fields: [
+        { name: "twitter_username", label: "Your Twitter Username", placeholder: "Enter your Twitter username", required: true, disabled: true },
+        { name: "follow_status", label: "Did you follow us?", placeholder: "Yes or No", required: true }
+      ]
+    },
+    {
+      title: "Retweet a Post",
+      tableName: "twitter_pending_submissions",
+      fields: [
+        { name: "twitter_username", label: "Your Twitter Username", placeholder: "Enter your Twitter username", required: true, disabled: true },
+        { name: "retweet_link", label: "Retweet Link", placeholder: "Paste the link to your retweet", required: true }
+      ]
+    },
+    {
+      title: "Join Our Discord Server",
+      tableName: "discord_pending_submissions",
+      fields: [
+        { name: "discord_username", label: "Discord Username", placeholder: "Enter your Discord username", required: true, disabled: true },
+        { name: "joined_server", label: "Did you join?", placeholder: "Yes or No", required: true }
+      ]
+    },
+    {
+      title: "Submit a Feedback",
+      tableName: "feedback_submissions",
+      fields: [
+        { name: "discord_username", label: "Discord Username", placeholder: "Enter your Discord username", required: true, disabled: true },
+        { name: "feedback", label: "Your Feedback", placeholder: "Write your feedback", required: true }
+      ]
+    }
+  ];
+
   return (
     <div style={{ padding: "20px", maxWidth: "600px", margin: "auto", textAlign: "center", color: "white" }}>
       <div style={{ background: "#ffcc00", padding: "10px", borderRadius: "8px", marginBottom: "10px", color: "#333", fontWeight: "bold" }}>
@@ -119,6 +163,12 @@ const Quests = () => {
         </form>
         {message && <p style={{ marginTop: "10px", color: message.includes("⚠️") || message.includes("❌") ? "red" : "green" }}>{message}</p>}
       </div>
+
+      {/* 🔥 Render Quests Below */}
+      <h2 style={{ marginTop: "20px", textAlign: "center" }}>Available Quests</h2>
+      {quests.map((quest, index) => (
+        <QuestBox key={index} {...quest} />
+      ))}
     </div>
   );
 };
