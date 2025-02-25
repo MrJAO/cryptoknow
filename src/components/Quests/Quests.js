@@ -106,24 +106,28 @@ const Quests = () => {
 
 const QuestsBox = () => {
   return (
-    <div style={{ padding: "20px", maxWidth: "600px", margin: "auto", textAlign: "center", color: "white" }}>
-      <h1 style={{ fontSize: "28px", fontWeight: "bold", marginBottom: "20px" }}>Available Quests</h1>
-      <QuestBox
-        title="Discord Quest"
-        tableName="discord_quests"
-        fields={[
-          { name: "discord_username", label: "Discord Username", placeholder: "", disabled: true, required: true },
-          { name: "answer", label: "Your Answer", placeholder: "Enter your answer", disabled: false, required: true },
-        ]}
-      />
-      <QuestBox
-        title="Other Quest"
-        tableName="other_quests"
-        fields={[
-          { name: "discord_username", label: "Discord Username", placeholder: "", disabled: true, required: true },
-          { name: "task_input", label: "Task Details", placeholder: "Describe your task", disabled: false, required: true },
-        ]}
-      />
+    <div style={{ padding: "20px", maxWidth: "900px", margin: "auto", textAlign: "left", color: "white" }}>
+      <h1 style={{ fontSize: "28px", fontWeight: "bold", marginBottom: "20px", textAlign: "center" }}>
+        Available Quests
+      </h1>
+      <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
+        <QuestBox
+          title="Discord Quest"
+          tableName="discord_quests"
+          fields={[
+            { name: "discord_username", label: "Discord Username", placeholder: "", disabled: true, required: true },
+            { name: "answer", label: "Your Answer", placeholder: "Enter your answer", disabled: false, required: true },
+          ]}
+        />
+        <QuestBox
+          title="Other Quest"
+          tableName="other_quests"
+          fields={[
+            { name: "discord_username", label: "Discord Username", placeholder: "", disabled: true, required: true },
+            { name: "task_input", label: "Task Details", placeholder: "Describe your task", disabled: false, required: true },
+          ]}
+        />
+      </div>
     </div>
   );
 };
