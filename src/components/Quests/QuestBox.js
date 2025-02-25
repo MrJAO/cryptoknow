@@ -1,3 +1,7 @@
+import React, { useState, useEffect } from "react";
+import { supabase } from "../../supabaseClient"; // Ensure this file exists
+import "./QuestBox.css"; // Import external CSS file
+
 const QuestBox = ({ title, fields, tableName }) => {
   const [formData, setFormData] = useState(() =>
     fields.reduce((acc, field) => ({ ...acc, [field.name]: "" }), {})
