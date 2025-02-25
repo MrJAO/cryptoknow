@@ -1,7 +1,3 @@
-import React, { useState, useEffect } from "react";
-import { supabase } from "../../supabaseClient";
-import "./QuestBox.css"; // Import external CSS file
-
 const QuestBox = ({ title, fields, tableName }) => {
   const [formData, setFormData] = useState(() =>
     fields.reduce((acc, field) => ({ ...acc, [field.name]: "" }), {})
@@ -27,7 +23,6 @@ const QuestBox = ({ title, fields, tableName }) => {
           discord_username: discordUsername,
         }));
 
-        // Fetch user's linked Twitter username if the quest requires it
         if (fields.some(field => field.name === "twitter_post")) {
           const { data: twitterData, error: twitterError } = await supabase
             .from("user_twitter_usernames")
@@ -58,6 +53,28 @@ const QuestBox = ({ title, fields, tableName }) => {
     }));
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const { data, error } = await supabase.from(tableName).insert([formData]);
+
+      if (error) {
+        console.error("Error submitting form:", error);
+        setMessage("⚠️ Submission failed. Please try again.");
+      } else {
+        setMessage("✅ Submission successful!");
+        setFormData(fields.reduce((acc, field) => ({ ...acc, [field.name]: "" }), {}));
+      }
+    } catch (error) {
+      console.error("Unexpected error:", error);
+      setMessage("⚠️ An unexpected error occurred.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="quest-box">
       <h2 className="quest-title">{title}</h2>
@@ -77,9 +94,11 @@ const QuestBox = ({ title, fields, tableName }) => {
             />
           </div>
         ))}
+        <button type="submit" disabled={loading} className="submit-button">
+          {loading ? "Submitting..." : "Submit"}
+        </button>
       </form>
+      {message && <p className="message">{message}</p>}
     </div>
   );
 };
-
-export default QuestBox;
