@@ -99,7 +99,7 @@ const Quests = () => {
         </form>
         {message && <p style={{ marginTop: "10px", color: message.includes("⚠️") || message.includes("❌") ? "red" : "green" }}>{message}</p>}
       </div>
-      <QuestsBox />
+      {/* Removed the incorrect <QuestsBox /> */}
     </div>
   );
 };
@@ -110,7 +110,7 @@ const QuestsBox = () => {
       <h1 style={{ fontSize: "28px", fontWeight: "bold", marginBottom: "20px" }}>
         Available Quests
       </h1>
-      <div style={{ display: "flex", justifyContent: "space-between", gap: "20px", flexWrap: "nowrap" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", gap: "20px", flexWrap: "wrap" }}>
         <QuestBox
           title="Discord Quest"
           tableName="discord_quests"
@@ -139,6 +139,5 @@ const QuestsBox = () => {
     </div>
   );
 };
-
 
 export default Quests;
