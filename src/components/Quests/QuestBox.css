@@ -35,6 +35,66 @@
   justify-content: space-between;
 }
 
+.quest-box h2 {
+  color: #ffcc00;
+  margin-bottom: 10px;
+  font-size: 22px;
+  text-align: center;
+}
+
+.quest-box form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.quest-box label {
+  font-size: 14px;
+  color: #ddd;
+}
+
+.quest-box input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 5px;
+  background: #333;
+  color: white;
+  border: 1px solid #555;
+}
+
+.quest-box input::placeholder {
+  color: #aaa;
+}
+
+.quest-box button {
+  padding: 10px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.quest-box button:disabled {
+  background: #555;
+  cursor: not-allowed;
+}
+
+.quest-box p {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.quest-box p.success {
+  color: green;
+}
+
+.quest-box p.error {
+  color: red;
+}
+
 @media (max-width: 768px) {
   .quest-box {
     width: 90%;
