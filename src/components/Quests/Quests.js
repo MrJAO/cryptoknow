@@ -118,7 +118,6 @@ const QuestsBox = () => {
             { name: "discord_username", label: "Discord Username", placeholder: "", disabled: true, required: true },
             { name: "answer", label: "Your Answer", placeholder: "Enter your answer", disabled: false, required: true },
           ]}
-          width="30%"
         />
         <QuestBox
           title="Other Quest"
@@ -127,7 +126,6 @@ const QuestsBox = () => {
             { name: "discord_username", label: "Discord Username", placeholder: "", disabled: true, required: true },
             { name: "task_input", label: "Task Details", placeholder: "Describe your task", disabled: false, required: true },
           ]}
-          width="30%"
         />
         <QuestBox
           title="Twitter Quest"
@@ -136,7 +134,6 @@ const QuestsBox = () => {
             { name: "discord_username", label: "Discord Username", placeholder: "", disabled: true, required: true },
             { name: "twitter_post", label: "Tweet Link", placeholder: "Paste your tweet link", disabled: false, required: true },
           ]}
-          width="30%"
         />
       </div>
     </div>

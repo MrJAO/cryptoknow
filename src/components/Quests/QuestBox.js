@@ -72,8 +72,21 @@ const QuestBox = ({ title, fields, tableName }) => {
   };
 
   return (
-    <div style={{ background: "#1a1a1a", padding: "20px", borderRadius: "10px", textAlign: "left", marginBottom: "20px" }}>
-      <h2 style={{ color: "#ffcc00", marginBottom: "10px" }}>{title}</h2>
+    <div
+      style={{
+        background: "#1a1a1a",
+        padding: "20px",
+        borderRadius: "10px",
+        textAlign: "left",
+        width: "100%",
+        maxWidth: "350px", // Matches your form layout
+        minHeight: "250px", // Ensures consistent height
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+      }}
+    >
+      <h2 style={{ color: "#ffcc00", marginBottom: "10px", fontSize: "20px" }}>{title}</h2>
 
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
         {/* Render Form Fields Dynamically */}
@@ -88,17 +101,39 @@ const QuestBox = ({ title, fields, tableName }) => {
               placeholder={field.placeholder}
               disabled={field.disabled}
               required={field.required}
-              style={{ width: "100%", padding: "8px", borderRadius: "5px", background: "#333", color: "white", border: "1px solid #555" }}
+              style={{
+                width: "100%",
+                padding: "8px",
+                borderRadius: "5px",
+                background: "#333",
+                color: "white",
+                border: "1px solid #555",
+              }}
             />
           </div>
         ))}
 
-        <button type="submit" disabled={loading} style={{ padding: "10px", background: "#28a745", color: "white", border: "none", borderRadius: "5px", cursor: "pointer" }}>
+        <button
+          type="submit"
+          disabled={loading}
+          style={{
+            padding: "10px",
+            background: "#28a745",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+          }}
+        >
           {loading ? "Submitting..." : "Submit"}
         </button>
       </form>
 
-      {message && <p style={{ marginTop: "10px", color: message.includes("⚠️") || message.includes("❌") ? "red" : "green" }}>{message}</p>}
+      {message && (
+        <p style={{ marginTop: "10px", color: message.includes("⚠️") || message.includes("❌") ? "red" : "green" }}>
+          {message}
+        </p>
+      )}
     </div>
   );
 };
