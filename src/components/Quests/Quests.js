@@ -30,18 +30,6 @@ const Quests = () => {
           discord_username: discordUsername,
         }));
 
-        // Fetch completed required quests
-        const { data: completedQuestsData, error: questError } = await supabase
-          .from("required_quests_table")
-          .select("quest_title")
-          .eq("discord_username", discordUsername);
-
-        if (questError) {
-          console.error("Error fetching completed quests:", questError);
-        } else if (completedQuestsData) {
-          setCompletedQuests(completedQuestsData.map((quest) => quest.quest_title));
-        }
-
         // Fetch Twitter username if linked
         const { data: twitterData } = await supabase
           .from("user_twitter_usernames")

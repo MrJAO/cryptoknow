@@ -8,7 +8,6 @@ const QuestBox = ({ title, fields = [], tableName, quest_title, quest_type, link
   );
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [alreadyCompleted, setAlreadyCompleted] = useState(false); // Tracks if quest is already completed
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -30,22 +29,6 @@ const QuestBox = ({ title, fields = [], tableName, quest_title, quest_type, link
           ...prevData,
           discord_username: discordUsername,
         }));
-
-        // Check if the user already completed this required quest
-        if (tableName === "required_quests_table") {
-          const { data: completedQuest, error: questError } = await supabase
-            .from("required_quests_table")
-            .select("quest_title")
-            .eq("discord_username", discordUsername)
-            .eq("quest_title", quest_title)
-            .maybeSingle();
-
-          if (questError) {
-            console.error("Error checking completed quest:", questError);
-          } else if (completedQuest) {
-            setAlreadyCompleted(true);
-          }
-        }
 
         // Auto-fill Twitter username if required
         if (Array.isArray(fields) && fields.some((field) => field.name === "twitter_username")) {
@@ -100,13 +83,6 @@ const QuestBox = ({ title, fields = [], tableName, quest_title, quest_type, link
     e.preventDefault();
     setLoading(true);
 
-    // Prevent submitting if quest is already completed
-    if (alreadyCompleted) {
-      setMessage("⚠️ Warning, you already completed this required quest.");
-      setLoading(false);
-      return;
-    }
-
     // Include quest_title and quest_type in the submission
     const submissionData = {
       ...formData,
@@ -145,29 +121,26 @@ const QuestBox = ({ title, fields = [], tableName, quest_title, quest_type, link
         </p>
       )}
 
-      {/* Hide form if quest is already completed */}
-      {!alreadyCompleted ? (
-        <form onSubmit={handleSubmit} className="quests-form">
-          {(fields || []).map((field) => (
-            <div key={field.name} className="form-group">
-              <label>{field.label}</label>
-              <input
-                type="text"
-                name={field.name}
-                value={formData[field.name] || ""}
-                onChange={handleChange}
-                placeholder={field.placeholder}
-                disabled={field.disabled}
-                required={field.required}
-                className="quest-input"
-              />
-            </div>
-          ))}
-          <button type="submit" disabled={loading} className="submit-button">
-            {loading ? "Submitting..." : "Submit"}
-          </button>
-        </form>
-      ) : null}
+      <form onSubmit={handleSubmit} className="quests-form">
+        {(fields || []).map((field) => (
+          <div key={field.name} className="form-group">
+            <label>{field.label}</label>
+            <input
+              type="text"
+              name={field.name}
+              value={formData[field.name] || ""}
+              onChange={handleChange}
+              placeholder={field.placeholder}
+              disabled={field.disabled}
+              required={field.required}
+              className="quest-input"
+            />
+          </div>
+        ))}
+        <button type="submit" disabled={loading} className="submit-button">
+          {loading ? "Submitting..." : "Submit"}
+        </button>
+      </form>
 
       {message && <p>{message}</p>}
     </div>
