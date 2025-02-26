@@ -5,16 +5,58 @@ function FAQs() {
 
   const faqs = [
     { 
-      question: "What is the To Do List?", 
-      answer: "It's to maximize your daily crypto farming." 
+      question: "Search Tab", 
+      answer: (
+        <>
+          <p><strong>Beginner Guides:</strong> Contains a list of basic requirements for starting in crypto, including step-by-step guides.</p>
+          <p><strong>Crypto Files:</strong> A section for requested crypto-related resources such as social accounts, tokenomics, airdrop checkers, and more.</p>
+        </>
+      )
     },
     { 
-      question: "How do I add an airdrop to my To Do List?", 
-      answer: "Simply click the 'Add to My List' button on the Available Airdrops page." 
+      question: "To Do List", 
+      answer: (
+        <>
+          <p>This tab displays all the airdrops you added from the Available Airdrops tab.</p>
+          <p>It also helps you track completed airdrops by allowing you to check them off and submit finished tasks.</p>
+        </>
+      )
     },
     { 
-      question: "Can I remove a task from my To Do List?", 
-      answer: "Currently, tasks cannot be removed once added, but we may add this feature in the future." 
+      question: "Can I remove an airdrop from my To Do List?", 
+      answer: "Yes, just click the 'X' button in the Actions column."
+    },
+    { 
+      question: "Available Airdrops Tab", 
+      answer: (
+        <>
+          <p>This tab lists all ongoing airdrops. Users can add an airdrop to their To Do List by clicking the 'Add' button in the Actions column.</p>
+          <p>Airdrops listed here are either added by the developer or contributed by the community.</p>
+        </>
+      )
+    },
+    { 
+      question: "Contribute Tab", 
+      answer: (
+        <>
+          <p>Here, community members can submit ongoing airdrops that are not yet listed in the Available Airdrops tab.</p>
+          <p>Contributors will receive credit, and if a referral link is included, it will be used.</p>
+          <p>Credits will also be displayed in the Airdrop Guide for that specific project.</p>
+        </>
+      )
+    },
+    { 
+      question: "Quests and Leaderboard", 
+      answer: (
+        <>
+          <p>The Quests and Leaderboard system is mainly for fun, but more details will be revealed in the future.</p>
+          <p>There will be future raffle rewards based on the points system, but the execution method is still being finalized.</p>
+        </>
+      )
+    },
+    { 
+      question: "Harvests Tab", 
+      answer: "This tab helps track completed airdrops. Once an airdrop from the Available Airdrops list ends, we will gather community feedback via Quests to determine how many members were eligible."
     }
   ];
 
@@ -37,7 +79,7 @@ function FAQs() {
         ⚠️ DISCLAIMER: The information provided here is for educational purposes only and should not be considered financial advice. Always do your own research and proceed with caution. Your results depend on your own actions and decisions. ⚠️
       </div>
       <h1 style={{ textAlign: "center", marginBottom: "20px", fontSize: "2em" }}>Frequently Asked Questions</h1>
-      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "1.5em" }}>
+      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "1.2em" }}>
         <thead>
           <tr style={{ background: "#333", color: "#fff", textAlign: "left" }}>
             <th style={{ padding: "15px", width: "80%" }}>Question</th>

@@ -47,8 +47,6 @@ function Search() {
   );
 
   return (
-    <div style={{ textAlign: "center", padding: "20px" }}>
-      <h1>Search</h1>
       <div
         style={{
           display: "flex",
