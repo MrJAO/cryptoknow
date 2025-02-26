@@ -86,6 +86,7 @@ const QuestBox = ({ title, fields = [], tableName, quest_title, quest_type, link
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setMessage("");
 
     // Include quest_title and quest_type in the submission
     const submissionData = {
@@ -95,6 +96,28 @@ const QuestBox = ({ title, fields = [], tableName, quest_title, quest_type, link
     };
 
     try {
+      // Check if this quest already exists for the user
+      const { data: existingQuest, error: fetchError } = await supabase
+        .from(tableName)
+        .select("*")
+        .eq("discord_username", formData.discord_username)
+        .eq("quest_title", quest_title)
+        .maybeSingle();
+
+      if (fetchError) {
+        console.error("Error checking existing quest:", fetchError);
+        setMessage("⚠️ Error checking existing submission.");
+        setLoading(false);
+        return;
+      }
+
+      if (existingQuest) {
+        setMessage("⚠️ You have already submitted this quest.");
+        setLoading(false);
+        return;
+      }
+
+      // Proceed with submission if no duplicate found
       const { error } = await supabase.from(tableName).insert([submissionData]);
 
       if (error) {
