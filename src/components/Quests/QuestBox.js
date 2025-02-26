@@ -167,9 +167,7 @@ const QuestBox = ({ title, fields, tableName, quest_title, quest_type, link }) =
             {loading ? "Submitting..." : "Submit"}
           </button>
         </form>
-      ) : (
-        <p className="quest-warning">⚠️ You have already completed this required quest.</p>
-      )}
+      ) : null}
 
       {message && <p>{message}</p>}
     </div>
