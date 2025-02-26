@@ -101,3 +101,18 @@
   }
 }
 
+.quest-link {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #1da1f2;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.quest-link:hover {
+  text-decoration: underline;
+  color: #0d8af0;
+}
+
+
