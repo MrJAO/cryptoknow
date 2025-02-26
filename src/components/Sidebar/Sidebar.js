@@ -28,7 +28,7 @@ function Sidebar({ isLoggedIn }) {
       <button className="nav-button" onClick={() => navigate('/leaderboard')}>Leaderboard</button>
       <button className="nav-button" onClick={() => navigate('/harvests')}>Harvests</button>
       <button className="nav-button" onClick={() => navigate('/faqs')}>FAQs</button>
-	  <button className="nav-button" onClick={() => navigate('/about')}>About</button>
+      <button className="nav-button" onClick={() => navigate('/about')}>About</button>	  
     </div>
   );
 }
