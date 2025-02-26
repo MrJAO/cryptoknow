@@ -24,37 +24,40 @@ const Quests = () => {
           data.user.user_metadata?.user_name ||
           data.user.user_metadata?.full_name ||
           "";
+
         setFormData((prevData) => ({
           ...prevData,
           discord_username: discordUsername,
         }));
 
-        // Fetch Twitter username if linked
-        const { data: twitterData } = await supabase
-          .from("user_twitter_usernames")
-          .select("twitter_username")
-          .eq("discord_username", discordUsername)
-          .maybeSingle();
+        if (discordUsername) {
+          // Fetch Twitter username if linked
+          const { data: twitterData } = await supabase
+            .from("user_twitter_usernames")
+            .select("twitter_username")
+            .eq("discord_username", discordUsername)
+            .maybeSingle();
 
-        if (twitterData) {
-          setFormData((prevData) => ({
-            ...prevData,
-            twitter_username: twitterData.twitter_username,
-          }));
-        }
+          if (twitterData) {
+            setFormData((prevData) => ({
+              ...prevData,
+              twitter_username: twitterData.twitter_username,
+            }));
+          }
 
-        // Fetch Facebook username if linked
-        const { data: facebookData } = await supabase
-          .from("user_facebook_usernames")
-          .select("facebook_username")
-          .eq("discord_username", discordUsername)
-          .maybeSingle();
+          // Fetch Facebook username if linked
+          const { data: facebookData } = await supabase
+            .from("user_facebook_usernames")
+            .select("facebook_username")
+            .eq("discord_username", discordUsername)
+            .maybeSingle();
 
-        if (facebookData) {
-          setFormData((prevData) => ({
-            ...prevData,
-            facebook_username: facebookData.facebook_username,
-          }));
+          if (facebookData) {
+            setFormData((prevData) => ({
+              ...prevData,
+              facebook_username: facebookData.facebook_username,
+            }));
+          }
         }
       }
     };
@@ -125,7 +128,7 @@ const Quests = () => {
       const { data: existingUser } = await supabase
         .from("user_facebook_usernames")
         .select("*")
-        .eq("discord_username", discordUsername)
+        .eq("discord_username", discord_username)
         .maybeSingle();
 
       if (existingUser) {
@@ -201,19 +204,6 @@ const Quests = () => {
             fields: [
               { name: "discord_username", label: "Discord Username", disabled: true },
               { name: "facebook_username", label: "Facebook Username", disabled: true },
-            ],
-          },
-          {
-            title: "Like, Reply, and Retweet",
-            tableName: "required_quests_table",
-            quest_title: "Like, Reply, and Retweet",
-            quest_type: "Twitter Quest",
-            link: "https://twitter.com/yourpost",
-            fields: [
-              { name: "discord_username", label: "Discord Username", disabled: true },
-              { name: "twitter_username", label: "Twitter Username", disabled: true },
-              { name: "reply_link", label: "Reply Link", placeholder: "Paste reply link", required: true },
-              { name: "retweet_link", label: "Retweet Link", placeholder: "Paste retweet link", required: true },
             ],
           },
         ].map((quest, index) => (

@@ -12,7 +12,6 @@ const QuestBox = ({ title, fields = [], tableName, quest_title, quest_type, link
   useEffect(() => {
     const fetchUserData = async () => {
       const { data, error } = await supabase.auth.getUser();
-
       if (error) {
         console.error("Error fetching user:", error);
         setMessage("⚠️ Failed to fetch user. Please log in again.");
@@ -30,46 +29,51 @@ const QuestBox = ({ title, fields = [], tableName, quest_title, quest_type, link
           discord_username: discordUsername,
         }));
 
-        // Auto-fill Twitter username if required
-        if (Array.isArray(fields) && fields.some((field) => field.name === "twitter_username")) {
-          const { data: twitterData, error: twitterError } = await supabase
-            .from("user_twitter_usernames")
-            .select("twitter_username")
-            .eq("discord_username", discordUsername)
-            .maybeSingle();
+        if (discordUsername) {
+          // Auto-fill Twitter username if required
+          const fetchTwitter = async () => {
+            const { data: twitterData, error: twitterError } = await supabase
+              .from("user_twitter_usernames")
+              .select("twitter_username")
+              .eq("discord_username", discordUsername)
+              .maybeSingle();
 
-          if (twitterError) {
-            console.error("Error fetching Twitter username:", twitterError);
-          } else if (twitterData?.twitter_username) {
-            setFormData((prevData) => ({
-              ...prevData,
-              twitter_username: twitterData.twitter_username,
-            }));
-          }
-        }
+            if (twitterError) {
+              console.error("Error fetching Twitter username:", twitterError);
+            } else if (twitterData?.twitter_username) {
+              setFormData((prevData) => ({
+                ...prevData,
+                twitter_username: twitterData.twitter_username,
+              }));
+            }
+          };
 
-        // Auto-fill Facebook username if required
-        if (Array.isArray(fields) && fields.some((field) => field.name === "facebook_username")) {
-          const { data: facebookData, error: facebookError } = await supabase
-            .from("user_facebook_usernames")
-            .select("facebook_username")
-            .eq("discord_username", discordUsername)
-            .maybeSingle();
+          // Auto-fill Facebook username if required
+          const fetchFacebook = async () => {
+            const { data: facebookData, error: facebookError } = await supabase
+              .from("user_facebook_usernames")
+              .select("facebook_username")
+              .eq("discord_username", discordUsername)
+              .maybeSingle();
 
-          if (facebookError) {
-            console.error("Error fetching Facebook username:", facebookError);
-          } else if (facebookData?.facebook_username) {
-            setFormData((prevData) => ({
-              ...prevData,
-              facebook_username: facebookData.facebook_username,
-            }));
-          }
+            if (facebookError) {
+              console.error("Error fetching Facebook username:", facebookError);
+            } else if (facebookData?.facebook_username) {
+              setFormData((prevData) => ({
+                ...prevData,
+                facebook_username: facebookData.facebook_username,
+              }));
+            }
+          };
+
+          fetchTwitter();
+          fetchFacebook();
         }
       }
     };
 
     fetchUserData();
-  }, [fields]); // Runs when fields change
+  }, []); // Runs only once on component mount
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -131,7 +135,6 @@ const QuestBox = ({ title, fields = [], tableName, quest_title, quest_type, link
               value={formData[field.name] || ""}
               onChange={handleChange}
               placeholder={field.placeholder}
-              disabled={field.disabled}
               required={field.required}
               className="quest-input"
             />
