@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { supabase } from "../../supabaseClient"; // Ensure this file exists
 import "./QuestBox.css"; // Import external CSS file
 
-const QuestBox = ({ title, fields, tableName, quest_title, quest_type, link }) => {
+const QuestBox = ({ title, fields = [], tableName, quest_title, quest_type, link }) => {
   const [formData, setFormData] = useState(() =>
-    fields.reduce((acc, field) => ({ ...acc, [field.name]: "" }), {})
+    (fields || []).reduce((acc, field) => ({ ...acc, [field.name]: "" }), {})
   );
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -48,7 +48,7 @@ const QuestBox = ({ title, fields, tableName, quest_title, quest_type, link }) =
         }
 
         // Auto-fill Twitter username if required
-        if (fields.some((field) => field.name === "twitter_username")) {
+        if (Array.isArray(fields) && fields.some((field) => field.name === "twitter_username")) {
           const { data: twitterData, error: twitterError } = await supabase
             .from("user_twitter_usernames")
             .select("twitter_username")
@@ -66,7 +66,7 @@ const QuestBox = ({ title, fields, tableName, quest_title, quest_type, link }) =
         }
 
         // Auto-fill Facebook username if required
-        if (fields.some((field) => field.name === "facebook_username")) {
+        if (Array.isArray(fields) && fields.some((field) => field.name === "facebook_username")) {
           const { data: facebookData, error: facebookError } = await supabase
             .from("user_facebook_usernames")
             .select("facebook_username")
@@ -122,7 +122,7 @@ const QuestBox = ({ title, fields, tableName, quest_title, quest_type, link }) =
         setMessage("⚠️ Submission failed. Please try again.");
       } else {
         setMessage("✅ Submission successful!");
-        setFormData(fields.reduce((acc, field) => ({ ...acc, [field.name]: "" }), {}));
+        setFormData((fields || []).reduce((acc, field) => ({ ...acc, [field.name]: "" }), {}));
       }
     } catch (error) {
       console.error("Unexpected error:", error);
@@ -148,7 +148,7 @@ const QuestBox = ({ title, fields, tableName, quest_title, quest_type, link }) =
       {/* Hide form if quest is already completed */}
       {!alreadyCompleted ? (
         <form onSubmit={handleSubmit} className="quests-form">
-          {fields.map((field) => (
+          {(fields || []).map((field) => (
             <div key={field.name} className="form-group">
               <label>{field.label}</label>
               <input
