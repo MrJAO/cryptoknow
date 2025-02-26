@@ -20,15 +20,15 @@ function Sidebar({ isLoggedIn }) {
         <>
           <button className="nav-button" onClick={() => navigate('/to-do-list')}>To Do List</button>
           <button className="nav-button" onClick={() => navigate('/available-airdrops')}>Available Airdrops</button>
-		  <button className="nav-button" onClick={() => navigate('/available-opportunities')}>Available Opportunities</button>
-          <button className="nav-button" onClick={() => navigate('/quests')}>Quests</button>		  
+		  <button className="nav-button" onClick={() => navigate('/available-opportunities')}>Available Opportunities</button>		  
 		  <button className="nav-button" onClick={() => navigate('/contribute')}>Contribute</button>
-        </>
+          <button className="nav-button" onClick={() => navigate('/quests')}>Quests</button>		  
       )}
 
       <button className="nav-button" onClick={() => navigate('/leaderboard')}>Leaderboard</button>
       <button className="nav-button" onClick={() => navigate('/harvests')}>Harvests</button>
       <button className="nav-button" onClick={() => navigate('/faqs')}>FAQs</button>
+	  <button className="nav-button" onClick={() => navigate('/about')}>About</button>
     </div>
   );
 }

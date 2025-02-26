@@ -8,11 +8,12 @@ import Search from './components/Search/Search';
 import ToDoList from './components/ToDoList/ToDoList';
 import AvailableAirdrops from './components/AvailableAirdrops/AvailableAirdrops';
 import AvailableOpportunities from './components/AvailableOpportunities/AvailableOpportunities';
-import Quests from './components/Quests/Quests';
 import Contribute from './components/Contribute/ContributeSubmissionForm';
+import Quests from './components/Quests/Quests';
 import Leaderboard from './components/Leaderboard/Leaderboard';
 import Harvests from './components/Harvests/Harvests';
 import FAQs from './components/FAQs/FAQs';
+import About from './components/About/About';
 import './App.css';
 
 // Initialize Supabase
@@ -91,12 +92,13 @@ const App = () => {
 			<Route path="/search" element={<Search />} />
             <Route path="/to-do-list" element={<ToDoList currentUser={user} />} />
             <Route path="/available-airdrops" element={<AvailableAirdrops />} />
-            <Route path="/available-opportunities" element={<AvailableOpportunities />} />
-            <Route path="/quests" element={<Quests />} />			
+            <Route path="/available-opportunities" element={<AvailableOpportunities />} />			
 			<Route path="/contribute" element={<Contribute />} />
+            <Route path="/quests" element={<Quests />} />			
             <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="/harvests" element={<Harvests />} />
             <Route path="/faqs" element={<FAQs />} />
+			<Route path="/about" element={<About />} />
           </Routes>
 
           {/* Centered Login/Logout Button */}
