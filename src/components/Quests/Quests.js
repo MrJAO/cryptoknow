@@ -154,13 +154,13 @@ const Quests = () => {
         </form>
         {message && <p style={{ marginTop: "10px", color: message.includes("⚠️") || message.includes("❌") ? "red" : "green" }}>{message}</p>}
       </div>
-    </div>
-	<h2 className="quests-title">Available Quests</h2>
+      <h2 className="quests-title">Available Quests</h2>
       <div className="quest-container">
         {quests.map((quest, index) => (
           <QuestBox key={index} {...quest} />
         ))}
       </div>
+    </div>
   );
 };
 
