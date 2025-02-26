@@ -1,6 +1,5 @@
 import React from "react";
-import { supabase } from "../../supabaseClient";
-import "./NoticePage.css"; // Make sure to create a CSS file for styling
+import "./NoticePage.css"; // Make sure the CSS file is properly linked
 
 const NoticePage = () => {
   return (
@@ -19,8 +18,10 @@ const NoticePage = () => {
         can support each other on this journey. Let’s contribute, grow
         together, and achieve our goals as a community.
       </p>
-      <p className="signature">Sincerely yours,<br />
-      JAO 🌻</p>
+      <div className="notice-signature">
+        <p>Sincerely yours,</p>
+        <p>JAO 🌻</p>
+      </div>
     </div>
   );
 };
