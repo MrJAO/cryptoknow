@@ -147,10 +147,30 @@ const Quests = () => {
       <h2 className="quests-title">Available Quests</h2>
       <div className="quest-container">
         <QuestBox
-          title="Follow the Dev"
+          title="Follow Jupiter Exchange"
           tableName="twitter_pending_submissions"
-          quest_title="Follow the Dev"
-          quest_type="Twitter..." />
+          quest_title="Follow Jupiter Exchange"
+          quest_type="Twitter Quest"
+          link="https://x.com/JupiterExchange"
+          fields={[
+            { name: "discord_username", label: "Discord Username", disabled: true },
+            { name: "twitter_username", label: "Twitter Username", disabled: true }
+          ]}
+        />
+
+        <QuestBox
+          title="Like, Reply, and Retweet"
+          tableName="twitter_pending_submissions"
+          quest_title="Catstanbul was a Movie"
+          quest_type="Twitter Quest"
+          link="https://x.com/JupiterExchange/status/1894660757796917614"
+          fields={[
+            { name: "discord_username", label: "Discord Username", disabled: true },
+            { name: "twitter_username", label: "Twitter Username", disabled: true },
+            { name: "reply_link", label: "Reply Link", placeholder: "Paste reply link", required: true },
+            { name: "retweet_link", label: "Retweet Link", placeholder: "Paste retweet link", required: true }
+          ]}
+        />
       </div>
     </div>
   );
