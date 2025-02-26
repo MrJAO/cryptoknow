@@ -30,7 +30,7 @@ const QuestBox = ({ title, fields, tableName }) => {
           discord_username: discordUsername,
         }));
 
-        // Check if quest requires Twitter username and auto-fill if found
+        // Auto-fill Twitter username if required
         if (fields.some((field) => field.name === "twitter_username")) {
           const { data: twitterData, error: twitterError } = await supabase
             .from("user_twitter_usernames")
@@ -44,6 +44,24 @@ const QuestBox = ({ title, fields, tableName }) => {
             setFormData((prevData) => ({
               ...prevData,
               twitter_username: twitterData.twitter_username,
+            }));
+          }
+        }
+
+        // Auto-fill Facebook username if required
+        if (fields.some((field) => field.name === "facebook_username")) {
+          const { data: facebookData, error: facebookError } = await supabase
+            .from("user_facebook_usernames")
+            .select("facebook_username")
+            .eq("discord_username", discordUsername)
+            .maybeSingle();
+
+          if (facebookError) {
+            console.error("Error fetching Facebook username:", facebookError);
+          } else if (facebookData?.facebook_username) {
+            setFormData((prevData) => ({
+              ...prevData,
+              facebook_username: facebookData.facebook_username,
             }));
           }
         }

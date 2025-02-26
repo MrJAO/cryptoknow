@@ -6,9 +6,12 @@ const Quests = () => {
   const [formData, setFormData] = useState({
     discord_username: "",
     twitter_username: "",
+    facebook_username: "",
   });
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [fbMessage, setFbMessage] = useState("");
+  const [fbLoading, setFbLoading] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -26,19 +29,31 @@ const Quests = () => {
           discord_username: discordUsername,
         }));
 
-        // Fetch user's linked Twitter username (if any)
-        const { data: existingData, error: fetchError } = await supabase
+        // Fetch Twitter username if linked
+        const { data: twitterData } = await supabase
           .from("user_twitter_usernames")
           .select("twitter_username")
           .eq("discord_username", discordUsername)
           .maybeSingle();
 
-        if (fetchError) {
-          console.error("Error fetching linked Twitter:", fetchError);
-        } else if (existingData) {
+        if (twitterData) {
           setFormData((prevData) => ({
             ...prevData,
-            twitter_username: existingData.twitter_username,
+            twitter_username: twitterData.twitter_username,
+          }));
+        }
+
+        // Fetch Facebook username if linked
+        const { data: facebookData } = await supabase
+          .from("user_facebook_usernames")
+          .select("facebook_username")
+          .eq("discord_username", discordUsername)
+          .maybeSingle();
+
+        if (facebookData) {
+          setFormData((prevData) => ({
+            ...prevData,
+            facebook_username: facebookData.facebook_username,
           }));
         }
       }
@@ -54,7 +69,7 @@ const Quests = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmitTwitter = async (e) => {
     e.preventDefault();
     setLoading(true);
     setMessage("");
@@ -67,14 +82,11 @@ const Quests = () => {
     }
 
     try {
-      // Check if Twitter username is already linked for this Discord user
-      const { data: existingUser, error: checkError } = await supabase
+      const { data: existingUser } = await supabase
         .from("user_twitter_usernames")
         .select("*")
         .eq("discord_username", discord_username)
         .maybeSingle();
-
-      if (checkError) throw checkError;
 
       if (existingUser) {
         setMessage("⚠️ You have already linked a Twitter username!");
@@ -82,7 +94,6 @@ const Quests = () => {
         return;
       }
 
-      // Insert new Twitter username for this Discord user
       const { error: insertError } = await supabase
         .from("user_twitter_usernames")
         .insert([{ discord_username, twitter_username }]);
@@ -98,67 +109,77 @@ const Quests = () => {
     }
   };
 
-  const quests = [
-    {
-      title: "Welcome to the Community!",
-      tableName: "onboarding_pending_submissions",
-      fields: [
-        { name: "discord_username", label: "Discord Username", placeholder: "Enter your Discord username", required: true, disabled: true },
-        { name: "why_join", label: "Why did you join?", placeholder: "Tell us why you joined", required: true }
-      ]
-    },
-    {
-      title: "Twitter Follow Quest",
-      tableName: "twitter_pending_submissions",
-      fields: [
-        { name: "twitter_username", label: "Your Twitter Username", placeholder: "Enter your Twitter username", required: true, disabled: true },
-        { name: "follow_status", label: "Did you follow us?", placeholder: "Yes or No", required: true }
-      ]
-    },
-    {
-      title: "Retweet a Post",
-      tableName: "twitter_pending_submissions",
-      fields: [
-        { name: "twitter_username", label: "Your Twitter Username", placeholder: "Enter your Twitter username", required: true, disabled: true },
-        { name: "retweet_link", label: "Retweet Link", placeholder: "Paste the link to your retweet", required: true }
-      ]
-    },
-    {
-      title: "Join Our Discord Server",
-      tableName: "discord_pending_submissions",
-      fields: [
-        { name: "discord_username", label: "Discord Username", placeholder: "Enter your Discord username", required: true, disabled: true },
-        { name: "joined_server", label: "Did you join?", placeholder: "Yes or No", required: true }
-      ]
-    },
-    {
-      title: "Submit a Feedback",
-      tableName: "feedback_submissions",
-      fields: [
-        { name: "discord_username", label: "Discord Username", placeholder: "Enter your Discord username", required: true, disabled: true },
-        { name: "feedback", label: "Your Feedback", placeholder: "Write your feedback", required: true }
-      ]
+  const handleSubmitFacebook = async (e) => {
+    e.preventDefault();
+    setFbLoading(true);
+    setFbMessage("");
+
+    const { discord_username, facebook_username } = formData;
+    if (!facebook_username.trim()) {
+      setFbMessage("⚠️ Please enter your Facebook username.");
+      setFbLoading(false);
+      return;
     }
-  ];
+
+    try {
+      const { data: existingUser } = await supabase
+        .from("user_facebook_usernames")
+        .select("*")
+        .eq("discord_username", discord_username)
+        .maybeSingle();
+
+      if (existingUser) {
+        setFbMessage("⚠️ You have already linked a Facebook username!");
+        setFbLoading(false);
+        return;
+      }
+
+      const { error: insertError } = await supabase
+        .from("user_facebook_usernames")
+        .insert([{ discord_username, facebook_username }]);
+
+      if (insertError) throw insertError;
+
+      setFbMessage("✅ Facebook username linked successfully!");
+    } catch (error) {
+      console.error("Error saving data:", error);
+      setFbMessage("❌ Failed to save. Please try again.");
+    } finally {
+      setFbLoading(false);
+    }
+  };
 
   return (
     <div className="quests-container">
+      {/* Important - Twitter Username */}
       <div className="important-box">Important - Twitter Username</div>
       <div className="quest-container">
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmitTwitter}>
           <label>Discord Username</label>
           <input type="text" name="discord_username" value={formData.discord_username} disabled className="input-field" />
           <label>Twitter Username (without @)</label>
           <input type="text" name="twitter_username" value={formData.twitter_username} onChange={handleChange} placeholder="e.g CryptoModJAO" required className="input-field" />
           <button type="submit" disabled={loading} className="submit-button">{loading ? "Submitting..." : "Submit"}</button>
         </form>
-        {message && <p style={{ marginTop: "10px", color: message.includes("⚠️") || message.includes("❌") ? "red" : "green" }}>{message}</p>}
+        {message && <p className="message">{message}</p>}
       </div>
+
+      {/* Important - Facebook Username */}
+      <div className="important-box">Important - Facebook Username</div>
+      <div className="quest-container">
+        <form onSubmit={handleSubmitFacebook}>
+          <label>Discord Username</label>
+          <input type="text" name="discord_username" value={formData.discord_username} disabled className="input-field" />
+          <label>Facebook Username</label>
+          <input type="text" name="facebook_username" value={formData.facebook_username} onChange={handleChange} placeholder="e.g CryptoModJAO" required className="input-field" />
+          <button type="submit" disabled={fbLoading} className="submit-button">{fbLoading ? "Submitting..." : "Submit"}</button>
+        </form>
+        {fbMessage && <p className="message">{fbMessage}</p>}
+      </div>
+
       <h2 className="quests-title">Available Quests</h2>
       <div className="quest-container">
-        {quests.map((quest, index) => (
-          <QuestBox key={index} {...quest} />
-        ))}
+        <QuestBox title="Join Our Discord Server" tableName="discord_pending_submissions" fields={[{ name: "discord_username", label: "Discord Username", disabled: true }, { name: "joined_server", label: "Did you join?", placeholder: "Yes or No", required: true }]} />
       </div>
     </div>
   );
