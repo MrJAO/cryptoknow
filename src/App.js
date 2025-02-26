@@ -7,8 +7,8 @@ import Home from './components/Home/CryptoKnow';
 import Search from './components/Search/Search';
 import ToDoList from './components/ToDoList/ToDoList';
 import AvailableAirdrops from './components/AvailableAirdrops/AvailableAirdrops';
-import Quests from './components/Quests/Quests';
 import AvailableOpportunities from './components/AvailableOpportunities/AvailableOpportunities';
+import Quests from './components/Quests/Quests';
 import Contribute from './components/Contribute/ContributeSubmissionForm';
 import Leaderboard from './components/Leaderboard/Leaderboard';
 import Harvests from './components/Harvests/Harvests';
@@ -91,8 +91,8 @@ const App = () => {
 			<Route path="/search" element={<Search />} />
             <Route path="/to-do-list" element={<ToDoList currentUser={user} />} />
             <Route path="/available-airdrops" element={<AvailableAirdrops />} />
-            <Route path="/quests" element={<Quests />} />
             <Route path="/available-opportunities" element={<AvailableOpportunities />} />
+            <Route path="/quests" element={<Quests />} />			
 			<Route path="/contribute" element={<Contribute />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="/harvests" element={<Harvests />} />
