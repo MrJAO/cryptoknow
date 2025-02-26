@@ -116,4 +116,16 @@
   color: #0d8af0;
 }
 
+.quests-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #ffcc00; /* Matching the theme */
+  text-align: center;
+  margin: 20px 0;
+  padding: 10px;
+  background: rgba(255, 204, 0, 0.1); /* Light yellowish background */
+  border-radius: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
 
