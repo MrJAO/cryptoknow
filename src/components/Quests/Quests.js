@@ -206,7 +206,7 @@ const Quests = () => {
               { name: "facebook_username", label: "Facebook Username", disabled: true },
             ],
           },
-          {
+		  {
             title: "Like, Reply, and Retweet",
             tableName: "required_quests_table",
             quest_title: "Like, Reply, and Retweet",
@@ -219,14 +219,12 @@ const Quests = () => {
               { name: "retweet_link", label: "Retweet Link", placeholder: "Paste retweet link", required: true },
             ],
           },
-        ]
-          .filter((quest) => !completedQuests.includes(quest.quest_title)) // Hide completed quests
-          .map((quest, index) => (
-            <QuestBox key={index} {...quest} />
-          ))}
+        ].map((quest, index) => (
+          <QuestBox key={index} {...quest} />
+        ))}
       </div>
-
-      {/* Available Quests */}
+	  
+	  {/* Available Quests */}
       <h2 className="quests-title">Available Quests</h2>
       <div className="quest-container">
         <QuestBox
