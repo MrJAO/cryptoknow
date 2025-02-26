@@ -8,6 +8,7 @@ const Quests = () => {
     twitter_username: "",
     facebook_username: "",
   });
+  const [completedQuests, setCompletedQuests] = useState([]); // Tracks completed required quests
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [fbMessage, setFbMessage] = useState("");
@@ -28,6 +29,18 @@ const Quests = () => {
           ...prevData,
           discord_username: discordUsername,
         }));
+
+        // Fetch completed required quests
+        const { data: completedQuestsData, error: questError } = await supabase
+          .from("required_quests_table")
+          .select("quest_title")
+          .eq("discord_username", discordUsername);
+
+        if (questError) {
+          console.error("Error fetching completed quests:", questError);
+        } else if (completedQuestsData) {
+          setCompletedQuests(completedQuestsData.map((quest) => quest.quest_title));
+        }
 
         // Fetch Twitter username if linked
         const { data: twitterData } = await supabase
@@ -191,78 +204,10 @@ const Quests = () => {
               { name: "discord_username", label: "Discord Username", disabled: true },
               { name: "twitter_username", label: "Twitter Username", disabled: true },
             ],
-          },
-          {
-            title: "Follow our Facebook Page",
-            tableName: "required_quests_table",
-            quest_title: "Follow our Facebook Page",
-            quest_type: "Facebook Quest",
-            link: "https://www.facebook.com/CryptoKnowSpace/",
-            fields: [
-              { name: "discord_username", label: "Discord Username", disabled: true },
-              { name: "facebook_username", label: "Facebook Username", disabled: true },
-            ],
-          },
-          {
-            title: "Like, Reply, and Retweet",
-            tableName: "required_quests_table",
-            quest_title: "Like, Reply, and Retweet",
-            quest_type: "Twitter Quest",
-            link: "https://twitter.com/yourpost",
-            fields: [
-              { name: "discord_username", label: "Discord Username", disabled: true },
-              { name: "twitter_username", label: "Twitter Username", disabled: true },
-              { name: "reply_link", label: "Reply Link", placeholder: "Paste reply link", required: true },
-              { name: "retweet_link", label: "Retweet Link", placeholder: "Paste retweet link", required: true },
-            ],
-          },
-        ]
-          .filter((quest) => !completedQuests.includes(quest.quest_title)) // Hide completed quests
-          .map((quest, index) => (
-            <QuestBox key={index} {...quest} />
-          ))}
-      </div>
-
-      {/* Available Quests */}
-      <h2 className="quests-title">Available Quests</h2>
-      <div className="quest-container">
-        <QuestBox
-          title="Follow the Dev"
-          tableName="twitter_pending_submissions"
-          quest_title="Follow the Dev"
-          quest_type="Twitter Quest"
-          link="https://x.com/CryptoModJAO"
-          fields={[
-            { name: "discord_username", label: "Discord Username", disabled: true },
-            { name: "twitter_username", label: "Twitter Username", disabled: true },
-          ]}
-        />
-
-        <QuestBox
-          title="Follow our Facebook Page"
-          tableName="facebook_pending_submissions"
-          quest_title="Follow our Facebook Page"
-          quest_type="Facebook Quest"
-          link="https://www.facebook.com/CryptoKnowSpace/"
-          fields={[
-            { name: "discord_username", label: "Discord Username", disabled: true },
-            { name: "facebook_username", label: "Facebook Username", disabled: true },
-          ]}
-        />
-
-        <QuestBox
-          title="Like, Reply, and Retweet"
-          tableName="twitter_pending_submissions"
-          quest_title="Like, Reply, and Retweet"
-          quest_type="Twitter Quest"
-          link="https://twitter.com/yourpost"
-          fields={[
-            { name: "discord_username", label: "Discord Username", disabled: true },
-            { name: "twitter_username", label: "Twitter Username", disabled: true },
-            { name: "reply_link", label: "Reply Link", placeholder: "Paste reply link", required: true },
-            { name: "retweet_link", label: "Retweet Link", placeholder: "Paste retweet link", required: true },
-          ]}
-        />
+          }
+        ].map((quest, index) => (
+          <QuestBox key={index} {...quest} />
+        ))}
       </div>
     </div>
   );
