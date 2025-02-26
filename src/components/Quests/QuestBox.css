@@ -104,10 +104,11 @@
 .quest-link {
   display: block;
   margin-bottom: 10px;
+  text-align: center;
   font-size: 14px;
   color: #1da1f2;
   text-decoration: none;
-  font-weight: bold;
+  font-weight: bold;  
 }
 
 .quest-link:hover {
