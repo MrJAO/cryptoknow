@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { supabase } from "../../supabaseClient"; // Ensure this file exists
 import "./QuestBox.css"; // Import external CSS file
 
-const QuestBox = ({ title, fields, tableName, link }) => {
+const QuestBox = ({ title, fields, tableName, quest_title, quest_type, link }) => {
   const [formData, setFormData] = useState(() =>
     fields.reduce((acc, field) => ({ ...acc, [field.name]: "" }), {})
   );
@@ -83,8 +83,15 @@ const QuestBox = ({ title, fields, tableName, link }) => {
     e.preventDefault();
     setLoading(true);
 
+    // Include quest_title and quest_type in the submission
+    const submissionData = {
+      ...formData,
+      quest_title: quest_title || "", // Default to empty string if missing
+      quest_type: quest_type || "",   // Default to empty string if missing
+    };
+
     try {
-      const { error } = await supabase.from(tableName).insert([formData]);
+      const { error } = await supabase.from(tableName).insert([submissionData]);
 
       if (error) {
         console.error("Error submitting form:", error);
@@ -104,12 +111,14 @@ const QuestBox = ({ title, fields, tableName, link }) => {
   return (
     <div className="quest-box">
       <h2>{title}</h2>
-      
-      {/* 🔗 Display link below the title if provided */}
+
+      {/* Display link if provided */}
       {link && (
-        <a href={link} target="_blank" rel="noopener noreferrer" className="quest-link">
-          Click here to visit
-        </a>
+        <p className="quest-link">
+          <a href={link} target="_blank" rel="noopener noreferrer">
+            Click here to view
+          </a>
+        </p>
       )}
 
       <form onSubmit={handleSubmit} className="quests-form">
