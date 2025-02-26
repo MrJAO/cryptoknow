@@ -171,7 +171,7 @@ const Quests = () => {
           <label>Discord Username</label>
           <input type="text" name="discord_username" value={formData.discord_username} disabled className="input-field" />
           <label>Facebook Username</label>
-          <input type="text" name="facebook_username" value={formData.facebook_username} onChange={handleChange} placeholder="e.g CryptoModJAO" required className="input-field" />
+          <input type="text" name="facebook_username" value={formData.facebook_username} onChange={handleChange} placeholder="e.g Juan Dela Cruz" required className="input-field" />
           <button type="submit" disabled={fbLoading} className="submit-button">{fbLoading ? "Submitting..." : "Submit"}</button>
         </form>
         {fbMessage && <p className="message">{fbMessage}</p>}
@@ -179,7 +179,31 @@ const Quests = () => {
 
       <h2 className="quests-title">Available Quests</h2>
       <div className="quest-container">
-        <QuestBox title="Join Our Discord Server" tableName="discord_pending_submissions" fields={[{ name: "discord_username", label: "Discord Username", disabled: true }, { name: "joined_server", label: "Did you join?", placeholder: "Yes or No", required: true }]} />
+        <QuestBox title="Follow the Dev" tableName="twitter_pending_submissions"
+          fields={[
+            { name: "discord_username", label: "Discord Username", disabled: true },
+            { name: "twitter_username", label: "Twitter Username", disabled: true }
+          ]}
+          link="https://x.com/CryptoModJAO"
+        />
+
+        <QuestBox title="Follow our Facebook Page" tableName="facebook_pending_submissions"
+          fields={[
+            { name: "discord_username", label: "Discord Username", disabled: true },
+            { name: "facebook_username", label: "Facebook Username", disabled: true }
+          ]}
+          link="https://www.facebook.com/CryptoKnowSpace/"
+        />
+
+        <QuestBox title="Like, Reply, and Retweet" tableName="twitter_pending_submissions"
+          fields={[
+            { name: "discord_username", label: "Discord Username", disabled: true },
+            { name: "twitter_username", label: "Twitter Username", disabled: true },
+            { name: "reply_link", label: "Reply Link", placeholder: "Paste reply link", required: true },
+            { name: "retweet_link", label: "Retweet Link", placeholder: "Paste retweet link", required: true }
+          ]}
+          link="https://twitter.com/yourpost"
+        />
       </div>
     </div>
   );
