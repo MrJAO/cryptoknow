@@ -204,10 +204,78 @@ const Quests = () => {
               { name: "discord_username", label: "Discord Username", disabled: true },
               { name: "twitter_username", label: "Twitter Username", disabled: true },
             ],
-          }
-        ].map((quest, index) => (
-          <QuestBox key={index} {...quest} />
-        ))}
+          },
+          {
+            title: "Follow our Facebook Page",
+            tableName: "required_quests_table",
+            quest_title: "Follow our Facebook Page",
+            quest_type: "Facebook Quest",
+            link: "https://www.facebook.com/CryptoKnowSpace/",
+            fields: [
+              { name: "discord_username", label: "Discord Username", disabled: true },
+              { name: "facebook_username", label: "Facebook Username", disabled: true },
+            ],
+          },
+          {
+            title: "Like, Reply, and Retweet",
+            tableName: "required_quests_table",
+            quest_title: "Like, Reply, and Retweet",
+            quest_type: "Twitter Quest",
+            link: "https://twitter.com/yourpost",
+            fields: [
+              { name: "discord_username", label: "Discord Username", disabled: true },
+              { name: "twitter_username", label: "Twitter Username", disabled: true },
+              { name: "reply_link", label: "Reply Link", placeholder: "Paste reply link", required: true },
+              { name: "retweet_link", label: "Retweet Link", placeholder: "Paste retweet link", required: true },
+            ],
+          },
+        ]
+          .filter((quest) => !completedQuests.includes(quest.quest_title)) // Hide completed quests
+          .map((quest, index) => (
+            <QuestBox key={index} {...quest} />
+          ))}
+      </div>
+
+      {/* Available Quests */}
+      <h2 className="quests-title">Available Quests</h2>
+      <div className="quest-container">
+        <QuestBox
+          title="Follow the Dev"
+          tableName="twitter_pending_submissions"
+          quest_title="Follow the Dev"
+          quest_type="Twitter Quest"
+          link="https://x.com/CryptoModJAO"
+          fields={[
+            { name: "discord_username", label: "Discord Username", disabled: true },
+            { name: "twitter_username", label: "Twitter Username", disabled: true },
+          ]}
+        />
+
+        <QuestBox
+          title="Follow our Facebook Page"
+          tableName="facebook_pending_submissions"
+          quest_title="Follow our Facebook Page"
+          quest_type="Facebook Quest"
+          link="https://www.facebook.com/CryptoKnowSpace/"
+          fields={[
+            { name: "discord_username", label: "Discord Username", disabled: true },
+            { name: "facebook_username", label: "Facebook Username", disabled: true },
+          ]}
+        />
+
+        <QuestBox
+          title="Like, Reply, and Retweet"
+          tableName="twitter_pending_submissions"
+          quest_title="Like, Reply, and Retweet"
+          quest_type="Twitter Quest"
+          link="https://twitter.com/yourpost"
+          fields={[
+            { name: "discord_username", label: "Discord Username", disabled: true },
+            { name: "twitter_username", label: "Twitter Username", disabled: true },
+            { name: "reply_link", label: "Reply Link", placeholder: "Paste reply link", required: true },
+            { name: "retweet_link", label: "Retweet Link", placeholder: "Paste retweet link", required: true },
+          ]}
+        />
       </div>
     </div>
   );
