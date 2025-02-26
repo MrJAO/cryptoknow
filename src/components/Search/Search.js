@@ -47,14 +47,9 @@ function Search() {
   );
 
   return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          gap: "20px",
-          marginTop: "20px",
-        }}
-      >
+    <div style={{ textAlign: "center", padding: "20px" }}>
+      {/* Button Navigation */}
+      <div style={{ display: "flex", justifyContent: "center", gap: "20px", marginBottom: "20px" }}>
         <button
           onClick={() => setSelectedOption("guides")}
           style={{
@@ -94,7 +89,6 @@ function Search() {
         style={{
           width: "80%",
           padding: "10px",
-          marginTop: "20px",
           fontSize: "16px",
           border: "1px solid #ccc",
           borderRadius: "5px",
