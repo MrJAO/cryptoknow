@@ -177,7 +177,36 @@ const Quests = () => {
         {fbMessage && <p className="message">{fbMessage}</p>}
       </div>
 
-      <h2 className="quests-title">Available Quests</h2>
+      <h2 className="quests-title">Required Quests</h2>
+      <div className="quest-container">
+        <QuestBox title="Follow the Dev" tableName="twitter_pending_submissions"
+		link="https://x.com/CryptoModJAO"
+          fields={[
+            { name: "discord_username", label: "Discord Username", disabled: true },
+            { name: "twitter_username", label: "Twitter Username", disabled: true }
+          ]}
+        />
+
+        <QuestBox title="Follow our Facebook Page" tableName="facebook_pending_submissions"
+		link="https://www.facebook.com/CryptoKnowSpace/"
+          fields={[
+            { name: "discord_username", label: "Discord Username", disabled: true },
+            { name: "facebook_username", label: "Facebook Username", disabled: true }
+          ]}          
+        />
+
+        <QuestBox title="Like, Reply, and Retweet" tableName="twitter_pending_submissions"
+		link="https://twitter.com/yourpost"
+          fields={[
+            { name: "discord_username", label: "Discord Username", disabled: true },
+            { name: "twitter_username", label: "Twitter Username", disabled: true },
+            { name: "reply_link", label: "Reply Link", placeholder: "Paste reply link", required: true },
+            { name: "retweet_link", label: "Retweet Link", placeholder: "Paste retweet link", required: true }
+          ]}         
+        />
+      </div>
+	  
+	  <h2 className="quests-title">Available Quests</h2>
       <div className="quest-container">
         <QuestBox title="Follow the Dev" tableName="twitter_pending_submissions"
 		link="https://x.com/CryptoModJAO"
