@@ -31,49 +31,52 @@ const QuestBox = ({ title, fields = [], tableName, quest_title, quest_type, link
 
         if (discordUsername) {
           // Auto-fill Twitter username if required
-          const fetchTwitter = async () => {
-            const { data: twitterData, error: twitterError } = await supabase
-              .from("user_twitter_usernames")
-              .select("twitter_username")
-              .eq("discord_username", discordUsername)
-              .maybeSingle();
+          if (fields.some((field) => field.name === "twitter_username")) {
+            const fetchTwitter = async () => {
+              const { data: twitterData, error: twitterError } = await supabase
+                .from("user_twitter_usernames")
+                .select("twitter_username")
+                .eq("discord_username", discordUsername)
+                .maybeSingle();
 
-            if (twitterError) {
-              console.error("Error fetching Twitter username:", twitterError);
-            } else if (twitterData?.twitter_username) {
-              setFormData((prevData) => ({
-                ...prevData,
-                twitter_username: twitterData.twitter_username,
-              }));
-            }
-          };
+              if (twitterError) {
+                console.error("Error fetching Twitter username:", twitterError);
+              } else if (twitterData?.twitter_username) {
+                setFormData((prevData) => ({
+                  ...prevData,
+                  twitter_username: twitterData.twitter_username,
+                }));
+              }
+            };
+            fetchTwitter();
+          }
 
           // Auto-fill Facebook username if required
-          const fetchFacebook = async () => {
-            const { data: facebookData, error: facebookError } = await supabase
-              .from("user_facebook_usernames")
-              .select("facebook_username")
-              .eq("discord_username", discordUsername)
-              .maybeSingle();
+          if (fields.some((field) => field.name === "facebook_username")) {
+            const fetchFacebook = async () => {
+              const { data: facebookData, error: facebookError } = await supabase
+                .from("user_facebook_usernames")
+                .select("facebook_username")
+                .eq("discord_username", discordUsername)
+                .maybeSingle();
 
-            if (facebookError) {
-              console.error("Error fetching Facebook username:", facebookError);
-            } else if (facebookData?.facebook_username) {
-              setFormData((prevData) => ({
-                ...prevData,
-                facebook_username: facebookData.facebook_username,
-              }));
-            }
-          };
-
-          fetchTwitter();
-          fetchFacebook();
+              if (facebookError) {
+                console.error("Error fetching Facebook username:", facebookError);
+              } else if (facebookData?.facebook_username) {
+                setFormData((prevData) => ({
+                  ...prevData,
+                  facebook_username: facebookData.facebook_username,
+                }));
+              }
+            };
+            fetchFacebook();
+          }
         }
       }
     };
 
     fetchUserData();
-  }, []); // Runs only once on component mount
+  }, [fields]); // Runs only when fields change
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -98,7 +101,7 @@ const QuestBox = ({ title, fields = [], tableName, quest_title, quest_type, link
     // Check for duplicate submission
     const { data: existingSubmission, error: checkError } = await supabase
       .from(tableName)
-      .select("id")
+      .select("id") // Ensure ID column exists in the table
       .eq("discord_username", discord_username)
       .eq("quest_title", quest_title)
       .eq("quest_type", quest_type)
@@ -117,12 +120,22 @@ const QuestBox = ({ title, fields = [], tableName, quest_title, quest_type, link
       return;
     }
 
-    // Include quest_title and quest_type in the submission
+    // Dynamic submission filtering: Only include necessary fields
     const submissionData = {
-      ...formData,
-      quest_title: quest_title || "", // Default to empty string if missing
-      quest_type: quest_type || "",   // Default to empty string if missing
+      discord_username,
+      quest_title: quest_title || "",
+      quest_type: quest_type || "",
     };
+
+    if (quest_type === "Twitter Quest") {
+      if (formData.twitter_username) submissionData.twitter_username = formData.twitter_username;
+      if (formData.reply_link) submissionData.reply_link = formData.reply_link;
+      if (formData.retweet_link) submissionData.retweet_link = formData.retweet_link;
+    }
+
+    if (quest_type === "Facebook Quest") {
+      if (formData.facebook_username) submissionData.facebook_username = formData.facebook_username;
+    }
 
     try {
       const { error } = await supabase.from(tableName).insert([submissionData]);
