@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "../../supabaseClient";
+import { useNavigate } from "react-router-dom"; // Added for dynamic navigation
 
 function Search() {
   const [selectedOption, setSelectedOption] = useState("guides"); // Default to "guides"
   const [guides, setGuides] = useState([]);
   const [cryptoFiles, setCryptoFiles] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate(); // Hook for navigation
 
   useEffect(() => {
     if (selectedOption === "guides") {
@@ -16,7 +18,10 @@ function Search() {
   }, [selectedOption]);
 
   const fetchGuides = async () => {
-    const { data, error } = await supabase.from("guides").select("*");
+    const { data, error } = await supabase
+      .from("guides")
+      .select("id, title, slug, description, importance");
+
     if (error) {
       console.error("Error fetching guides:", error);
     } else {
@@ -104,24 +109,22 @@ function Search() {
               <thead>
                 <tr style={{ background: "#333", color: "#fff", textAlign: "left" }}>
                   <th style={{ padding: "10px", width: "40%" }}>Title</th>
-                  <th style={{ padding: "10px", width: "40%" }}>Guide Link</th>
+                  <th style={{ padding: "10px", width: "40%" }}>Description</th>
                   <th style={{ padding: "10px", width: "20%" }}>Importance</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredGuides.map((guide) => (
                   <tr key={guide.id} style={{ borderBottom: "1px solid #ddd" }}>
-                    <td style={{ padding: "10px", fontWeight: "bold" }}>{guide.title}</td>
-                    <td style={{ padding: "10px" }}>
+                    <td style={{ padding: "10px", fontWeight: "bold" }}>
                       <a
-                        href={guide.guide_link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{ color: "#007bff", textDecoration: "none" }}
+                        onClick={() => navigate(`/guides/${guide.slug}`)}
+                        style={{ cursor: "pointer", color: "#007bff", textDecoration: "none" }}
                       >
-                        Open Guide
+                        {guide.title}
                       </a>
                     </td>
+                    <td style={{ padding: "10px" }}>{guide.description || "No description available."}</td>
                     <td style={{ padding: "10px", fontWeight: "bold", color: "#ff8800" }}>
                       {guide.importance}
                     </td>
