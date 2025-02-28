@@ -23,7 +23,7 @@ function Search() {
       .select("id, title, slug, description, importance");
 
     if (error) {
-      console.error("Error fetching guides:", error);
+      console.error("❌ Error fetching guides:", error);
     } else {
       setGuides(data);
     }
@@ -32,7 +32,7 @@ function Search() {
   const fetchCryptoFiles = async () => {
     const { data, error } = await supabase.from("crypto_files").select("*");
     if (error) {
-      console.error("Error fetching crypto files:", error);
+      console.error("❌ Error fetching crypto files:", error);
     } else {
       setCryptoFiles(data);
     }
@@ -119,6 +119,7 @@ function Search() {
                     <td style={{ padding: "10px", fontWeight: "bold" }}>
                       <a
                         onClick={() => navigate(`/guides/${guide.slug}`)}
+                        role="button"
                         style={{ cursor: "pointer", color: "#007bff", textDecoration: "none" }}
                       >
                         {guide.title}
