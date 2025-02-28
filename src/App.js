@@ -100,7 +100,7 @@ const App = () => {
             <Route path="/harvests" element={<Harvests />} />
             <Route path="/faqs" element={<FAQs />} />
             <Route path="/about" element={<About />} />
-            <Route path="/guides/:slug" element={<GuidePage />} /> {/* ✅ New Route for Guide Pagess */}
+            <Route path="/guides/:slug" element={<GuidePage />} /> {/* ✅ New Route for Guide Pages */}
           </Routes>
 
           {/* Centered Login/Logout Button */}
