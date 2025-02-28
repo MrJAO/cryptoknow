@@ -159,6 +159,31 @@ function Search() {
           marginBottom: "15px",
         }}
       />
+	  
+	{/* Filters and Sorting */}
+	{selectedOption === "guides" && (
+	  <div style={{ display: "flex", justifyContent: "center", gap: "10px", marginBottom: "15px" }}>
+		<select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
+		  <option value="All">All Categories</option>
+		  {[...new Set(guides.map((g) => g.category).filter(Boolean))].map((cat) => (
+			<option key={cat} value={cat}>{cat}</option>
+		  ))}
+		</select>
+
+		<select value={selectedTag} onChange={(e) => setSelectedTag(e.target.value)}>
+		  <option value="All">All Tags</option>
+		  {[...new Set(guides.flatMap((g) => g.tags || []))].map((tag) => (
+			<option key={tag} value={tag}>{tag}</option>
+		  ))}
+		</select>
+
+		<select value={sortOption} onChange={(e) => setSortOption(e.target.value)}>
+		  <option value="importance">Sort by Importance</option>
+		  <option value="title-asc">Sort A → Z</option>
+		  <option value="title-desc">Sort Z → A</option>
+		</select>
+	  </div>
+	)}
 
       {/* Guides List */}
       {selectedOption === "guides" && (
@@ -223,7 +248,30 @@ function Search() {
           </table>
         </>
       )}
-    </div>
+	  
+	{/* Suggest a Guide Button */}
+	{selectedOption === "guides" && (
+	  <button
+		onClick={() => setShowSuggestionForm(true)}
+		style={{
+		  padding: "12px 20px",
+		  fontSize: "16px",
+		  background: "#28a745",
+		  color: "white",
+		  border: "none",
+		  borderRadius: "5px",
+		  cursor: "pointer",
+		  marginTop: "15px",
+		}}
+	  >
+		+ Suggest a Guide
+	  </button>
+	)}
+
+	{/* Show Suggest Guide Form if Open */}
+	{showSuggestionForm && <SuggestGuideForm onClose={() => setShowSuggestionForm(false)} />}
+
+    </div>	
   );
 }
 
