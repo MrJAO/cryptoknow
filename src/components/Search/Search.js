@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "../../supabaseClient";
 import { useNavigate } from "react-router-dom";
+import SuggestGuideForm from "../Guides/SuggestGuideForm"; // Import Suggestion Form
 
 function Search() {
   const [selectedOption, setSelectedOption] = useState("guides");
@@ -10,6 +11,7 @@ function Search() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedTag, setSelectedTag] = useState("All");
   const [sortOption, setSortOption] = useState("importance");
+  const [showSuggestionForm, setShowSuggestionForm] = useState(false); // State for Suggest Guide Form
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -62,6 +64,23 @@ function Search() {
 
   return (
     <div style={{ textAlign: "center", padding: "20px" }}>
+      {/* Suggest a Guide Button */}
+      <button
+        onClick={() => setShowSuggestionForm(true)}
+        style={{
+          padding: "12px 20px",
+          fontSize: "16px",
+          background: "#28a745",
+          color: "white",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+          marginBottom: "15px",
+        }}
+      >
+        + Suggest a Guide
+      </button>
+
       {/* Search Bar */}
       <input
         type="text"
@@ -132,6 +151,11 @@ function Search() {
             </tbody>
           </table>
         </>
+      )}
+
+      {/* Show Suggest Guide Form if Open */}
+      {showSuggestionForm && (
+        <SuggestGuideForm onClose={() => setShowSuggestionForm(false)} />
       )}
     </div>
   );
