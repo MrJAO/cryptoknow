@@ -7,6 +7,8 @@ function Search() {
   const [guides, setGuides] = useState([]);
   const [cryptoFiles, setCryptoFiles] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [sortOrder, setSortOrder] = useState("None");
   const navigate = useNavigate(); // Hook for navigation
 
   useEffect(() => {
@@ -20,7 +22,7 @@ function Search() {
   const fetchGuides = async () => {
     const { data, error } = await supabase
       .from("guides")
-      .select("id, title, slug, description, importance");
+      .select("id, title, slug, description, importance, category, tags");
 
     if (error) {
       console.error("❌ Error fetching guides:", error);
@@ -42,93 +44,72 @@ function Search() {
     return accuracy === "Accurate" ? "✔️ Accurate" : "🟠 Can't Confirm";
   };
 
-  const filteredGuides = guides.filter((guide) =>
-    guide.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const filteredCryptoFiles = cryptoFiles.filter((file) =>
-    file.detail_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    file.source.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredGuides = guides
+    .filter((guide) =>
+      guide.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      guide.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (guide.tags && guide.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())))
+    )
+    .filter((guide) => selectedCategory === "All" || guide.category === selectedCategory)
+    .sort((a, b) => {
+      if (sortOrder === "Ascending") return a.importance.localeCompare(b.importance);
+      if (sortOrder === "Descending") return b.importance.localeCompare(a.importance);
+      return 0;
+    });
 
   return (
     <div style={{ textAlign: "center", padding: "20px" }}>
       {/* Button Navigation */}
       <div style={{ display: "flex", justifyContent: "center", gap: "20px", marginBottom: "20px" }}>
-        <button
-          onClick={() => setSelectedOption("guides")}
-          style={{
-            padding: "15px 30px",
-            fontSize: "18px",
-            cursor: "pointer",
-            background: selectedOption === "guides" ? "#007bff" : "#fff",
-            color: selectedOption === "guides" ? "#fff" : "#000",
-            border: "1px solid #007bff",
-            borderRadius: "5px",
-          }}
-        >
-          Beginner Guides
-        </button>
-        <button
-          onClick={() => setSelectedOption("crypto")}
-          style={{
-            padding: "15px 30px",
-            fontSize: "18px",
-            cursor: "pointer",
-            background: selectedOption === "crypto" ? "#007bff" : "#fff",
-            color: selectedOption === "crypto" ? "#fff" : "#000",
-            border: "1px solid #007bff",
-            borderRadius: "5px",
-          }}
-        >
-          Crypto Files
-        </button>
+        <button onClick={() => setSelectedOption("guides")}>Beginner Guides</button>
+        <button onClick={() => setSelectedOption("crypto")}>Crypto Files</button>
       </div>
 
       {/* Search Bar */}
-      <input
-        type="text"
-        placeholder="Search..."
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        style={{
-          width: "80%",
-          padding: "10px",
-          fontSize: "16px",
-          border: "1px solid #ccc",
-          borderRadius: "5px",
-        }}
-      />
+      <input type="text" placeholder="Search..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+
+      {/* Filters */}
+      {selectedOption === "guides" && (
+        <div style={{ display: "flex", justifyContent: "center", gap: "10px", margin: "10px 0" }}>
+          <select onChange={(e) => setSelectedCategory(e.target.value)} value={selectedCategory}>
+            <option value="All">All Categories</option>
+            <option value="Airdrops">Airdrops</option>
+            <option value="DeFi">DeFi</option>
+            <option value="Wallets">Wallets</option>
+            <option value="Security">Security</option>
+          </select>
+
+          <select onChange={(e) => setSortOrder(e.target.value)} value={sortOrder}>
+            <option value="None">Sort by Importance</option>
+            <option value="Ascending">Low to High</option>
+            <option value="Descending">High to Low</option>
+          </select>
+        </div>
+      )}
 
       {/* Content Section */}
-      <div style={{ maxWidth: "100%", margin: "auto", padding: "20px" }}>
+      <div>
         {selectedOption === "guides" && (
           <>
-            <h1 style={{ textAlign: "center", marginBottom: "20px" }}>Guides</h1>
-            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <h1>Guides</h1>
+            <table>
               <thead>
-                <tr style={{ background: "#333", color: "#fff", textAlign: "left" }}>
-                  <th style={{ padding: "10px", width: "40%" }}>Title</th>
-                  <th style={{ padding: "10px", width: "40%" }}>Description</th>
-                  <th style={{ padding: "10px", width: "20%" }}>Importance</th>
+                <tr>
+                  <th>Title</th>
+                  <th>Description</th>
+                  <th>Category</th>
+                  <th>Importance</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredGuides.map((guide) => (
-                  <tr key={guide.id} style={{ borderBottom: "1px solid #ddd" }}>
-                    <td style={{ padding: "10px", fontWeight: "bold" }}>
-                      <a
-                        onClick={() => navigate(`/guides/${guide.slug}`)}
-                        role="button"
-                        style={{ cursor: "pointer", color: "#007bff", textDecoration: "none" }}
-                      >
-                        {guide.title}
-                      </a>
+                  <tr key={guide.id}>
+                    <td>
+                      <a onClick={() => navigate(`/guides/${guide.slug}`)}>{guide.title}</a>
                     </td>
-                    <td style={{ padding: "10px" }}>{guide.description || "No description available."}</td>
-                    <td style={{ padding: "10px", fontWeight: "bold", color: "#ff8800" }}>
-                      {guide.importance}
-                    </td>
+                    <td>{guide.description || "No description available."}</td>
+                    <td>{guide.category}</td>
+                    <td>{guide.importance}</td>
                   </tr>
                 ))}
               </tbody>
@@ -138,32 +119,25 @@ function Search() {
 
         {selectedOption === "crypto" && (
           <>
-            <h1 style={{ textAlign: "center", marginBottom: "20px" }}>Crypto Files</h1>
-            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <h1>Crypto Files</h1>
+            <table>
               <thead>
-                <tr style={{ background: "#333", color: "#fff", textAlign: "left" }}>
-                  <th style={{ padding: "10px", width: "30%" }}>Detail Name</th>
-                  <th style={{ padding: "10px", width: "30%" }}>Source Link</th>
-                  <th style={{ padding: "10px", width: "20%" }}>Source</th>
-                  <th style={{ padding: "10px", width: "20%" }}>Accuracy</th>
+                <tr>
+                  <th>Detail Name</th>
+                  <th>Source Link</th>
+                  <th>Source</th>
+                  <th>Accuracy</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredCryptoFiles.map((file) => (
-                  <tr key={file.id} style={{ borderBottom: "1px solid #ddd" }}>
-                    <td style={{ padding: "10px", fontWeight: "bold" }}>{file.detail_name}</td>
-                    <td style={{ padding: "10px" }}>
-                      <a
-                        href={file.source_link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{ color: "#007bff", textDecoration: "none" }}
-                      >
-                        Open Source
-                      </a>
+                {cryptoFiles.map((file) => (
+                  <tr key={file.id}>
+                    <td>{file.detail_name}</td>
+                    <td>
+                      <a href={file.source_link} target="_blank" rel="noopener noreferrer">Open Source</a>
                     </td>
-                    <td style={{ padding: "10px" }}>{file.source}</td>
-                    <td style={{ padding: "10px" }}>{getAccuracyEmoji(file.accuracy)}</td>
+                    <td>{file.source}</td>
+                    <td>{getAccuracyEmoji(file.accuracy)}</td>
                   </tr>
                 ))}
               </tbody>
