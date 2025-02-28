@@ -7,7 +7,7 @@ function Search() {
   const [selectedOption, setSelectedOption] = useState("guides");
   const [guides, setGuides] = useState([]);
   const [cryptoFiles, setCryptoFiles] = useState([]);
-  const [completedGuides, setCompletedGuides] = useState(0); // ✅ Track completed guides
+  const [completedGuides, setCompletedGuides] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedTag, setSelectedTag] = useState("All");
@@ -18,7 +18,7 @@ function Search() {
   useEffect(() => {
     fetchGuides();
     fetchCryptoFiles();
-    fetchCompletedGuides(); // ✅ Fetch user progress
+    fetchCompletedGuides();
   }, []);
 
   // Fetch Guide List
@@ -91,9 +91,6 @@ function Search() {
       if (sortOption === "title-desc") return b.title.localeCompare(a.title);
       return 0;
     });
-
-  const uniqueCategories = ["All", ...new Set(guides.map((g) => g.category).filter(Boolean))];
-  const uniqueTags = ["All", ...new Set(guides.flatMap((g) => g.tags || []))];
 
   const filteredCryptoFiles = cryptoFiles.filter(
     (file) =>
@@ -190,6 +187,31 @@ function Search() {
                   <td>{guide.category || "Uncategorized"}</td>
                   <td>{guide.tags ? guide.tags.join(", ") : "No Tags"}</td>
                   <td style={{ fontWeight: "bold", color: "#ff8800" }}>{guide.importance}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+      )}
+
+      {/* Crypto Files List */}
+      {selectedOption === "crypto" && (
+        <>
+          <h1>Crypto Files</h1>
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr style={{ background: "#333", color: "#fff", textAlign: "left" }}>
+                <th style={{ padding: "10px", width: "40%" }}>Detail Name</th>
+                <th style={{ padding: "10px", width: "30%" }}>Source</th>
+                <th style={{ padding: "10px", width: "30%" }}>Accuracy</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredCryptoFiles.map((file) => (
+                <tr key={file.id} style={{ borderBottom: "1px solid #ddd" }}>
+                  <td>{file.detail_name}</td>
+                  <td><a href={file.source_link} target="_blank">{file.source}</a></td>
+                  <td>{getAccuracyEmoji(file.accuracy)}</td>
                 </tr>
               ))}
             </tbody>
