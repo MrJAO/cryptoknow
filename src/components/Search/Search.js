@@ -245,10 +245,13 @@ function Search() {
 			</div>
 		  )}
 
-		  {/* Show Suggest Guide Form if Open */}
-		  {showSuggestionForm && <SuggestGuideForm onClose={() => setShowSuggestionForm(false)} />}
-		</>
+      {/* Show Suggest Guide Form if Open */}
+      {showSuggestionForm && (
+        <SuggestGuideForm onClose={() => setShowSuggestionForm(false)} />
+      )}
+    </div>
   );
 }
 
 export default Search;
+
