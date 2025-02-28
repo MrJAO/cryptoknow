@@ -14,6 +14,7 @@ import Leaderboard from './components/Leaderboard/Leaderboard';
 import Harvests from './components/Harvests/Harvests';
 import FAQs from './components/FAQs/FAQs';
 import About from './components/About/About';
+import GuidePage from './components/Guides/GuidePage'; // ✅ New Guide Page Import
 import './App.css';
 
 // Initialize Supabase
@@ -89,16 +90,17 @@ const App = () => {
         <div className="main-content">
           <Routes>
             <Route path="/" element={<Home user={user} />} />
-			<Route path="/search" element={<Search />} />
+            <Route path="/search" element={<Search />} />
             <Route path="/to-do-list" element={<ToDoList currentUser={user} />} />
             <Route path="/available-airdrops" element={<AvailableAirdrops />} />
-            <Route path="/available-opportunities" element={<AvailableOpportunities />} />			
-			<Route path="/contribute" element={<Contribute />} />
-            <Route path="/quests" element={<Quests />} />			
+            <Route path="/available-opportunities" element={<AvailableOpportunities />} />
+            <Route path="/contribute" element={<Contribute />} />
+            <Route path="/quests" element={<Quests />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="/harvests" element={<Harvests />} />
             <Route path="/faqs" element={<FAQs />} />
-			<Route path="/about" element={<About />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/guides/:slug" element={<GuidePage />} /> {/* ✅ New Route for Guide Pages */}
           </Routes>
 
           {/* Centered Login/Logout Button */}

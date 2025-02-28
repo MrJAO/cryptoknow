@@ -1,0 +1,95 @@
+/* Guide Page Container */
+.guide-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #1a1a1a;
+  color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+  text-align: justify;
+}
+
+/* Guide Title */
+.guide-title {
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #ffcc00;
+}
+
+/* Guide Content */
+.guide-content {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+/* Guide Importance Badge */
+.importance-badge {
+  display: inline-block;
+  padding: 8px 15px;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Different Colors Based on Importance */
+.importance-high {
+  background-color: #ff4444;
+  color: white;
+}
+
+.importance-medium {
+  background-color: #ff8800;
+  color: white;
+}
+
+.importance-low {
+  background-color: #008000;
+  color: white;
+}
+
+/* External Link Styling */
+.guide-link {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.guide-link a {
+  background-color: #007bff;
+  color: #fff;
+  padding: 12px 20px;
+  font-size: 1.1rem;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+.guide-link a:hover {
+  background-color: #0056b3;
+}
+
+/* Back Button */
+.back-button {
+  display: block;
+  margin: 30px auto;
+  padding: 10px 15px;
+  background-color: #444;
+  color: white;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 1.1rem;
+  text-decoration: none;
+  transition: background 0.3s;
+  width: fit-content;
+}
+
+.back-button:hover {
+  background-color: #666;
+}
