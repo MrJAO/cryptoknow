@@ -9,6 +9,9 @@ const GuidePage = () => {
   const [guide, setGuide] = useState(null);
   const [progress, setProgress] = useState(false);
   const [headings, setHeadings] = useState([]);
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState("");
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const fetchGuide = async () => {
@@ -27,10 +30,30 @@ const GuidePage = () => {
       }
     };
 
+    const fetchComments = async () => {
+      const { data, error } = await supabase
+        .from("guide_comments")
+        .select("discord_username, comment, created_at")
+        .eq("guide_slug", slug)
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("❌ Error fetching comments:", error);
+      } else {
+        setComments(data);
+      }
+    };
+
+    const fetchUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      setUser(data.user);
+    };
+
     fetchGuide();
+    fetchComments();
+    fetchUser();
   }, [slug]);
 
-  // Extract headings for Table of Contents
   const extractHeadings = (content) => {
     const tempDiv = document.createElement("div");
     tempDiv.innerHTML = content;
@@ -46,15 +69,11 @@ const GuidePage = () => {
     setHeadings(extractedHeadings);
   };
 
-  // Check if the user has already completed the guide
   const checkUserProgress = async () => {
-    const user = await supabase.auth.getUser();
-    if (!user.data.user) return;
+    if (!user) return;
 
     const discord_username =
-      user.data.user?.user_metadata?.user_name ||
-      user.data.user?.user_metadata?.full_name ||
-      "";
+      user.user_metadata?.user_name || user.user_metadata?.full_name || "";
 
     const { data, error } = await supabase
       .from("guide_progress")
@@ -70,20 +89,16 @@ const GuidePage = () => {
     }
   };
 
-  // Mark Guide as Read
   const handleMarkAsRead = async () => {
-    if (!guide || progress) return; // Prevent duplicate entries
+    if (!guide || progress) return;
 
-    const user = await supabase.auth.getUser();
-    if (!user.data.user) {
+    if (!user) {
       alert("⚠️ You need to be logged in to track progress.");
       return;
     }
 
     const discord_username =
-      user.data.user?.user_metadata?.user_name ||
-      user.data.user?.user_metadata?.full_name ||
-      "";
+      user.user_metadata?.user_name || user.user_metadata?.full_name || "";
 
     const { error } = await supabase
       .from("guide_progress")
@@ -93,6 +108,24 @@ const GuidePage = () => {
       console.error("❌ Error marking as read:", error);
     } else {
       setProgress(true);
+    }
+  };
+
+  const handleAddComment = async () => {
+    if (!user || !newComment.trim()) return;
+
+    const discord_username =
+      user.user_metadata?.user_name || user.user_metadata?.full_name || "";
+
+    const { error } = await supabase
+      .from("guide_comments")
+      .insert([{ guide_slug: slug, discord_username, comment: newComment }]);
+
+    if (error) {
+      console.error("❌ Error adding comment:", error);
+    } else {
+      setComments([{ discord_username, comment: newComment, created_at: new Date() }, ...comments]);
+      setNewComment("");
     }
   };
 
@@ -110,7 +143,6 @@ const GuidePage = () => {
         <>
           <h1 className="guide-title">{guide.title}</h1>
 
-          {/* Table of Contents */}
           <div className="table-of-contents">
             <h2>Table of Contents</h2>
             <ul>
@@ -134,6 +166,30 @@ const GuidePage = () => {
           <button className="mark-as-read" onClick={handleMarkAsRead} disabled={progress}>
             {progress ? "✅ Marked as Read" : "📖 Mark as Read"}
           </button>
+
+          <div className="comments-section">
+            <h2>Comments</h2>
+            {user ? (
+              <>
+                <textarea
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  placeholder="Write a comment..."
+                />
+                <button onClick={handleAddComment}>Post Comment</button>
+              </>
+            ) : (
+              <p>Log in to post a comment.</p>
+            )}
+
+            <ul>
+              {comments.map((comment, index) => (
+                <li key={index}>
+                  <strong>{comment.discord_username}:</strong> {comment.comment}
+                </li>
+              ))}
+            </ul>
+          </div>
         </>
       ) : (
         <p>Loading guide...</p>
