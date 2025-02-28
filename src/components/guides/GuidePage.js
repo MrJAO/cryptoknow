@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "../../supabaseClient";
 import "./GuidePage.css";
 
-const GuidePage = ({ user }) => {
+const GuidePage = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const [guide, setGuide] = useState(null);
@@ -11,35 +11,27 @@ const GuidePage = ({ user }) => {
   const [headings, setHeadings] = useState([]);
 
   useEffect(() => {
+    const fetchGuide = async () => {
+      const { data, error } = await supabase
+        .from("guides")
+        .select("*")
+        .eq("slug", slug)
+        .maybeSingle();
+
+      if (error || !data) {
+        console.error("❌ Error fetching guide:", error);
+      } else {
+        setGuide(data);
+        extractHeadings(data.content);
+        checkUserProgress();
+      }
+    };
+
     fetchGuide();
   }, [slug]);
 
-  useEffect(() => {
-    if (user && guide) {
-      checkUserProgress();
-    }
-  }, [user, guide]);
-
-  // Fetch Guide Data
-  const fetchGuide = async () => {
-    const { data, error } = await supabase
-      .from("guides")
-      .select("*")
-      .eq("slug", slug)
-      .maybeSingle();
-
-    if (error || !data) {
-      console.error("❌ Error fetching guide:", error);
-    } else {
-      setGuide(data);
-      extractHeadings(data.content);
-    }
-  };
-
-  // Extract headings (h2, h3) for Table of Contents
+  // Extract headings for Table of Contents
   const extractHeadings = (content) => {
-    if (!content) return;
-
     const tempDiv = document.createElement("div");
     tempDiv.innerHTML = content;
 
@@ -54,32 +46,48 @@ const GuidePage = ({ user }) => {
     setHeadings(extractedHeadings);
   };
 
-  // Check if user has already marked this guide as read
+  // Check if the user has already completed the guide
   const checkUserProgress = async () => {
-    if (!user || !guide) return;
+    const user = await supabase.auth.getUser();
+    if (!user.data.user) return;
 
-    const { data } = await supabase
+    const discord_username =
+      user.data.user?.user_metadata?.user_name ||
+      user.data.user?.user_metadata?.full_name ||
+      "";
+
+    const { data, error } = await supabase
       .from("guide_progress")
-      .select("completed")
-      .eq("user_id", user.id)
+      .select("guide_slug")
+      .eq("discord_username", discord_username)
       .eq("guide_slug", slug)
       .maybeSingle();
 
-    if (data) {
-      setProgress(data.completed);
+    if (error) {
+      console.error("❌ Error checking progress:", error);
+    } else if (data) {
+      setProgress(true);
     }
   };
 
   // Mark Guide as Read
   const handleMarkAsRead = async () => {
-    if (!user) {
-      alert("⚠️ Please log in to track your progress.");
+    if (!guide || progress) return; // Prevent duplicate entries
+
+    const user = await supabase.auth.getUser();
+    if (!user.data.user) {
+      alert("⚠️ You need to be logged in to track progress.");
       return;
     }
 
+    const discord_username =
+      user.data.user?.user_metadata?.user_name ||
+      user.data.user?.user_metadata?.full_name ||
+      "";
+
     const { error } = await supabase
       .from("guide_progress")
-      .upsert([{ user_id: user.id, guide_slug: slug, completed: true }]);
+      .upsert([{ discord_username, guide_slug: slug }]);
 
     if (error) {
       console.error("❌ Error marking as read:", error);
@@ -88,12 +96,8 @@ const GuidePage = ({ user }) => {
     }
   };
 
-  // Scroll to heading from TOC
   const scrollToHeading = (id) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
@@ -107,23 +111,20 @@ const GuidePage = ({ user }) => {
           <h1 className="guide-title">{guide.title}</h1>
 
           {/* Table of Contents */}
-          {headings.length > 0 && (
-            <div className="table-of-contents">
-              <h2>Table of Contents</h2>
-              <ul>
-                {headings.map((heading, index) => (
-                  <li
-                    key={index}
-                    className={heading.level}
-                    onClick={() => scrollToHeading(heading.id)}
-                    style={{ cursor: "pointer", color: "#007bff" }}
-                  >
-                    {heading.text}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          <div className="table-of-contents">
+            <h2>Table of Contents</h2>
+            <ul>
+              {headings.map((heading, index) => (
+                <li
+                  key={index}
+                  className={heading.level}
+                  onClick={() => scrollToHeading(heading.id)}
+                >
+                  {heading.text}
+                </li>
+              ))}
+            </ul>
+          </div>
 
           <div
             className="guide-content"

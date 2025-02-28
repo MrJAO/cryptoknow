@@ -7,7 +7,7 @@ function Search() {
   const [selectedOption, setSelectedOption] = useState("guides");
   const [guides, setGuides] = useState([]);
   const [cryptoFiles, setCryptoFiles] = useState([]);
-  const [completedGuides, setCompletedGuides] = useState(0);
+  const [completedGuides, setCompletedGuides] = useState(new Set()); // ✅ Store as a Set for fast lookups
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedTag, setSelectedTag] = useState("All");
@@ -52,7 +52,8 @@ function Search() {
     if (error) {
       console.error("❌ Error fetching completed guides:", error);
     } else {
-      setCompletedGuides(data.length);
+      const completedSet = new Set(data.map((g) => g.guide_slug));
+      setCompletedGuides(completedSet);
     }
   };
 
@@ -137,9 +138,9 @@ function Search() {
       {selectedOption === "guides" && (
         <div style={{ marginBottom: "20px" }}>
           <p>
-            📖 Progress: <strong>{completedGuides}</strong> / {guides.length} guides completed
+            📖 Progress: <strong>{completedGuides.size}</strong> / {guides.length} guides completed
           </p>
-          <progress value={completedGuides} max={guides.length} style={{ width: "100%" }}></progress>
+          <progress value={completedGuides.size} max={guides.length} style={{ width: "100%" }}></progress>
         </div>
       )}
 
@@ -179,9 +180,13 @@ function Search() {
                     <a
                       onClick={() => navigate(`/guides/${guide.slug}`)}
                       role="button"
-                      style={{ cursor: "pointer", color: "#007bff", textDecoration: "none" }}
+                      style={{
+                        cursor: "pointer",
+                        color: completedGuides.has(guide.slug) ? "#28a745" : "#007bff",
+                        textDecoration: "none",
+                      }}
                     >
-                      {guide.title}
+                      {completedGuides.has(guide.slug) ? `✅ ${guide.title}` : guide.title}
                     </a>
                   </td>
                   <td>{guide.category || "Uncategorized"}</td>
