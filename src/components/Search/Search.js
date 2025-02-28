@@ -7,6 +7,7 @@ function Search() {
   const [selectedOption, setSelectedOption] = useState("guides");
   const [guides, setGuides] = useState([]);
   const [cryptoFiles, setCryptoFiles] = useState([]);
+  const [completedGuides, setCompletedGuides] = useState(0); // ✅ Track completed guides
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedTag, setSelectedTag] = useState("All");
@@ -17,8 +18,10 @@ function Search() {
   useEffect(() => {
     fetchGuides();
     fetchCryptoFiles();
+    fetchCompletedGuides(); // ✅ Fetch user progress
   }, []);
 
+  // Fetch Guide List
   const fetchGuides = async () => {
     const { data, error } = await supabase
       .from("guides")
@@ -31,6 +34,29 @@ function Search() {
     }
   };
 
+  // Fetch Completed Guides
+  const fetchCompletedGuides = async () => {
+    const user = await supabase.auth.getUser();
+    if (!user.data.user) return;
+
+    const discord_username =
+      user.data.user?.user_metadata?.user_name ||
+      user.data.user?.user_metadata?.full_name ||
+      "";
+
+    const { data, error } = await supabase
+      .from("guide_progress")
+      .select("guide_slug")
+      .eq("discord_username", discord_username);
+
+    if (error) {
+      console.error("❌ Error fetching completed guides:", error);
+    } else {
+      setCompletedGuides(data.length);
+    }
+  };
+
+  // Fetch Crypto Files
   const fetchCryptoFiles = async () => {
     const { data, error } = await supabase
       .from("crypto_files")
@@ -110,23 +136,14 @@ function Search() {
         </button>
       </div>
 
-      {/* Suggest a Guide Button */}
+      {/* Guide Progress */}
       {selectedOption === "guides" && (
-        <button
-          onClick={() => setShowSuggestionForm(true)}
-          style={{
-            padding: "12px 20px",
-            fontSize: "16px",
-            background: "#28a745",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-            marginBottom: "15px",
-          }}
-        >
-          + Suggest a Guide
-        </button>
+        <div style={{ marginBottom: "20px" }}>
+          <p>
+            📖 Progress: <strong>{completedGuides}</strong> / {guides.length} guides completed
+          </p>
+          <progress value={completedGuides} max={guides.length} style={{ width: "100%" }}></progress>
+        </div>
       )}
 
       {/* Search Bar */}
@@ -179,38 +196,6 @@ function Search() {
           </table>
         </>
       )}
-
-      {/* Crypto Files List */}
-      {selectedOption === "crypto" && (
-        <>
-          <h1>Crypto Files</h1>
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
-            <thead>
-              <tr style={{ background: "#333", color: "#fff", textAlign: "left" }}>
-                <th style={{ padding: "10px", width: "30%" }}>Detail Name</th>
-                <th style={{ padding: "10px", width: "30%" }}>Source</th>
-                <th style={{ padding: "10px", width: "30%" }}>Accuracy</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredCryptoFiles.map((file) => (
-                <tr key={file.id} style={{ borderBottom: "1px solid #ddd" }}>
-                  <td>{file.detail_name}</td>
-                  <td>
-                    <a href={file.source_link} target="_blank" rel="noopener noreferrer">
-                      {file.source}
-                    </a>
-                  </td>
-                  <td>{getAccuracyEmoji(file.accuracy)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </>
-      )}
-
-      {/* Show Suggest Guide Form if Open */}
-      {showSuggestionForm && <SuggestGuideForm onClose={() => setShowSuggestionForm(false)} />}
     </div>
   );
 }
