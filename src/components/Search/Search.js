@@ -224,32 +224,6 @@ function Search() {
         </>
       )}
     </div>
-	
-	{/* Suggest a Guide Button */}
-		  {selectedOption === "guides" && (
-			<div style={{ textAlign: "center", paddingBottom: "20px" }}>
-			  <button
-				onClick={() => setShowSuggestionForm(true)}
-				style={{
-				  padding: "12px 20px",
-				  fontSize: "16px",
-				  background: "#28a745",
-				  color: "white",
-				  border: "none",
-				  borderRadius: "5px",
-				  cursor: "pointer",
-				}}
-			  >
-				+ Suggest a Guide
-			  </button>
-			</div>
-		  )}
-
-      {/* Show Suggest Guide Form if Open */}
-      {showSuggestionForm && (
-        <SuggestGuideForm onClose={() => setShowSuggestionForm(false)} />
-      )}
-    </div>
   );
 }
 
