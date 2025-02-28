@@ -31,27 +31,27 @@ const GuidePage = () => {
     fetchGuide();
   }, [slug]);
 
-  const handleMarkAsRead = async () => {
-    if (!guide) return;
+	const handleMarkAsRead = async () => {
+	  if (!guide) return;
 
-    const user = await supabase.auth.getUser();
-    if (!user.data.user) {
-      alert("You need to be logged in to track progress.");
-      return;
-    }
+	  const user = await supabase.auth.getUser();
+	  if (!user.data.user) {
+		alert("You need to be logged in to track progress.");
+		return;
+	  }
 
-    const discordUsername = user.data.user.user_metadata?.user_name || "";
+	  const discord_username = user.data.user?.user_metadata?.user_name || user.data.user?.user_metadata?.full_name || "";
 
-    const { error } = await supabase
-      .from("guide_progress")
-      .upsert([{ discord_username, guide_slug: slug }]);
+	  const { error } = await supabase
+		.from("guide_progress")
+		.upsert([{ discord_username, guide_slug: slug }]);
 
-    if (error) {
-      console.error("Error marking as read:", error);
-    } else {
-      setProgress(true);
-    }
-  };
+	  if (error) {
+		console.error("Error marking as read:", error);
+	  } else {
+		setProgress(true);
+	  }
+	};
 
   if (loading) return <p>Loading guide...</p>;
   if (error) return <p className="error">{error}</p>;
