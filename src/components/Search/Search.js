@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "../../supabaseClient";
 import { useNavigate } from "react-router-dom";
-import SuggestGuideForm from "../guides/SuggestGuideForm"; // Import Suggestion Form
+import SuggestGuideForm from "../Guides/SuggestGuideForm"; // Import Suggestion Form
 
 function Search() {
   const [selectedOption, setSelectedOption] = useState("guides");
@@ -32,12 +32,19 @@ function Search() {
   };
 
   const fetchCryptoFiles = async () => {
-    const { data, error } = await supabase.from("crypto_files").select("*");
+    const { data, error } = await supabase
+      .from("crypto_files")
+      .select("id, detail_name, source, source_link, accuracy");
+
     if (error) {
       console.error("❌ Error fetching crypto files:", error);
     } else {
       setCryptoFiles(data);
     }
+  };
+
+  const getAccuracyEmoji = (accuracy) => {
+    return accuracy === "Accurate" ? "✔️ Accurate" : "🟠 Can't Confirm";
   };
 
   const filteredGuides = guides
@@ -61,6 +68,12 @@ function Search() {
 
   const uniqueCategories = ["All", ...new Set(guides.map((g) => g.category).filter(Boolean))];
   const uniqueTags = ["All", ...new Set(guides.flatMap((g) => g.tags || []))];
+
+  const filteredCryptoFiles = cryptoFiles.filter(
+    (file) =>
+      file.detail_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      file.source.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div style={{ textAlign: "center", padding: "20px" }}>
@@ -119,7 +132,7 @@ function Search() {
       {/* Search Bar */}
       <input
         type="text"
-        placeholder="Search by title, category, or tags..."
+        placeholder={selectedOption === "guides" ? "Search Guides..." : "Search Crypto Files..."}
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
         style={{
@@ -131,29 +144,6 @@ function Search() {
           marginBottom: "15px",
         }}
       />
-
-      {/* Filters */}
-      {selectedOption === "guides" && (
-        <div style={{ display: "flex", justifyContent: "center", gap: "15px", marginBottom: "15px" }}>
-          <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
-            {uniqueCategories.map((cat) => (
-              <option key={cat} value={cat}>{cat}</option>
-            ))}
-          </select>
-
-          <select value={selectedTag} onChange={(e) => setSelectedTag(e.target.value)}>
-            {uniqueTags.map((tag) => (
-              <option key={tag} value={tag}>{tag}</option>
-            ))}
-          </select>
-
-          <select value={sortOption} onChange={(e) => setSortOption(e.target.value)}>
-            <option value="importance">Sort by Importance</option>
-            <option value="title-asc">Sort A → Z</option>
-            <option value="title-desc">Sort Z → A</option>
-          </select>
-        </div>
-      )}
 
       {/* Guides List */}
       {selectedOption === "guides" && (
@@ -194,7 +184,28 @@ function Search() {
       {selectedOption === "crypto" && (
         <>
           <h1>Crypto Files</h1>
-          <p>Coming Soon...</p> {/* Placeholder for Crypto Files Data */}
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr style={{ background: "#333", color: "#fff", textAlign: "left" }}>
+                <th style={{ padding: "10px", width: "30%" }}>Detail Name</th>
+                <th style={{ padding: "10px", width: "30%" }}>Source</th>
+                <th style={{ padding: "10px", width: "30%" }}>Accuracy</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredCryptoFiles.map((file) => (
+                <tr key={file.id} style={{ borderBottom: "1px solid #ddd" }}>
+                  <td>{file.detail_name}</td>
+                  <td>
+                    <a href={file.source_link} target="_blank" rel="noopener noreferrer">
+                      {file.source}
+                    </a>
+                  </td>
+                  <td>{getAccuracyEmoji(file.accuracy)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </>
       )}
 
