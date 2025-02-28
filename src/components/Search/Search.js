@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "../../supabaseClient";
 import { useNavigate } from "react-router-dom";
-import SuggestGuideForm from "../Guides/SuggestGuideForm"; // Import Suggestion Form
+import SuggestGuideForm from "../guides/SuggestGuideForm"; // Import Suggestion Form
 
 function Search() {
   const [selectedOption, setSelectedOption] = useState("guides");
