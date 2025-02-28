@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "../../supabaseClient";
 import { useNavigate } from "react-router-dom";
-import SuggestGuideForm from "../guides/SuggestGuideForm"; // Import Suggestion Form
+import SuggestGuideForm from "../Guides/SuggestGuideForm"; // Import Suggestion Form
 
 function Search() {
   const [selectedOption, setSelectedOption] = useState("guides");
@@ -11,7 +11,7 @@ function Search() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedTag, setSelectedTag] = useState("All");
   const [sortOption, setSortOption] = useState("importance");
-  const [showSuggestionForm, setShowSuggestionForm] = useState(false); // State for Suggest Guide Form
+  const [showSuggestionForm, setShowSuggestionForm] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -64,22 +64,57 @@ function Search() {
 
   return (
     <div style={{ textAlign: "center", padding: "20px" }}>
+      {/* Buttons Navigation */}
+      <div style={{ display: "flex", justifyContent: "center", gap: "15px", marginBottom: "20px" }}>
+        <button
+          onClick={() => setSelectedOption("guides")}
+          style={{
+            padding: "12px 20px",
+            fontSize: "16px",
+            cursor: "pointer",
+            background: selectedOption === "guides" ? "#007bff" : "#fff",
+            color: selectedOption === "guides" ? "#fff" : "#000",
+            border: "1px solid #007bff",
+            borderRadius: "5px",
+          }}
+        >
+          Beginner Guides
+        </button>
+
+        <button
+          onClick={() => setSelectedOption("crypto")}
+          style={{
+            padding: "12px 20px",
+            fontSize: "16px",
+            cursor: "pointer",
+            background: selectedOption === "crypto" ? "#007bff" : "#fff",
+            color: selectedOption === "crypto" ? "#fff" : "#000",
+            border: "1px solid #007bff",
+            borderRadius: "5px",
+          }}
+        >
+          Crypto Files
+        </button>
+      </div>
+
       {/* Suggest a Guide Button */}
-      <button
-        onClick={() => setShowSuggestionForm(true)}
-        style={{
-          padding: "12px 20px",
-          fontSize: "16px",
-          background: "#28a745",
-          color: "white",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-          marginBottom: "15px",
-        }}
-      >
-        + Suggest a Guide
-      </button>
+      {selectedOption === "guides" && (
+        <button
+          onClick={() => setShowSuggestionForm(true)}
+          style={{
+            padding: "12px 20px",
+            fontSize: "16px",
+            background: "#28a745",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+            marginBottom: "15px",
+          }}
+        >
+          + Suggest a Guide
+        </button>
+      )}
 
       {/* Search Bar */}
       <input
@@ -98,25 +133,27 @@ function Search() {
       />
 
       {/* Filters */}
-      <div style={{ display: "flex", justifyContent: "center", gap: "15px", marginBottom: "15px" }}>
-        <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
-          {uniqueCategories.map((cat) => (
-            <option key={cat} value={cat}>{cat}</option>
-          ))}
-        </select>
+      {selectedOption === "guides" && (
+        <div style={{ display: "flex", justifyContent: "center", gap: "15px", marginBottom: "15px" }}>
+          <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
+            {uniqueCategories.map((cat) => (
+              <option key={cat} value={cat}>{cat}</option>
+            ))}
+          </select>
 
-        <select value={selectedTag} onChange={(e) => setSelectedTag(e.target.value)}>
-          {uniqueTags.map((tag) => (
-            <option key={tag} value={tag}>{tag}</option>
-          ))}
-        </select>
+          <select value={selectedTag} onChange={(e) => setSelectedTag(e.target.value)}>
+            {uniqueTags.map((tag) => (
+              <option key={tag} value={tag}>{tag}</option>
+            ))}
+          </select>
 
-        <select value={sortOption} onChange={(e) => setSortOption(e.target.value)}>
-          <option value="importance">Sort by Importance</option>
-          <option value="title-asc">Sort A → Z</option>
-          <option value="title-desc">Sort Z → A</option>
-        </select>
-      </div>
+          <select value={sortOption} onChange={(e) => setSortOption(e.target.value)}>
+            <option value="importance">Sort by Importance</option>
+            <option value="title-asc">Sort A → Z</option>
+            <option value="title-desc">Sort Z → A</option>
+          </select>
+        </div>
+      )}
 
       {/* Guides List */}
       {selectedOption === "guides" && (
@@ -153,10 +190,16 @@ function Search() {
         </>
       )}
 
-      {/* Show Suggest Guide Form if Open */}
-      {showSuggestionForm && (
-        <SuggestGuideForm onClose={() => setShowSuggestionForm(false)} />
+      {/* Crypto Files List */}
+      {selectedOption === "crypto" && (
+        <>
+          <h1>Crypto Files</h1>
+          <p>Coming Soon...</p> {/* Placeholder for Crypto Files Data */}
+        </>
       )}
+
+      {/* Show Suggest Guide Form if Open */}
+      {showSuggestionForm && <SuggestGuideForm onClose={() => setShowSuggestionForm(false)} />}
     </div>
   );
 }

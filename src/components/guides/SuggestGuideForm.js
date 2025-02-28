@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { supabase } from "../../supabaseClient";
+import "./GSuggestGuideForm.css";
 
 const SuggestGuideForm = ({ onClose, user }) => {
   const [formData, setFormData] = useState({
