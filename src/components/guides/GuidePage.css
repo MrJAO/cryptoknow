@@ -1,72 +1,98 @@
 /* Guide Page Container */
-.guide-container {
-  max-width: 800px;
+.guide-page {
+  max-width: 900px;
   margin: auto;
   padding: 20px;
-  background-color: #121212;
+  font-family: Arial, sans-serif;
+}
+
+/* Back Button */
+.back-button {
+  display: inline-block;
+  margin-bottom: 20px;
+  padding: 10px 15px;
+  font-size: 16px;
   color: #fff;
-  border-radius: 8px;
-  box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.back-button:hover {
+  background-color: #0056b3;
 }
 
 /* Guide Title */
-h1 {
+.guide-title {
   text-align: center;
   font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+/* Table of Contents */
+.table-of-contents {
+  background: #f8f9fa;
+  padding: 15px;
+  border-left: 4px solid #007bff;
+  margin-bottom: 20px;
+}
+
+.table-of-contents h2 {
+  font-size: 1.2rem;
   margin-bottom: 10px;
 }
 
-/* Category and Tags */
-.category,
-.tags {
-  font-size: 1rem;
-  color: #bbb;
-  text-align: center;
-  margin-bottom: 10px;
+.table-of-contents ul {
+  list-style: none;
+  padding: 0;
+}
+
+.table-of-contents li {
+  cursor: pointer;
+  padding: 5px 0;
+  color: #007bff;
+}
+
+.table-of-contents li:hover {
+  text-decoration: underline;
 }
 
 /* Guide Content */
 .guide-content {
-  font-size: 1.1rem;
-  line-height: 1.6;
-  text-align: justify;
-  margin-bottom: 20px;
+  line-height: 1.8;
+}
+
+.guide-content h2 {
+  margin-top: 30px;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 5px;
+}
+
+.guide-content h3 {
+  margin-top: 20px;
+  font-size: 1.2rem;
 }
 
 /* Mark as Read Button */
-.mark-read {
+.mark-as-read {
   display: block;
   width: 100%;
-  padding: 10px;
-  font-size: 1.1rem;
+  padding: 12px;
+  font-size: 16px;
   color: #fff;
-  background: #007bff;
+  background-color: #28a745;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  margin-bottom: 20px;
+  margin-top: 20px;
 }
 
-.mark-read.completed {
-  background: #28a745;
+.mark-as-read:hover {
+  background-color: #218838;
 }
 
-/* Navigation Buttons */
-.navigation {
-  display: flex;
-  justify-content: space-between;
-}
-
-.navigation button {
-  padding: 10px 15px;
-  font-size: 1rem;
-  color: #fff;
-  background: #333;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.navigation button:hover {
-  background: #007bff;
+.mark-as-read:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
 }
