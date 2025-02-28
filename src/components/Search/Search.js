@@ -1,28 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "../../supabaseClient";
-import { useNavigate } from "react-router-dom"; // Added for dynamic navigation
+import { useNavigate } from "react-router-dom";
 
 function Search() {
-  const [selectedOption, setSelectedOption] = useState("guides"); // Default to "guides"
+  const [selectedOption, setSelectedOption] = useState("guides");
   const [guides, setGuides] = useState([]);
   const [cryptoFiles, setCryptoFiles] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [sortOrder, setSortOrder] = useState("None");
-  const navigate = useNavigate(); // Hook for navigation
+  const [selectedTag, setSelectedTag] = useState("All");
+  const [sortOption, setSortOption] = useState("importance");
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (selectedOption === "guides") {
-      fetchGuides();
-    } else if (selectedOption === "crypto") {
-      fetchCryptoFiles();
-    }
-  }, [selectedOption]);
+    fetchGuides();
+    fetchCryptoFiles();
+  }, []);
 
   const fetchGuides = async () => {
     const { data, error } = await supabase
       .from("guides")
-      .select("id, title, slug, description, importance, category, tags");
+      .select("id, title, slug, description, category, tags, importance");
 
     if (error) {
       console.error("❌ Error fetching guides:", error);
@@ -40,111 +38,101 @@ function Search() {
     }
   };
 
-  const getAccuracyEmoji = (accuracy) => {
-    return accuracy === "Accurate" ? "✔️ Accurate" : "🟠 Can't Confirm";
-  };
-
   const filteredGuides = guides
-    .filter((guide) =>
-      guide.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      guide.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (guide.tags && guide.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())))
+    .filter(
+      (guide) =>
+        guide.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        guide.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        guide.category?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (guide.tags && guide.tags.some((tag) =>
+          tag.toLowerCase().includes(searchQuery.toLowerCase())
+        ))
     )
     .filter((guide) => selectedCategory === "All" || guide.category === selectedCategory)
+    .filter((guide) => selectedTag === "All" || (guide.tags && guide.tags.includes(selectedTag)))
     .sort((a, b) => {
-      if (sortOrder === "Ascending") return a.importance.localeCompare(b.importance);
-      if (sortOrder === "Descending") return b.importance.localeCompare(a.importance);
+      if (sortOption === "importance") return b.importance - a.importance;
+      if (sortOption === "title-asc") return a.title.localeCompare(b.title);
+      if (sortOption === "title-desc") return b.title.localeCompare(a.title);
       return 0;
     });
 
+  const uniqueCategories = ["All", ...new Set(guides.map((g) => g.category).filter(Boolean))];
+  const uniqueTags = ["All", ...new Set(guides.flatMap((g) => g.tags || []))];
+
   return (
     <div style={{ textAlign: "center", padding: "20px" }}>
-      {/* Button Navigation */}
-      <div style={{ display: "flex", justifyContent: "center", gap: "20px", marginBottom: "20px" }}>
-        <button onClick={() => setSelectedOption("guides")}>Beginner Guides</button>
-        <button onClick={() => setSelectedOption("crypto")}>Crypto Files</button>
-      </div>
-
       {/* Search Bar */}
-      <input type="text" placeholder="Search..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+      <input
+        type="text"
+        placeholder="Search by title, category, or tags..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        style={{
+          width: "80%",
+          padding: "10px",
+          fontSize: "16px",
+          border: "1px solid #ccc",
+          borderRadius: "5px",
+          marginBottom: "15px",
+        }}
+      />
 
       {/* Filters */}
-      {selectedOption === "guides" && (
-        <div style={{ display: "flex", justifyContent: "center", gap: "10px", margin: "10px 0" }}>
-          <select onChange={(e) => setSelectedCategory(e.target.value)} value={selectedCategory}>
-            <option value="All">All Categories</option>
-            <option value="Airdrops">Airdrops</option>
-            <option value="DeFi">DeFi</option>
-            <option value="Wallets">Wallets</option>
-            <option value="Security">Security</option>
-          </select>
+      <div style={{ display: "flex", justifyContent: "center", gap: "15px", marginBottom: "15px" }}>
+        <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
+          {uniqueCategories.map((cat) => (
+            <option key={cat} value={cat}>{cat}</option>
+          ))}
+        </select>
 
-          <select onChange={(e) => setSortOrder(e.target.value)} value={sortOrder}>
-            <option value="None">Sort by Importance</option>
-            <option value="Ascending">Low to High</option>
-            <option value="Descending">High to Low</option>
-          </select>
-        </div>
-      )}
+        <select value={selectedTag} onChange={(e) => setSelectedTag(e.target.value)}>
+          {uniqueTags.map((tag) => (
+            <option key={tag} value={tag}>{tag}</option>
+          ))}
+        </select>
 
-      {/* Content Section */}
-      <div>
-        {selectedOption === "guides" && (
-          <>
-            <h1>Guides</h1>
-            <table>
-              <thead>
-                <tr>
-                  <th>Title</th>
-                  <th>Description</th>
-                  <th>Category</th>
-                  <th>Importance</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredGuides.map((guide) => (
-                  <tr key={guide.id}>
-                    <td>
-                      <a onClick={() => navigate(`/guides/${guide.slug}`)}>{guide.title}</a>
-                    </td>
-                    <td>{guide.description || "No description available."}</td>
-                    <td>{guide.category}</td>
-                    <td>{guide.importance}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </>
-        )}
-
-        {selectedOption === "crypto" && (
-          <>
-            <h1>Crypto Files</h1>
-            <table>
-              <thead>
-                <tr>
-                  <th>Detail Name</th>
-                  <th>Source Link</th>
-                  <th>Source</th>
-                  <th>Accuracy</th>
-                </tr>
-              </thead>
-              <tbody>
-                {cryptoFiles.map((file) => (
-                  <tr key={file.id}>
-                    <td>{file.detail_name}</td>
-                    <td>
-                      <a href={file.source_link} target="_blank" rel="noopener noreferrer">Open Source</a>
-                    </td>
-                    <td>{file.source}</td>
-                    <td>{getAccuracyEmoji(file.accuracy)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </>
-        )}
+        <select value={sortOption} onChange={(e) => setSortOption(e.target.value)}>
+          <option value="importance">Sort by Importance</option>
+          <option value="title-asc">Sort A → Z</option>
+          <option value="title-desc">Sort Z → A</option>
+        </select>
       </div>
+
+      {/* Guides List */}
+      {selectedOption === "guides" && (
+        <>
+          <h1>Guides</h1>
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr style={{ background: "#333", color: "#fff", textAlign: "left" }}>
+                <th style={{ padding: "10px", width: "30%" }}>Title</th>
+                <th style={{ padding: "10px", width: "20%" }}>Category</th>
+                <th style={{ padding: "10px", width: "30%" }}>Tags</th>
+                <th style={{ padding: "10px", width: "20%" }}>Importance</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredGuides.map((guide) => (
+                <tr key={guide.id} style={{ borderBottom: "1px solid #ddd" }}>
+                  <td>
+                    <a
+                      onClick={() => navigate(`/guides/${guide.slug}`)}
+                      role="button"
+                      style={{ cursor: "pointer", color: "#007bff", textDecoration: "none" }}
+                    >
+                      {guide.title}
+                    </a>
+                  </td>
+                  <td>{guide.category || "Uncategorized"}</td>
+                  <td>{guide.tags ? guide.tags.join(", ") : "No Tags"}</td>
+                  <td style={{ fontWeight: "bold", color: "#ff8800" }}>{guide.importance}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+      )}
     </div>
   );
 }
