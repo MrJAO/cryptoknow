@@ -14,7 +14,7 @@ import Leaderboard from './components/Leaderboard/Leaderboard';
 import Harvests from './components/Harvests/Harvests';
 import FAQs from './components/FAQs/FAQs';
 import About from './components/About/About';
-import GuidePage from './components/Guides/GuidePage'; // ✅ New Guide Page Import
+import GuidePage from './components/guides/GuidePage'; // ✅ New Guide Page Import
 import './App.css';
 
 // Initialize Supabase
