@@ -8,17 +8,20 @@ const GuidePage = () => {
   const navigate = useNavigate();
   const [guide, setGuide] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [progress, setProgress] = useState(false);
 
   useEffect(() => {
     const fetchGuide = async () => {
       const { data, error } = await supabase
         .from("guides")
-        .select("title, content, importance, category")
+        .select("*")
         .eq("slug", slug)
         .single();
 
       if (error) {
         console.error("Error fetching guide:", error);
+        setError("Guide not found.");
       } else {
         setGuide(data);
       }
@@ -28,50 +31,51 @@ const GuidePage = () => {
     fetchGuide();
   }, [slug]);
 
-  if (loading) return <p>Loading...</p>;
-  if (!guide) return <p>Guide not found.</p>;
+  const handleMarkAsRead = async () => {
+    if (!guide) return;
 
-  // Extract headings for Table of Contents
-  const extractHeadings = (htmlContent) => {
-    const tempDiv = document.createElement("div");
-    tempDiv.innerHTML = htmlContent;
-    const headings = tempDiv.querySelectorAll("h2, h3");
-    return Array.from(headings).map((heading) => ({
-      id: heading.innerText.replace(/\s+/g, "-").toLowerCase(),
-      text: heading.innerText,
-      tag: heading.tagName,
-    }));
+    const user = await supabase.auth.getUser();
+    if (!user.data.user) {
+      alert("You need to be logged in to track progress.");
+      return;
+    }
+
+    const discordUsername = user.data.user.user_metadata?.user_name || "";
+
+    const { error } = await supabase
+      .from("guide_progress")
+      .upsert([{ discord_username, guide_slug: slug }]);
+
+    if (error) {
+      console.error("Error marking as read:", error);
+    } else {
+      setProgress(true);
+    }
   };
 
-  const headings = extractHeadings(guide.content);
+  if (loading) return <p>Loading guide...</p>;
+  if (error) return <p className="error">{error}</p>;
 
   return (
     <div className="guide-container">
-      {/* Back Button */}
-      <button onClick={() => navigate("/search")} className="back-button">
-        ← Back to Guides
+      <h1>{guide.title}</h1>
+      <p className="category">Category: {guide.category}</p>
+      <p className="tags">Tags: {guide.tags?.join(", ") || "No tags"}</p>
+
+      <div className="guide-content" dangerouslySetInnerHTML={{ __html: guide.content }} />
+
+      <button className={`mark-read ${progress ? "completed" : ""}`} onClick={handleMarkAsRead}>
+        {progress ? "✅ Marked as Read" : "Mark as Read"}
       </button>
-      
-      {/* Title & Importance */}
-      <h1 className="guide-title">{guide.title}</h1>
-      <p className="guide-importance">Importance: {guide.importance}</p>
-      
-      {/* Table of Contents */}
-      {headings.length > 0 && (
-        <div className="table-of-contents">
-          <h3>Table of Contents</h3>
-          <ul>
-            {headings.map((heading) => (
-              <li key={heading.id} className={heading.tag.toLowerCase()}>
-                <a href={`#${heading.id}`}>{heading.text}</a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-      
-      {/* Guide Content */}
-      <div className="guide-content" dangerouslySetInnerHTML={{ __html: guide.content }}></div>
+
+      <div className="navigation">
+        {guide.previous_slug && (
+          <button onClick={() => navigate(`/guides/${guide.previous_slug}`)}>← Previous</button>
+        )}
+        {guide.next_slug && (
+          <button onClick={() => navigate(`/guides/${guide.next_slug}`)}>Next →</button>
+        )}
+      </div>
     </div>
   );
 };
