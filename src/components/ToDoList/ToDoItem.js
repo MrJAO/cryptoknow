@@ -7,10 +7,8 @@ const ToDoItem = ({ task, onDelete, onMarkDone, doneTasks, isEven, finishedTasks
   const isDone = doneTasks[task.id] || false;
 
   useEffect(() => {
-    if (finishedTasks[task.project_name]) { // Fix: Check existence in object
-      setIsDisabled(true);
-    }
-  }, [finishedTasks, task.project_name]);
+    setIsDisabled(!!finishedTasks[task.project_name]);
+  }, [finishedTasks]);
 
   const handleCheckboxToggle = () => {
     if (!isDisabled) {
@@ -42,12 +40,12 @@ const ToDoItem = ({ task, onDelete, onMarkDone, doneTasks, isEven, finishedTasks
         .eq('project_name', task.project_name)
         .eq('discord_username', discordUsername);
 
-      if (!error) {
-        onDelete(task.id);
-      } else {
+      if (error) {
         console.error("Error deleting task:", error.message);
-        alert("Failed to delete task. Try again.");
+        alert(`Failed to delete "${task.project_name}". Please try again.`);
+        return;
       }
+      onDelete(task.id);
     }
   };
 
@@ -65,7 +63,7 @@ const ToDoItem = ({ task, onDelete, onMarkDone, doneTasks, isEven, finishedTasks
           />
         )}
         <Link 
-          to={`/airdrop/${task.slug}`} 
+          to={`/airdrop/${task.slug || ''}`} 
           className={`text-blue-600 hover:underline ${isDone || isDisabled ? 'line-through text-gray-500' : ''}`}
         >
           {task.project_name}

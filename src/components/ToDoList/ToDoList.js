@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../supabaseClient';
-import ToDoItem from './ToDoItem';
 import { Link } from 'react-router-dom';
 
 const ToDoList = ({ currentUser }) => {
@@ -29,7 +28,7 @@ const ToDoList = ({ currentUser }) => {
 
     const { data, error } = await supabase
       .from('to_do_list')
-      .select('id, project_name, chain, airdrop_type, device_needed') // ✅ Removed "task_link"
+      .select('id, project_name, chain, airdrop_type, device_needed')
       .eq('discord_username', discord_username);
 
     if (error) {
@@ -59,17 +58,8 @@ const ToDoList = ({ currentUser }) => {
     }
   };
 
-  const handleMarkDone = (taskId, isDone) => {
-    setDoneTasks((prev) => ({ ...prev, [taskId]: isDone }));
-  };
-
   const handleDeleteTask = (deletedTaskId) => {
     setTasks((prevTasks) => prevTasks.filter(task => task.id !== deletedTaskId));
-    setDoneTasks((prev) => {
-      const newState = { ...prev };
-      delete newState[deletedTaskId];
-      return newState;
-    });
   };
 
   const handleSubmitFinishedTasks = async () => {
@@ -90,8 +80,7 @@ const ToDoList = ({ currentUser }) => {
     const { error } = await supabase.from('finished_daily_tasks').insert(inserts);
     if (!error) {
       alert("✅ Finished tasks submitted! They will be refreshed daily.");
-      setDoneTasks({});
-      fetchFinishedTasks(); // Refresh finished tasks
+      fetchFinishedTasks();
     } else {
       console.error("❌ Error submitting tasks:", error.message);
     }
@@ -126,13 +115,7 @@ const ToDoList = ({ currentUser }) => {
                   <td className="border p-3">{task.airdrop_type}</td>
                   <td className="border p-3">{task.device_needed}</td>
                   <td className="border p-3">
-                    <ToDoItem 
-                      task={task} 
-                      onDelete={handleDeleteTask} 
-                      onMarkDone={handleMarkDone} 
-                      doneTasks={doneTasks} 
-                      finishedTasks={finishedTasks} 
-                    />
+                    <button onClick={() => handleDeleteTask(task.id)} className="text-red-600 hover:text-red-800">❌</button>
                   </td>
                 </tr>
               ))}
