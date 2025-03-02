@@ -178,9 +178,9 @@ function Search() {
 		</select>
 
 		<select value={sortOption} onChange={(e) => setSortOption(e.target.value)}>
-		  <option value="importance">Sort by Importance</option>
-		  <option value="title-asc">Sort A → Z</option>
-		  <option value="title-desc">Sort Z → A</option>
+		  <option value="importance">High</option>
+		  <option value="title-asc">Medium</option>
+		  <option value="title-desc">Low</option>
 		</select>
 	  </div>
 	)}
