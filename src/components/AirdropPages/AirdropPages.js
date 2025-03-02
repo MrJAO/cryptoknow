@@ -38,10 +38,6 @@ const AirdropPages = () => {
 
   return (
     <div className="airdrop-page">
-      <button className="back-button" onClick={() => navigate("/available-airdrops")}>
-        ← Back to Available Airdrops
-      </button>
-
       {loading ? (
         <p>Loading airdrop details...</p>
       ) : airdrop ? (
@@ -65,6 +61,11 @@ const AirdropPages = () => {
       ) : (
         <p>❌ No airdrop found for this slug.</p>
       )}
+
+      {/* ✅ Move Back Button to the Bottom */}
+      <button className="back-button" onClick={() => navigate("/available-airdrops")}>
+        ← Back to Available Airdrops
+      </button>
     </div>
   );
 };
