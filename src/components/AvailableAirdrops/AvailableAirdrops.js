@@ -44,24 +44,6 @@ const AvailableAirdrops = () => {
     };
   }, []);
 
-  useEffect(() => {
-    const subscription = supabase
-      .channel('available_airdrops')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'available_airdrops' }, payload => {
-        console.log("🔄 Realtime update received:", payload);
-        setAirdrops(prevAirdrops => [...prevAirdrops, payload.new]);
-      })
-      .subscribe();
-
-    return () => {
-      if (subscription && typeof subscription.unsubscribe === 'function') {
-        subscription.unsubscribe();
-      } else {
-        console.warn("Subscription channel is not valid:", subscription);
-      }
-    };
-  }, []);
-
   const handleAddToDo = async (airdrop) => {
     if (!user) {
       alert("Please log in to add a task.");

@@ -40,12 +40,5 @@ export const subscribeToAirdrops = (setAirdrops) => {
     )
     .subscribe();
 
-  // Return cleanup function
-  return () => {
-    if (channel && typeof channel.unsubscribe === "function") {
-      channel.unsubscribe();
-    } else {
-      console.warn("Subscription channel is not valid:", channel);
-    }
-  };
+  return channel; // ✅ Return the channel instead of a cleanup function
 };
