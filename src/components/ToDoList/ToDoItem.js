@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../../supabaseClient';
+import { Link } from 'react-router-dom';
 
 const ToDoItem = ({ task, onDelete, onMarkDone, doneTasks, isEven, finishedTasks }) => {
   const [isDisabled, setIsDisabled] = useState(false);
@@ -63,9 +64,12 @@ const ToDoItem = ({ task, onDelete, onMarkDone, doneTasks, isEven, finishedTasks
             className="w-5 h-5 cursor-pointer accent-blue-500"
           />
         )}
-        <span className={`text-gray-800 ${isDone || isDisabled ? 'line-through text-gray-500' : ''}`}>
+        <Link 
+          to={`/airdrop/${task.slug}`} 
+          className={`text-blue-600 hover:underline ${isDone || isDisabled ? 'line-through text-gray-500' : ''}`}
+        >
           {task.project_name}
-        </span>
+        </Link>
       </td>
       <td className="border p-3 text-gray-700">{task.chain}</td>
       <td className="border p-3 text-gray-700">{task.airdrop_type}</td>

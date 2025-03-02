@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../supabaseClient';
 import ToDoItem from './ToDoItem';
+import { Link } from 'react-router-dom';
 
 const ToDoList = ({ currentUser }) => {
   const [tasks, setTasks] = useState([]);
@@ -115,15 +116,25 @@ const ToDoList = ({ currentUser }) => {
             </thead>
             <tbody>
               {tasks.map((task, index) => (
-                <ToDoItem 
-                  key={task.id} 
-                  task={task} 
-                  onDelete={handleDeleteTask} 
-                  onMarkDone={handleMarkDone} 
-                  doneTasks={doneTasks} 
-                  finishedTasks={finishedTasks} 
-                  isEven={index % 2 === 0} // Helps with alternating row colors
-                />
+                <tr key={task.id} className={index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}>
+                  <td className="border p-3">
+                    <Link to={`/airdrop/${task.project_name.replace(/\s+/g, '-').toLowerCase()}`} className="text-blue-600 hover:underline">
+                      {task.project_name}
+                    </Link>
+                  </td>
+                  <td className="border p-3">{task.chain}</td>
+                  <td className="border p-3">{task.airdrop_type}</td>
+                  <td className="border p-3">{task.device_needed}</td>
+                  <td className="border p-3">
+                    <ToDoItem 
+                      task={task} 
+                      onDelete={handleDeleteTask} 
+                      onMarkDone={handleMarkDone} 
+                      doneTasks={doneTasks} 
+                      finishedTasks={finishedTasks} 
+                    />
+                  </td>
+                </tr>
               ))}
             </tbody>
           </table>
