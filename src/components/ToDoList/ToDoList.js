@@ -28,7 +28,7 @@ const ToDoList = ({ currentUser }) => {
 
     const { data, error } = await supabase
       .from('to_do_list')
-      .select('id, slug') // ✅ Fetch only slug
+      .select('id, slug, airdrop_name, details') // ✅ Fetch airdrop name and details
       .eq('discord_username', discord_username);
 
     if (error) {
@@ -60,6 +60,13 @@ const ToDoList = ({ currentUser }) => {
 
   const handleDeleteTask = (deletedTaskId) => {
     setTasks((prevTasks) => prevTasks.filter(task => task.id !== deletedTaskId));
+  };
+
+  const handleCheckboxChange = (taskId) => {
+    setDoneTasks(prev => ({
+      ...prev,
+      [taskId]: !prev[taskId]
+    }));
   };
 
   const handleSubmitFinishedTasks = async () => {
@@ -96,19 +103,28 @@ const ToDoList = ({ currentUser }) => {
           <table className="w-full border-collapse border border-gray-300 shadow-md rounded-lg overflow-hidden">
             <thead>
               <tr className="bg-gray-700 text-white text-left">
-                <th className="border p-3">Project</th>
+                <th className="border p-3">✔</th>
+                <th className="border p-3">Airdrop Name</th>
+                <th className="border p-3">Details</th>
                 <th className="border p-3">Actions</th>
               </tr>
             </thead>
             <tbody>
               {tasks.map((task, index) => (
                 <tr key={task.id} className={index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}>
+                  <td className="border p-3 text-center">
+                    <input 
+                      type="checkbox" 
+                      checked={doneTasks[task.id] || false} 
+                      onChange={() => handleCheckboxChange(task.id)}
+                    />
+                  </td>
+                  <td className="border p-3">{task.airdrop_name || 'N/A'}</td>
+                  <td className="border p-3">{task.details || 'No details available'}</td>
                   <td className="border p-3">
-                    <Link to={`/airdrop/${task.slug}`} className="text-blue-600 hover:underline">
+                    <Link to={`/airdrop/${task.slug}`} className="text-blue-600 hover:underline mr-4">
                       View Airdrop
                     </Link>
-                  </td>
-                  <td className="border p-3">
                     <button onClick={() => handleDeleteTask(task.id)} className="text-red-600 hover:text-red-800">❌</button>
                   </td>
                 </tr>
