@@ -3,11 +3,11 @@ import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "../../supabaseClient";
 import "./AirdropPages.css";
 
-const AirdropPages = () => {  // ✅ Name matches App.js
+const AirdropPages = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const [airdrop, setAirdrop] = useState(null);
-  const [loading, setLoading] = useState(true); // ✅ Added loading state
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     console.log("🔍 Checking slug:", slug);
@@ -20,7 +20,7 @@ const AirdropPages = () => {  // ✅ Name matches App.js
       setLoading(true);
       const { data, error } = await supabase
         .from("available_airdrops")
-        .select("*")
+        .select("project_name, chain, airdrop_type, device_needed, status, content") // ✅ Fetch 'content'
         .eq("slug", slug)
         .single();
 
@@ -51,9 +51,19 @@ const AirdropPages = () => {  // ✅ Name matches App.js
           <p><strong>Airdrop Type:</strong> {airdrop.airdrop_type}</p>
           <p><strong>Device Needed:</strong> {airdrop.device_needed}</p>
           <p><strong>Status:</strong> {airdrop.status ? "🟢 Ongoing" : "🔴 Ended"}</p>
+
+          {/* ✅ Display Content if Available */}
+          {airdrop.content ? (
+            <div className="airdrop-content">
+              <h2>Details & Instructions</h2>
+              <p>{airdrop.content}</p>
+            </div>
+          ) : (
+            <p>ℹ️ No additional details available.</p>
+          )}
         </>
       ) : (
-        <p>❌ No airdrop found for this slug.</p> // ✅ Error message if no data
+        <p>❌ No airdrop found for this slug.</p>
       )}
     </div>
   );

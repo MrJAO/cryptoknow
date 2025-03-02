@@ -100,7 +100,7 @@ const App = () => {
             <Route path="/harvests" element={<Harvests />} />
             <Route path="/faqs" element={<FAQs />} />
             <Route path="/about" element={<About />} />
-            <Route path="/airdrop-pages/:slug" element={<AirdropPages />} /> {/* ✅ Corrected component reference */}
+            <Route path="/airdrop/:slug" element={<AirdropPages />} /> {/* ✅ Corrected component reference */}
             <Route path="/guides/:slug" element={<GuidePage />} /> {/* ✅ Route for Guide Pages */}
           </Routes>
 
