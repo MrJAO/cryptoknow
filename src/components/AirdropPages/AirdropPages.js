@@ -12,6 +12,11 @@ const AirdropPage = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
+    if (!slug) {
+      console.error("❌ Error: Slug is undefined");
+      return;
+    }
+
     const fetchAirdrop = async () => {
       const { data, error } = await supabase
         .from("available_airdrops")
