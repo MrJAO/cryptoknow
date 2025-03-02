@@ -48,7 +48,6 @@ const AvailableAirdrops = () => {
       .insert([{ 
         discord_username, 
         project_name: airdrop.project_name, 
-        task_link: airdrop.task_link, 
         chain: airdrop.chain,
         airdrop_type: airdrop.airdrop_type,
         device_needed: airdrop.device_needed,
@@ -83,7 +82,6 @@ const AvailableAirdrops = () => {
           <thead className="bg-gray-800 text-white uppercase">
             <tr>
               <th className="px-6 py-3 border-b">Project Name</th>
-              <th className="px-6 py-3 border-b">Task Link</th>
               <th className="px-6 py-3 border-b">Chain</th>
               <th className="px-6 py-3 border-b">Airdrop Type</th>
               <th className="px-6 py-3 border-b">Device Needed</th>
@@ -96,11 +94,6 @@ const AvailableAirdrops = () => {
               <tr key={index} className="border-b hover:bg-gray-100 transition">
                 <td className="px-6 py-4 font-semibold">
                   <Link to={`/airdrop/${airdrop.slug}`} className="text-blue-500 hover:underline">{airdrop.project_name}</Link>
-                </td>
-                <td className="px-6 py-4">
-                  <a href={airdrop.task_link} target="_blank" rel="noopener noreferrer" className="bg-blue-500 text-white font-semibold py-1 px-3 rounded hover:bg-blue-600 transition duration-300">
-                    🌍 Task
-                  </a>
                 </td>
                 <td className="px-6 py-4">{airdrop.chain}</td>
                 <td className="px-6 py-4">{airdrop.airdrop_type}</td>
