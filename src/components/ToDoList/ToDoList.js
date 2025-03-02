@@ -26,10 +26,13 @@ const ToDoList = ({ currentUser }) => {
 
     console.log("Fetching tasks for:", discord_username);
 
-    const { data, error } = await supabase
-      .from('to_do_list')
-      .select('id, slug, airdrop_name, details') // ✅ Fetch airdrop name and details
-      .eq('discord_username', discord_username);
+	const { data, error } = await supabase
+	  .from('to_do_list')
+	  .select(`
+		slug, 
+		available_airdrops (project_name, chain, airdrop_type, device_needed)
+	  `)
+	  .eq('discord_username', discord_username);
 
     if (error) {
       console.error("❌ Error fetching tasks:", error.message);
