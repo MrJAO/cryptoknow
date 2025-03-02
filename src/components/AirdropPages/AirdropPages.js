@@ -3,30 +3,34 @@ import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "../../supabaseClient";
 import "./AirdropPages.css";
 
-const AirdropPage = () => {
+const AirdropPages = () => {  // ✅ Name matches App.js
   const { slug } = useParams();
   const navigate = useNavigate();
   const [airdrop, setAirdrop] = useState(null);
+  const [loading, setLoading] = useState(true); // ✅ Added loading state
 
   useEffect(() => {
-    console.log("🔍 Checking slug:", slug); // Debugging
+    console.log("🔍 Checking slug:", slug);
     if (!slug) {
       console.error("❌ Error: Slug is undefined");
       return;
     }
 
     const fetchAirdrop = async () => {
+      setLoading(true);
       const { data, error } = await supabase
         .from("available_airdrops")
         .select("*")
         .eq("slug", slug)
-        .single(); // Ensure it always returns an object
+        .single();
 
       if (error) {
         console.error("❌ Error fetching airdrop:", error.message);
       } else {
+        console.log("✅ Airdrop data received:", data);
         setAirdrop(data);
       }
+      setLoading(false);
     };
 
     fetchAirdrop();
@@ -38,7 +42,9 @@ const AirdropPage = () => {
         ← Back to Available Airdrops
       </button>
 
-      {airdrop ? (
+      {loading ? (
+        <p>Loading airdrop details...</p>
+      ) : airdrop ? (
         <>
           <h1 className="airdrop-title">{airdrop.project_name}</h1>
           <p><strong>Chain:</strong> {airdrop.chain}</p>
@@ -47,10 +53,10 @@ const AirdropPage = () => {
           <p><strong>Status:</strong> {airdrop.status ? "🟢 Ongoing" : "🔴 Ended"}</p>
         </>
       ) : (
-        <p>Loading airdrop details...</p>
+        <p>❌ No airdrop found for this slug.</p> // ✅ Error message if no data
       )}
     </div>
   );
 };
 
-export default AirdropPage;
+export default AirdropPages;
