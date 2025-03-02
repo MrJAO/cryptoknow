@@ -6,7 +6,7 @@ import { Link } from "react-router-dom"; // Import Link for navigation
 const AvailableAirdrops = () => {
   const [airdrops, setAirdrops] = useState([]);
   const [user, setUser] = useState(null);
-  const [addedProjects, setAddedProjects] = useState([]);
+  const [addedProjects, setAddedProjects] = useState(new Set());
   const [filters, setFilters] = useState({
     chain: "",
     airdrop_type: "",
@@ -15,14 +15,22 @@ const AvailableAirdrops = () => {
 
   useEffect(() => {
     const getCurrentUserAndTasks = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user }, error } = await supabase.auth.getUser();
+      if (error) {
+        console.error("Error fetching user:", error);
+        return;
+      }
       if (user) {
         setUser(user);
-        const { data: tasks } = await supabase
+        const { data: tasks, error: tasksError } = await supabase
           .from("to_do_list")
           .select("project_name")
           .eq("discord_username", user.user_metadata?.full_name || "");
-        setAddedProjects(tasks?.map((t) => t.project_name) || []);
+        if (tasksError) {
+          console.error("Error fetching to-do list:", tasksError);
+          return;
+        }
+        setAddedProjects(new Set(tasks?.map((t) => t.project_name) || []));
       }
     };
     getCurrentUserAndTasks();
@@ -32,14 +40,10 @@ const AvailableAirdrops = () => {
     const channel = subscribeToAirdrops(setAirdrops);
 
     return () => {
-      if (channel && typeof channel.unsubscribe === "function") {
-        try {
-          channel.unsubscribe();
-        } catch (error) {
-          console.warn("Error unsubscribing from airdrops:", error);
-        }
-      } else {
-        console.warn("Subscription channel is not valid:", channel);
+      try {
+        channel?.unsubscribe();
+      } catch (error) {
+        console.warn("Error unsubscribing from airdrops:", error);
       }
     };
   }, []);
@@ -61,8 +65,8 @@ const AvailableAirdrops = () => {
         airdrop_type: airdrop.airdrop_type,
         device_needed: airdrop.device_needed,
         status: airdrop.status,
-        slug: airdrop.slug, // Include slug
-        content: airdrop.content // Include content
+        slug: airdrop.slug,
+        content: airdrop.content 
       }]);
 
     if (error) {
@@ -70,7 +74,7 @@ const AvailableAirdrops = () => {
       alert("Failed to add. Please try again.");
     } else {
       alert("Added to your To-Do List!");
-      setAddedProjects((prev) => [...prev, airdrop.project_name]); 
+      setAddedProjects((prev) => new Set(prev).add(airdrop.project_name)); 
     }
   };
 
@@ -115,7 +119,7 @@ const AvailableAirdrops = () => {
                   )}
                 </td>
                 <td className="px-6 py-4">
-                  {addedProjects.includes(airdrop.project_name) ? (
+                  {addedProjects.has(airdrop.project_name) ? (
                     <span className="text-green-600 font-semibold">✅ Added</span>
                   ) : (
                     <button onClick={() => handleAddToDo(airdrop)} className="bg-green-500 text-white font-semibold py-1 px-3 rounded hover:bg-green-600 transition duration-300">

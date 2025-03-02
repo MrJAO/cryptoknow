@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "../../supabaseClient";
 import "./AirdropPages.css";
 
-const AirdropPages = () => {
+const AirdropPages = ({ user }) => {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [airdrop, setAirdrop] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log("🔍 Checking slug:", slug);
     if (!slug) {
       console.error("❌ Error: Slug is undefined");
       return;
@@ -18,23 +18,44 @@ const AirdropPages = () => {
 
     const fetchAirdrop = async () => {
       setLoading(true);
-      const { data, error } = await supabase
+      let airdropData = null;
+      let error = null;
+      
+      if (location.pathname.includes("to-do-list") && user) {
+        // If user is logged in & viewing from To-Do List, fetch their saved slug
+        const { data: userAirdrop, error: userError } = await supabase
+          .from("to_do_list")
+          .select("slug")
+          .eq("discord_username", user.discord_username)
+          .eq("slug", slug)
+          .single();
+
+        if (userError || !userAirdrop) {
+          console.error("❌ Error fetching user's saved airdrop:", userError?.message);
+          setLoading(false);
+          return;
+        }
+      }
+
+      // Fetch airdrop details from available_airdrops
+      const { data, error: fetchError } = await supabase
         .from("available_airdrops")
-        .select("project_name, chain, airdrop_type, device_needed, status, content") // ✅ Fetch 'content'
+        .select("project_name, chain, airdrop_type, device_needed, status, content")
         .eq("slug", slug)
         .single();
 
-      if (error) {
-        console.error("❌ Error fetching airdrop:", error.message);
+      if (fetchError) {
+        console.error("❌ Error fetching airdrop:", fetchError.message);
       } else {
-        console.log("✅ Airdrop data received:", data);
-        setAirdrop(data);
+        airdropData = data;
       }
+
+      setAirdrop(airdropData);
       setLoading(false);
     };
 
     fetchAirdrop();
-  }, [slug]);
+  }, [slug, user, location.pathname]);
 
   return (
     <div className="airdrop-page">
@@ -63,8 +84,11 @@ const AirdropPages = () => {
       )}
 
       {/* ✅ Move Back Button to the Bottom */}
-      <button className="back-button" onClick={() => navigate("/available-airdrops")}>
-        ← Back to Available Airdrops
+      <button 
+        className="back-button" 
+        onClick={() => navigate(location.pathname.includes("to-do-list") ? "/to-do-list" : "/available-airdrops")}
+      >
+        ← Back
       </button>
     </div>
   );

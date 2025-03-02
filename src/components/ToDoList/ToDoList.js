@@ -28,7 +28,7 @@ const ToDoList = ({ currentUser }) => {
 
     const { data, error } = await supabase
       .from('to_do_list')
-      .select('id, project_name, chain, airdrop_type, device_needed')
+      .select('id, slug') // ✅ Fetch only slug
       .eq('discord_username', discord_username);
 
     if (error) {
@@ -46,14 +46,14 @@ const ToDoList = ({ currentUser }) => {
     
     const { data, error } = await supabase
       .from('finished_daily_tasks')
-      .select('project_name')
+      .select('slug')
       .eq('discord_username', discord_username);
 
     if (error) {
       console.error("❌ Error fetching finished tasks:", error.message);
     } else {
       const finished = {};
-      data.forEach(task => { finished[task.project_name] = true; });
+      data.forEach(task => { finished[task.slug] = true; });
       setFinishedTasks(finished);
     }
   };
@@ -68,14 +68,14 @@ const ToDoList = ({ currentUser }) => {
     const discord_username = currentUser.user_metadata?.user_name || currentUser.user_metadata?.full_name || '';
     console.log("Submitting tasks for:", discord_username);
 
-    const newFinishedTasks = tasks.filter(task => doneTasks[task.id] && !finishedTasks[task.project_name]);
+    const newFinishedTasks = tasks.filter(task => doneTasks[task.id] && !finishedTasks[task.slug]);
 
     if (newFinishedTasks.length === 0) {
       alert("No new tasks have been marked as finished.");
       return;
     }
 
-    const inserts = newFinishedTasks.map(task => ({ discord_username, project_name: task.project_name }));
+    const inserts = newFinishedTasks.map(task => ({ discord_username, slug: task.slug }));
 
     const { error } = await supabase.from('finished_daily_tasks').insert(inserts);
     if (!error) {
@@ -96,10 +96,7 @@ const ToDoList = ({ currentUser }) => {
           <table className="w-full border-collapse border border-gray-300 shadow-md rounded-lg overflow-hidden">
             <thead>
               <tr className="bg-gray-700 text-white text-left">
-                <th className="border p-3">Project Name</th>
-                <th className="border p-3">Chain</th>
-                <th className="border p-3">Airdrop Type</th>
-                <th className="border p-3">Device Needed</th>
+                <th className="border p-3">Project</th>
                 <th className="border p-3">Actions</th>
               </tr>
             </thead>
@@ -107,13 +104,10 @@ const ToDoList = ({ currentUser }) => {
               {tasks.map((task, index) => (
                 <tr key={task.id} className={index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}>
                   <td className="border p-3">
-                    <Link to={`/airdrop/${task.project_name.replace(/\s+/g, '-').toLowerCase()}`} className="text-blue-600 hover:underline">
-                      {task.project_name}
+                    <Link to={`/airdrop/${task.slug}`} className="text-blue-600 hover:underline">
+                      View Airdrop
                     </Link>
                   </td>
-                  <td className="border p-3">{task.chain}</td>
-                  <td className="border p-3">{task.airdrop_type}</td>
-                  <td className="border p-3">{task.device_needed}</td>
                   <td className="border p-3">
                     <button onClick={() => handleDeleteTask(task.id)} className="text-red-600 hover:text-red-800">❌</button>
                   </td>
