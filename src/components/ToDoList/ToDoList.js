@@ -28,7 +28,7 @@ const ToDoList = ({ currentUser }) => {
 
     const { data, error } = await supabase
       .from('to_do_list')
-      .select('id, project_name, task_link, chain, airdrop_type, device_needed')
+      .select('id, project_name, chain, airdrop_type, device_needed') // ✅ Removed "task_link"
       .eq('discord_username', discord_username);
 
     if (error) {
@@ -107,7 +107,6 @@ const ToDoList = ({ currentUser }) => {
             <thead>
               <tr className="bg-gray-700 text-white text-left">
                 <th className="border p-3">Project Name</th>
-                <th className="border p-3">Task Link</th>
                 <th className="border p-3">Chain</th>
                 <th className="border p-3">Airdrop Type</th>
                 <th className="border p-3">Device Needed</th>

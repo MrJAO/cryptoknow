@@ -67,16 +67,6 @@ const ToDoItem = ({ task, onDelete, onMarkDone, doneTasks, isEven, finishedTasks
           {task.project_name}
         </span>
       </td>
-      <td className="border p-3">
-        <a 
-          href={task.task_link} 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          className="text-blue-500 hover:underline font-medium"
-        >
-          View Task
-        </a>
-      </td>
       <td className="border p-3 text-gray-700">{task.chain}</td>
       <td className="border p-3 text-gray-700">{task.airdrop_type}</td>
       <td className="border p-3 text-gray-700">{task.device_needed}</td>

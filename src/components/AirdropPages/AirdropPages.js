@@ -9,6 +9,7 @@ const AirdropPage = () => {
   const [airdrop, setAirdrop] = useState(null);
 
   useEffect(() => {
+    console.log("🔍 Checking slug:", slug); // Debugging
     if (!slug) {
       console.error("❌ Error: Slug is undefined");
       return;
@@ -19,10 +20,10 @@ const AirdropPage = () => {
         .from("available_airdrops")
         .select("*")
         .eq("slug", slug)
-        .maybeSingle();
+        .single(); // Ensure it always returns an object
 
-      if (error || !data) {
-        console.error("❌ Error fetching airdrop:", error);
+      if (error) {
+        console.error("❌ Error fetching airdrop:", error.message);
       } else {
         setAirdrop(data);
       }

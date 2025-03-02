@@ -28,17 +28,21 @@ const AvailableAirdrops = () => {
     getCurrentUserAndTasks();
   }, []);
 
-	useEffect(() => {
-	  const channel = subscribeToAirdrops(setAirdrops);
+  useEffect(() => {
+    const channel = subscribeToAirdrops(setAirdrops);
 
-	  return () => {
-		if (channel && typeof channel.unsubscribe === "function") {
-		  channel.unsubscribe();
-		} else {
-		  console.warn("Subscription channel is not valid:", channel);
-		}
-	  };
-	}, []);
+    return () => {
+      if (channel && typeof channel.unsubscribe === "function") {
+        try {
+          channel.unsubscribe();
+        } catch (error) {
+          console.warn("Error unsubscribing from airdrops:", error);
+        }
+      } else {
+        console.warn("Subscription channel is not valid:", channel);
+      }
+    };
+  }, []);
 
   const handleAddToDo = async (airdrop) => {
     if (!user) {
