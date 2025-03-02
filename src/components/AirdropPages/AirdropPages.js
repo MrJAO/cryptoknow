@@ -52,11 +52,11 @@ const AirdropPages = () => {
           <p><strong>Device Needed:</strong> {airdrop.device_needed}</p>
           <p><strong>Status:</strong> {airdrop.status ? "🟢 Ongoing" : "🔴 Ended"}</p>
 
-          {/* ✅ Display Content if Available */}
+          {/* ✅ Display Content as HTML */}
           {airdrop.content ? (
             <div className="airdrop-content">
               <h2>Details & Instructions</h2>
-              <p>{airdrop.content}</p>
+              <div dangerouslySetInnerHTML={{ __html: airdrop.content }} />
             </div>
           ) : (
             <p>ℹ️ No additional details available.</p>
