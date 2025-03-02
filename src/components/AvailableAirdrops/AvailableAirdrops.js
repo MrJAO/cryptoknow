@@ -28,12 +28,17 @@ const AvailableAirdrops = () => {
     getCurrentUserAndTasks();
   }, []);
 
-  useEffect(() => {
-    const channel = subscribeToAirdrops(setAirdrops);
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, []);
+	useEffect(() => {
+	  const channel = subscribeToAirdrops(setAirdrops);
+
+	  return () => {
+		if (channel && typeof channel.unsubscribe === "function") {
+		  channel.unsubscribe();
+		} else {
+		  console.warn("Subscription channel is not valid:", channel);
+		}
+	  };
+	}, []);
 
   const handleAddToDo = async (airdrop) => {
     if (!user) {
