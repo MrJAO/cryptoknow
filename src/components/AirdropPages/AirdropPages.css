@@ -104,4 +104,9 @@
 }
 
 .status.ongoing {
-  color: #00ff
+  color: #00ff00;
+}
+
+.status.ended {
+  color: #ff0000;
+}
