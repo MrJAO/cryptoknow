@@ -15,6 +15,7 @@ import Harvests from './components/Harvests/Harvests';
 import FAQs from './components/FAQs/FAQs';
 import About from './components/About/About';
 import GuidePage from './components/guides/GuidePage'; // ✅ New Guide Page Import
+import AirdropPage from './components/AvailableAirdrops/AvailableAirdrops'; // ✅ New AirdropPage Import
 import './App.css';
 
 // Initialize Supabase
@@ -100,6 +101,7 @@ const App = () => {
             <Route path="/harvests" element={<Harvests />} />
             <Route path="/faqs" element={<FAQs />} />
             <Route path="/about" element={<About />} />
+            <Route path="/available-airdrops/:slug" element={<AirdropPage />} /> {/* ✅ New Route for AirdropPage */}
             <Route path="/guides/:slug" element={<GuidePage />} /> {/* ✅ New Route for Guide Pages */}
           </Routes>
 
