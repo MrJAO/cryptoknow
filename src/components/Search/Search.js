@@ -87,11 +87,17 @@ function Search() {
     .filter((guide) => selectedCategory === "All" || guide.category === selectedCategory)
     .filter((guide) => selectedTag === "All" || (guide.tags && guide.tags.includes(selectedTag)))
     .sort((a, b) => {
-      if (sortOption === "importance") return b.importance - a.importance;
-      if (sortOption === "title-asc") return a.title.localeCompare(b.title);
-      if (sortOption === "title-desc") return b.title.localeCompare(a.title);
-      return 0;
-    });
+	  const importanceOrder = { High: 3, Medium: 2, Low: 1 };
+
+	  const importanceA = importanceOrder[a.importance] || 0;
+	  const importanceB = importanceOrder[b.importance] || 0;
+
+	  if (sortOption === "high") return importanceB - importanceA;
+	  if (sortOption === "medium") return Math.abs(importanceB - 2) - Math.abs(importanceA - 2);
+	  if (sortOption === "low") return importanceA - importanceB;
+
+	  return 0;
+	});
 
   const filteredCryptoFiles = cryptoFiles.filter(
     (file) =>
@@ -178,10 +184,11 @@ function Search() {
 		</select>
 
 		<select value={sortOption} onChange={(e) => setSortOption(e.target.value)}>
-		  <option value="importance">High</option>
-		  <option value="title-asc">Medium</option>
-		  <option value="title-desc">Low</option>
+		  <option value="high">High</option>
+		  <option value="medium">Medium</option>
+		  <option value="low">Low</option>
 		</select>
+
 	  </div>
 	)}
 
