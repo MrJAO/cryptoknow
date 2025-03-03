@@ -54,6 +54,16 @@ function FAQs() {
         </>
       )
     },
+	{ 
+      question: "Points Calculations", 
+      answer: (
+        <>
+          <p>Daily finished tasks is equivalent to 1 point with a maximum of N daily points (for fairness).</p>
+		  <p>Required and Available quests will give N points for each accepted quest.</p>
+          <p>Airdrop Contributions will give N points if accepted.</p>
+        </>
+      )
+    },
     { 
       question: "Harvests Tab", 
       answer: "This tab helps track completed airdrops. Once an airdrop from the Available Airdrops list ends, we will gather community feedback via Quests to determine how many members were eligible."
