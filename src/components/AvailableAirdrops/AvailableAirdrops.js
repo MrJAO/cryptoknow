@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "../../supabaseClient";
-import { subscribeToAirdrops } from "../../utils/supabaseSubscription"; // Import real-time subscription
-import { Link } from "react-router-dom"; // Import Link for navigation
+import { subscribeToAirdrops } from "../../utils/supabaseSubscription";
+import { Link } from "react-router-dom";
 
 const AvailableAirdrops = () => {
   const [airdrops, setAirdrops] = useState([]);
@@ -24,13 +24,14 @@ const AvailableAirdrops = () => {
         setUser(user);
         const { data: tasks, error: tasksError } = await supabase
           .from("to_do_list")
-          .select("project_name")
+          .select("slug")  // FIXED: Only selecting valid columns
           .eq("discord_username", user.user_metadata?.full_name || "");
+
         if (tasksError) {
-          console.error("Error fetching to-do list:", tasksError);
+          console.error("❌ Error fetching to-do list:", tasksError);
           return;
         }
-        setAddedProjects(new Set(tasks?.map((t) => t.project_name) || []));
+        setAddedProjects(new Set(tasks?.map((t) => t.slug) || []));
       }
     };
     getCurrentUserAndTasks();
@@ -38,7 +39,6 @@ const AvailableAirdrops = () => {
 
   useEffect(() => {
     const channel = subscribeToAirdrops(setAirdrops);
-
     return () => {
       try {
         channel?.unsubscribe();
@@ -55,29 +55,23 @@ const AvailableAirdrops = () => {
     }
 
     const discord_username = user.user_metadata?.full_name || "";
-
-    const { data, error } = await supabase
+    
+    // FIXED: Insert only the correct columns
+    const { error } = await supabase
       .from("to_do_list")
-      .insert([
-        {
-          discord_username,
-          project_name: airdrop.project_name,
-          chain: airdrop.chain,
-          airdrop_type: airdrop.airdrop_type,
-          device_needed: airdrop.device_needed,
-          status: airdrop.status,
-          slug: airdrop.slug,
-          content: airdrop.content || "Added from Available Airdrops", // Ensure content is not empty
-          created_at: new Date().toISOString() // Ensure a valid timestamp
-        }
-      ]);
+      .insert([{ 
+        discord_username, 
+        slug: airdrop.slug, 
+        content: `Airdrop: ${airdrop.project_name} - ${airdrop.details}`, // Adjust as needed
+        created_at: new Date().toISOString() // Explicitly set timestamp
+      }]);
 
     if (error) {
-      console.error("Error adding to To-Do List:", error);
+      console.error("❌ Error adding to To-Do List:", error);
       alert("Failed to add. Please try again.");
     } else {
       alert("Added to your To-Do List!");
-      setAddedProjects((prev) => new Set(prev).add(airdrop.project_name));
+      setAddedProjects((prev) => new Set(prev).add(airdrop.slug)); 
     }
   };
 
@@ -122,7 +116,7 @@ const AvailableAirdrops = () => {
                   )}
                 </td>
                 <td className="px-6 py-4">
-                  {addedProjects.has(airdrop.project_name) ? (
+                  {addedProjects.has(airdrop.slug) ? (
                     <span className="text-green-600 font-semibold">✅ Added</span>
                   ) : (
                     <button onClick={() => handleAddToDo(airdrop)} className="bg-green-500 text-white font-semibold py-1 px-3 rounded hover:bg-green-600 transition duration-300">
