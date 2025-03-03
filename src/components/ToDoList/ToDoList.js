@@ -61,8 +61,28 @@ const ToDoList = ({ currentUser }) => {
     }
   };
 
-  const handleDeleteTask = (deletedSlug) => {
+  const handleDeleteTask = async (deletedSlug) => {
     setTasks((prevTasks) => prevTasks.filter(task => task.slug !== deletedSlug));
+
+    const { error: deleteError } = await supabase
+      .from('to_do_list')
+      .delete()
+      .eq('slug', deletedSlug);
+
+    if (deleteError) {
+      console.error("❌ Error deleting task:", deleteError.message);
+      alert("Failed to delete the task. Please try again.");
+      return;
+    }
+
+    const { error: updateError } = await supabase
+      .from('available_airdrops')
+      .update({ status: 'Add' })
+      .eq('slug', deletedSlug);
+
+    if (updateError) {
+      console.error("❌ Error updating available airdrop status:", updateError.message);
+    }
   };
 
   const handleCheckboxChange = (taskSlug) => {
@@ -128,14 +148,15 @@ const ToDoList = ({ currentUser }) => {
                       onChange={() => handleCheckboxChange(task.slug)}
                     />
                   </td>
-                  <td className="border p-3">{task.available_airdrops?.project_name || 'N/A'}</td>
+                  <td className="border p-3">
+                    <Link to={`/airdrop/${task.slug}`} className="text-blue-600 hover:underline">
+                      {task.available_airdrops?.project_name || 'N/A'}
+                    </Link>
+                  </td>
                   <td className="border p-3">
                     {task.available_airdrops ? `${task.available_airdrops.chain}, ${task.available_airdrops.airdrop_type}, ${task.available_airdrops.device_needed}` : 'No details available'}
                   </td>
                   <td className="border p-3">
-                    <Link to={`/airdrop/${task.slug}`} className="text-blue-600 hover:underline mr-4">
-                      View Airdrop
-                    </Link>
                     <button onClick={() => handleDeleteTask(task.slug)} className="text-red-600 hover:text-red-800">❌</button>
                   </td>
                 </tr>
