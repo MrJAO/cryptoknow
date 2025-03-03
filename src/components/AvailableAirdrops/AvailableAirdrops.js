@@ -56,25 +56,28 @@ const AvailableAirdrops = () => {
 
     const discord_username = user.user_metadata?.full_name || "";
 
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("to_do_list")
-      .insert([{ 
-        discord_username, 
-        project_name: airdrop.project_name, 
-        chain: airdrop.chain,
-        airdrop_type: airdrop.airdrop_type,
-        device_needed: airdrop.device_needed,
-        status: airdrop.status,
-        slug: airdrop.slug,
-        content: airdrop.content 
-      }]);
+      .insert([
+        {
+          discord_username,
+          project_name: airdrop.project_name,
+          chain: airdrop.chain,
+          airdrop_type: airdrop.airdrop_type,
+          device_needed: airdrop.device_needed,
+          status: airdrop.status,
+          slug: airdrop.slug,
+          content: airdrop.content || "Added from Available Airdrops", // Ensure content is not empty
+          created_at: new Date().toISOString() // Ensure a valid timestamp
+        }
+      ]);
 
     if (error) {
       console.error("Error adding to To-Do List:", error);
       alert("Failed to add. Please try again.");
     } else {
       alert("Added to your To-Do List!");
-      setAddedProjects((prev) => new Set(prev).add(airdrop.project_name)); 
+      setAddedProjects((prev) => new Set(prev).add(airdrop.project_name));
     }
   };
 
