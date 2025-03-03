@@ -26,13 +26,13 @@ const ToDoList = ({ currentUser }) => {
 
     console.log("Fetching tasks for:", discord_username);
 
-	const { data, error } = await supabase
-	  .from('to_do_list')
-	  .select(`
-		slug, 
-		available_airdrops (project_name, chain, airdrop_type, device_needed)
-	  `)
-	  .eq('discord_username', discord_username);
+    const { data, error } = await supabase
+      .from('to_do_list')
+      .select(`
+        slug, 
+        available_airdrops (project_name, chain, airdrop_type, device_needed)
+      `)
+      .eq('discord_username', discord_username);
 
     if (error) {
       console.error("❌ Error fetching tasks:", error.message);
@@ -46,7 +46,7 @@ const ToDoList = ({ currentUser }) => {
     if (!currentUser) return;
 
     const discord_username = currentUser.user_metadata?.user_name || currentUser.user_metadata?.full_name || '';
-    
+
     const { data, error } = await supabase
       .from('finished_daily_tasks')
       .select('slug')
@@ -61,14 +61,14 @@ const ToDoList = ({ currentUser }) => {
     }
   };
 
-  const handleDeleteTask = (deletedTaskId) => {
-    setTasks((prevTasks) => prevTasks.filter(task => task.id !== deletedTaskId));
+  const handleDeleteTask = (deletedSlug) => {
+    setTasks((prevTasks) => prevTasks.filter(task => task.slug !== deletedSlug));
   };
 
-  const handleCheckboxChange = (taskId) => {
+  const handleCheckboxChange = (taskSlug) => {
     setDoneTasks(prev => ({
       ...prev,
-      [taskId]: !prev[taskId]
+      [taskSlug]: !prev[taskSlug]
     }));
   };
 
@@ -78,14 +78,20 @@ const ToDoList = ({ currentUser }) => {
     const discord_username = currentUser.user_metadata?.user_name || currentUser.user_metadata?.full_name || '';
     console.log("Submitting tasks for:", discord_username);
 
-    const newFinishedTasks = tasks.filter(task => doneTasks[task.id] && !finishedTasks[task.slug]);
+    const newFinishedTasks = tasks.filter(task => doneTasks[task.slug] && !finishedTasks[task.slug]);
 
     if (newFinishedTasks.length === 0) {
       alert("No new tasks have been marked as finished.");
       return;
     }
 
-    const inserts = newFinishedTasks.map(task => ({ discord_username, slug: task.slug }));
+    const inserts = newFinishedTasks.map(task => ({
+      discord_username,
+      slug: task.slug,
+      submitted_at: new Date().toISOString(), // Timestamp
+      points: 1, // Default value
+      content: task.available_airdrops?.project_name || 'Completed Task' // Using project_name for content
+    }));
 
     const { error } = await supabase.from('finished_daily_tasks').insert(inserts);
     if (!error) {
@@ -114,21 +120,23 @@ const ToDoList = ({ currentUser }) => {
             </thead>
             <tbody>
               {tasks.map((task, index) => (
-                <tr key={task.id} className={index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}>
+                <tr key={task.slug} className={index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}>
                   <td className="border p-3 text-center">
                     <input 
                       type="checkbox" 
-                      checked={doneTasks[task.id] || false} 
-                      onChange={() => handleCheckboxChange(task.id)}
+                      checked={doneTasks[task.slug] || false} 
+                      onChange={() => handleCheckboxChange(task.slug)}
                     />
                   </td>
-                  <td className="border p-3">{task.airdrop_name || 'N/A'}</td>
-                  <td className="border p-3">{task.details || 'No details available'}</td>
+                  <td className="border p-3">{task.available_airdrops?.project_name || 'N/A'}</td>
+                  <td className="border p-3">
+                    {task.available_airdrops ? `${task.available_airdrops.chain}, ${task.available_airdrops.airdrop_type}, ${task.available_airdrops.device_needed}` : 'No details available'}
+                  </td>
                   <td className="border p-3">
                     <Link to={`/airdrop/${task.slug}`} className="text-blue-600 hover:underline mr-4">
                       View Airdrop
                     </Link>
-                    <button onClick={() => handleDeleteTask(task.id)} className="text-red-600 hover:text-red-800">❌</button>
+                    <button onClick={() => handleDeleteTask(task.slug)} className="text-red-600 hover:text-red-800">❌</button>
                   </td>
                 </tr>
               ))}
