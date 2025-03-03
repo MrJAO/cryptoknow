@@ -58,6 +58,7 @@ const ToDoList = ({ currentUser }) => {
       const finished = {};
       data.forEach(task => { finished[task.slug] = true; });
       setFinishedTasks(finished);
+      setDoneTasks(finished); // Ensure checkboxes reflect finished tasks
     }
   };
 
