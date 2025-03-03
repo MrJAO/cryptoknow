@@ -30,7 +30,7 @@ const ToDoList = ({ currentUser }) => {
       .from('to_do_list')
       .select(`
         slug, 
-        available_airdrops:available_airdrops_id (project_name, chain, airdrop_type, device_needed, task_link)
+        available_airdrops (project_name, chain, airdrop_type, device_needed)
       `)
       .eq('discord_username', discord_username);
 
@@ -46,7 +46,7 @@ const ToDoList = ({ currentUser }) => {
     if (!currentUser) return;
 
     const discord_username = currentUser.user_metadata?.user_name || currentUser.user_metadata?.full_name || '';
-    
+
     const { data, error } = await supabase
       .from('finished_daily_tasks')
       .select('slug')
@@ -61,23 +61,14 @@ const ToDoList = ({ currentUser }) => {
     }
   };
 
-  const handleDeleteTask = async (deletedTask) => {
-    setTasks((prevTasks) => prevTasks.filter(task => task.slug !== deletedTask.slug));
-
-    const { error } = await supabase
-      .from('available_airdrops')
-      .update({ status: 'Add' })
-      .eq('slug', deletedTask.slug);
-
-    if (error) {
-      console.error("❌ Error updating available airdrop status:", error.message);
-    }
+  const handleDeleteTask = (deletedSlug) => {
+    setTasks((prevTasks) => prevTasks.filter(task => task.slug !== deletedSlug));
   };
 
-  const handleCheckboxChange = (taskId) => {
+  const handleCheckboxChange = (taskSlug) => {
     setDoneTasks(prev => ({
       ...prev,
-      [taskId]: !prev[taskId]
+      [taskSlug]: !prev[taskSlug]
     }));
   };
 
@@ -94,7 +85,13 @@ const ToDoList = ({ currentUser }) => {
       return;
     }
 
-    const inserts = newFinishedTasks.map(task => ({ discord_username, slug: task.slug }));
+    const inserts = newFinishedTasks.map(task => ({
+      discord_username,
+      slug: task.slug,
+      submitted_at: new Date().toISOString(), // Timestamp
+      points: 1, // Default value
+      content: task.available_airdrops?.project_name || 'Completed Task' // Using project_name for content
+    }));
 
     const { error } = await supabase.from('finished_daily_tasks').insert(inserts);
     if (!error) {
@@ -131,24 +128,15 @@ const ToDoList = ({ currentUser }) => {
                       onChange={() => handleCheckboxChange(task.slug)}
                     />
                   </td>
+                  <td className="border p-3">{task.available_airdrops?.project_name || 'N/A'}</td>
                   <td className="border p-3">
-                    <a 
-                      href={task.available_airdrops?.task_link || '#'} 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="text-blue-600 hover:underline">
-                      {task.available_airdrops?.project_name || 'N/A'}
-                    </a>
+                    {task.available_airdrops ? `${task.available_airdrops.chain}, ${task.available_airdrops.airdrop_type}, ${task.available_airdrops.device_needed}` : 'No details available'}
                   </td>
                   <td className="border p-3">
-                    {task.available_airdrops?.chain || 'N/A'} - {task.available_airdrops?.airdrop_type || 'N/A'} - {task.available_airdrops?.device_needed || 'N/A'}
-                  </td>
-                  <td className="border p-3">
-                    <button 
-                      onClick={() => handleDeleteTask(task)}
-                      className="text-red-600 hover:text-red-800">
-                      ❌
-                    </button>
+                    <Link to={`/airdrop/${task.slug}`} className="text-blue-600 hover:underline mr-4">
+                      View Airdrop
+                    </Link>
+                    <button onClick={() => handleDeleteTask(task.slug)} className="text-red-600 hover:text-red-800">❌</button>
                   </td>
                 </tr>
               ))}

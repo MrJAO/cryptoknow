@@ -24,7 +24,7 @@ const AvailableAirdrops = () => {
         setUser(user);
         const { data: tasks, error: tasksError } = await supabase
           .from("to_do_list")
-          .select("slug")
+          .select("slug")  // FIXED: Only selecting valid columns
           .eq("discord_username", user.user_metadata?.full_name || "");
 
         if (tasksError) {
@@ -40,8 +40,10 @@ const AvailableAirdrops = () => {
   useEffect(() => {
     const channel = subscribeToAirdrops(setAirdrops);
     return () => {
-      if (channel) {
-        channel.unsubscribe().catch((error) => console.warn("Error unsubscribing from airdrops:", error));
+      try {
+        channel?.unsubscribe();
+      } catch (error) {
+        console.warn("Error unsubscribing from airdrops:", error);
       }
     };
   }, []);
@@ -53,17 +55,15 @@ const AvailableAirdrops = () => {
     }
 
     const discord_username = user.user_metadata?.full_name || "";
-
+    
+    // FIXED: Insert only the correct columns
     const { error } = await supabase
       .from("to_do_list")
       .insert([{ 
         discord_username, 
         slug: airdrop.slug, 
-        project_name: airdrop.project_name, 
-        chain: airdrop.chain, 
-        airdrop_type: airdrop.airdrop_type, 
-        device_needed: airdrop.device_needed, 
-        created_at: new Date().toISOString() 
+        content: `Airdrop: ${airdrop.project_name} - ${airdrop.details}`, // Adjust as needed
+        created_at: new Date().toISOString() // Explicitly set timestamp
       }]);
 
     if (error) {
@@ -71,7 +71,7 @@ const AvailableAirdrops = () => {
       alert("Failed to add. Please try again.");
     } else {
       alert("Added to your To-Do List!");
-      setAddedProjects((prev) => new Set([...prev, airdrop.slug])); // Fixed state update
+      setAddedProjects((prev) => new Set(prev).add(airdrop.slug)); 
     }
   };
 
@@ -119,10 +119,7 @@ const AvailableAirdrops = () => {
                   {addedProjects.has(airdrop.slug) ? (
                     <span className="text-green-600 font-semibold">✅ Added</span>
                   ) : (
-                    <button 
-                      onClick={() => handleAddToDo(airdrop)} 
-                      className="bg-green-500 text-white font-semibold py-1 px-3 rounded hover:bg-green-600 transition duration-300"
-                    >
+                    <button onClick={() => handleAddToDo(airdrop)} className="bg-green-500 text-white font-semibold py-1 px-3 rounded hover:bg-green-600 transition duration-300">
                       ➕ Add
                     </button>
                   )}
