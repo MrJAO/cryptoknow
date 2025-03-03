@@ -2,8 +2,6 @@ import React from 'react';
 import banner from '../../assets/CryptoKnow Banner.webp'; // Ensure the path is correct
 
 function CryptoKnow({ user }) {
-  console.log("Rendering CryptoKnow with user:", user); // Debug log to check if it's loading correctly
-
   return (
     <div>
       {/* Banner image */}
@@ -22,7 +20,7 @@ function CryptoKnow({ user }) {
         <h1>Welcome to CryptoKnow - Your Hub for Crypto Opportunities!</h1>
         {user && (
           <p style={{ margin: '10px 0', fontSize: '1.2rem' }}>
-            Hello, {user.user_metadata?.full_name || user.email}
+            Hello, {user.user_metadata?.full_name || 'User'}
           </p>
         )}
       </div>
