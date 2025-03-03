@@ -56,19 +56,16 @@ const ToDoItem = ({ task, onDelete, onMarkDone, doneTasks, isEven, finishedTasks
   return (
     <tr className={`${isEven ? 'bg-gray-100' : 'bg-white'} hover:bg-gray-200 transition duration-200`}>
       <td className="border p-3 flex items-center space-x-3">
-        {isDisabled ? (
-          <span className="text-green-500 font-semibold">✔ Done</span>
-        ) : (
-          <input 
-            type="checkbox" 
-            checked={isDone || isDisabled} 
-            onChange={handleCheckboxToggle} 
-            className="w-5 h-5 cursor-pointer accent-blue-500"
-          />
-        )}
+        <input 
+          type="checkbox" 
+          checked={isDisabled} 
+          onChange={handleCheckboxToggle} 
+          className={`w-5 h-5 cursor-pointer ${isDisabled ? 'accent-blue-500' : 'accent-gray-500'}`} 
+          disabled={isDisabled} 
+        />
         <Link 
           to={`/airdrop/${task.slug}`} 
-          className={`text-blue-600 hover:underline ${isDone || isDisabled ? 'line-through text-gray-500' : ''}`}
+          className={`text-blue-600 hover:underline ${isDisabled ? 'line-through text-gray-500' : ''}`}
         >
           {task.available_airdrops?.project_name || 'Unknown'}
         </Link>
