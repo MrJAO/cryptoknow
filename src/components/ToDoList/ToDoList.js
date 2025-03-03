@@ -30,7 +30,7 @@ const ToDoList = ({ currentUser }) => {
       .from('to_do_list')
       .select(`
         slug, 
-        available_airdrops (project_name, chain, airdrop_type, device_needed, task_link)
+        available_airdrops:available_airdrops_id (project_name, chain, airdrop_type, device_needed, task_link)
       `)
       .eq('discord_username', discord_username);
 
@@ -64,7 +64,6 @@ const ToDoList = ({ currentUser }) => {
   const handleDeleteTask = async (deletedTask) => {
     setTasks((prevTasks) => prevTasks.filter(task => task.slug !== deletedTask.slug));
 
-    // Reset status in Available Airdrops
     const { error } = await supabase
       .from('available_airdrops')
       .update({ status: 'Add' })
