@@ -61,7 +61,7 @@ const ToDoItem = ({ task, onDelete, onMarkDone, doneTasks, isEven, finishedTasks
         ) : (
           <input 
             type="checkbox" 
-            checked={isDone} 
+            checked={isDone || isDisabled} 
             onChange={handleCheckboxToggle} 
             className="w-5 h-5 cursor-pointer accent-blue-500"
           />
