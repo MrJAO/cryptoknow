@@ -54,24 +54,23 @@ useEffect(() => {
   }, []);
 
 const handleAddToDo = async (airdrop) => {
-  if (!user) {
+  if (!user || !user.id) {
     alert("Please log in to add a task.");
     return;
   }
 
-  const user_id = user.id;
+  const user_id = user.id;  // ✅ Ensure this matches `auth.uid()`
   const discord_username = user.user_metadata?.full_name || "Unknown User";
 
-  // ✅ Now `onConflict` works because `user_id + slug` is unique
   const { error } = await supabase
     .from("to_do_list")
-    .upsert([{ 
-      user_id,
+    .insert([{ 
+      user_id,  // ✅ Must match `auth.uid()`
       discord_username,
       slug: airdrop.slug, 
       content: `Airdrop: ${airdrop.project_name} - ${airdrop.details}`,
       created_at: new Date().toISOString()
-    }], { onConflict: ["user_id", "slug"] });
+    }]);
 
   if (error) {
     console.error("❌ Error adding to To-Do List:", error);
