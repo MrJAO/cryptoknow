@@ -25,7 +25,7 @@ const AvailableAirdrops = () => {
         const { data: tasks, error: tasksError } = await supabase
           .from("to_do_list")
           .select("slug")  // FIXED: Only selecting valid columns
-          .eq("discord_username", user.user_metadata?.display_name || "");
+          .eq("discord_username", user.user_metadata?.full_name || "");
 
         if (tasksError) {
           console.error("❌ Error fetching to-do list:", tasksError);
@@ -54,7 +54,7 @@ const AvailableAirdrops = () => {
       return;
     }
 
-    const discord_username = user.user_metadata?.display_name || "";
+    const discord_username = user.user_metadata?.full_name || "";
     
     // FIXED: Insert only the correct columns
     const { error } = await supabase
