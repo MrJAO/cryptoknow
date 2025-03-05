@@ -13,29 +13,24 @@ const AvailableAirdrops = () => {
     device_needed: ""
   });
 
-  useEffect(() => {
-    const getCurrentUserAndTasks = async () => {
-      const { data: { user }, error } = await supabase.auth.getUser();
-      if (error) {
-        console.error("Error fetching user:", error);
-        return;
-      }
-      if (user) {
-        setUser(user);
-        const { data: tasks, error: tasksError } = await supabase
-          .from("to_do_list")
-          .select("slug")  // FIXED: Only selecting valid columns
-          .eq("discord_username", user.user_metadata?.full_name || "");
+	useEffect(() => {
+	  const fetchToDoList = async () => {
+		if (!user) return;
 
-        if (tasksError) {
-          console.error("❌ Error fetching to-do list:", tasksError);
-          return;
-        }
-        setAddedProjects(new Set(tasks?.map((t) => t.slug) || []));
-      }
-    };
-    getCurrentUserAndTasks();
-  }, []);
+		const { data: tasks, error } = await supabase
+		  .from("to_do_list")
+		  .select("slug")
+		  .eq("discord_username", user.user_metadata?.full_name || "");
+
+		if (error) {
+		  console.error("❌ Error fetching to-do list:", error);
+		  return;
+		}
+		setAddedProjects(new Set(tasks?.map((t) => t.slug) || []));
+	  };
+
+	  fetchToDoList();
+	}, [user]);  // ✅ Runs whenever `user` changes
 
   useEffect(() => {
     const channel = subscribeToAirdrops(setAirdrops);
