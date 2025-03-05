@@ -29,7 +29,9 @@ const ToDoList = ({ currentUser }) => {
     const { data, error } = await supabase
       .from('to_do_list')
       .select(`
-        slug, 
+        slug,
+        content,
+        created_at,
         available_airdrops (project_name, chain, airdrop_type, device_needed)
       `)
       .eq('discord_username', discord_username);
