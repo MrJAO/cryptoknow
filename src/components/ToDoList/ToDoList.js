@@ -49,10 +49,10 @@ const ToDoList = ({ currentUser }) => {
 
     const discord_username = currentUser.user_metadata?.user_name || currentUser.user_metadata?.full_name || '';
 
-    const { data, error } = await supabase
-      .from('finished_daily_tasks')
-      .select('slug')
-      .eq('discord_username', discord_username);
+	const { data, error } = await supabase
+	  .from('to_do_list')
+	  .select('*')  // Fetch everything for debugging
+	  .eq('discord_username', discord_username);
 
     if (error) {
       console.error("❌ Error fetching finished tasks:", error.message);
