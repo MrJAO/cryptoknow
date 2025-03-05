@@ -53,33 +53,52 @@ useEffect(() => {
     };
   }, []);
 
-	const handleAddToDo = async (airdrop) => {
-	  if (!user) {
-		alert("Please log in to add a task.");
-		return;
-	  }
+const handleAddToDo = async (airdrop) => {
+  if (!user) {
+    alert("Please log in to add a task.");
+    return;
+  }
 
-	  const user_id = user.id;
-	  const discord_username = user.user_metadata?.full_name || "Unknown User"; // Default value
+  const user_id = user.id;
+  const discord_username = user.user_metadata?.full_name || "Unknown User"; 
 
-	  const { error } = await supabase
-		.from("to_do_list")
-		.insert([{ 
-		  user_id,
-		  discord_username, // Include this if needed
-		  slug: airdrop.slug, 
-		  content: `Airdrop: ${airdrop.project_name} - ${airdrop.details}`,
-		  created_at: new Date().toISOString() 
-		}]);
+  // 🔍 Check if this user already added this project
+  const { data: existingEntry, error: fetchError } = await supabase
+    .from("to_do_list")
+    .select("id")  // Assuming you have an `id` column
+    .eq("user_id", user_id)
+    .eq("slug", airdrop.slug)
+    .single();  // Expect only one result
 
-	  if (error) {
-		console.error("❌ Error adding to To-Do List:", error);
-		alert("Failed to add. Please try again.");
-	  } else {
-		alert("Added to your To-Do List!");
-		setAddedProjects((prev) => new Set(prev).add(airdrop.slug)); 
-	  }
-	};
+  if (fetchError && fetchError.code !== "PGRST116") {
+    console.error("❌ Error checking existing entry:", fetchError);
+    return;
+  }
+
+  if (existingEntry) {
+    alert("You've already added this project to your To-Do List!");
+    return;
+  }
+
+  // ✅ Insert only if it doesn't already exist
+  const { error } = await supabase
+    .from("to_do_list")
+    .insert([{ 
+      user_id,
+      discord_username,
+      slug: airdrop.slug, 
+      content: `Airdrop: ${airdrop.project_name} - ${airdrop.details}`,
+      created_at: new Date().toISOString() 
+    }]);
+
+  if (error) {
+    console.error("❌ Error adding to To-Do List:", error);
+    alert("Failed to add. Please try again.");
+  } else {
+    alert("Added to your To-Do List!");
+    setAddedProjects((prev) => new Set(prev).add(airdrop.slug)); 
+  }
+};
 
   const filteredAirdrops = airdrops.filter((airdrop) => {
     return (
