@@ -13,34 +13,29 @@ const AvailableAirdrops = () => {
     device_needed: ""
   });
 
-useEffect(() => {
-  const getCurrentUserAndTasks = async () => {
-    const { data: { user }, error } = await supabase.auth.getUser();
-    if (error) {
-      console.error("Error fetching user:", error);
-      return;
-    }
-    if (user) {
-      setUser(user);  // ✅ First, set the user
-      fetchToDoList(user);  // ✅ Then fetch the to-do list
-    }
-  };
+  useEffect(() => {
+    const getCurrentUserAndTasks = async () => {
+      const { data: { user }, error } = await supabase.auth.getUser();
+      if (error) {
+        console.error("Error fetching user:", error);
+        return;
+      }
+      if (user) {
+        setUser(user);
+        const { data: tasks, error: tasksError } = await supabase
+          .from("to_do_list")
+          .select("slug")  // FIXED: Only selecting valid columns
+          .eq("discord_username", user.user_metadata?.full_name || "");
 
-  const fetchToDoList = async (loggedInUser) => {
-    const { data: tasks, error } = await supabase
-      .from("to_do_list")
-      .select("slug")
-      .eq("discord_username", loggedInUser.user_metadata?.full_name || "");
-
-    if (error) {
-      console.error("❌ Error fetching to-do list:", error);
-      return;
-    }
-    setAddedProjects(new Set(tasks?.map((t) => t.slug) || []));
-  };
-
-  getCurrentUserAndTasks();
-}, []);  // ✅ Runs once when component mounts
+        if (tasksError) {
+          console.error("❌ Error fetching to-do list:", tasksError);
+          return;
+        }
+        setAddedProjects(new Set(tasks?.map((t) => t.slug) || []));
+      }
+    };
+    getCurrentUserAndTasks();
+  }, []);
 
   useEffect(() => {
     const channel = subscribeToAirdrops(setAirdrops);
@@ -53,33 +48,32 @@ useEffect(() => {
     };
   }, []);
 
-const handleAddToDo = async (airdrop) => {
-  if (!user || !user.id) {
-    alert("Please log in to add a task.");
-    return;
-  }
+  const handleAddToDo = async (airdrop) => {
+    if (!user) {
+      alert("Please log in to add a task.");
+      return;
+    }
 
-  const user_id = user.id;  // ✅ Ensure this matches `auth.uid()`
-  const discord_username = user.user_metadata?.full_name || "Unknown User";
+    const discord_username = user.user_metadata?.full_name || "";
+    
+    // FIXED: Insert only the correct columns
+    const { error } = await supabase
+      .from("to_do_list")
+      .insert([{ 
+        discord_username, 
+        slug: airdrop.slug, 
+        content: `Airdrop: ${airdrop.project_name} - ${airdrop.details}`, // Adjust as needed
+        created_at: new Date().toISOString() // Explicitly set timestamp
+      }]);
 
-  const { error } = await supabase
-    .from("to_do_list")
-    .insert([{ 
-      user_id,  // ✅ Must match `auth.uid()`
-      discord_username,
-      slug: airdrop.slug, 
-      content: `Airdrop: ${airdrop.project_name} - ${airdrop.details}`,
-      created_at: new Date().toISOString()
-    }]);
-
-  if (error) {
-    console.error("❌ Error adding to To-Do List:", error);
-    alert("Failed to add. Please try again.");
-  } else {
-    alert("Added to your To-Do List!");
-    setAddedProjects((prev) => new Set(prev).add(airdrop.slug)); 
-  }
-};
+    if (error) {
+      console.error("❌ Error adding to To-Do List:", error);
+      alert("Failed to add. Please try again.");
+    } else {
+      alert("Added to your To-Do List!");
+      setAddedProjects((prev) => new Set(prev).add(airdrop.slug)); 
+    }
+  };
 
   const filteredAirdrops = airdrops.filter((airdrop) => {
     return (
