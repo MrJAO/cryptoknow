@@ -62,7 +62,7 @@ const handleAddToDo = async (airdrop) => {
   const user_id = user.id;
   const discord_username = user.user_metadata?.full_name || "Unknown User";
 
-  // ✅ Use upsert instead of insert to prevent duplicate errors
+  // ✅ Now `onConflict` works because `user_id + slug` is unique
   const { error } = await supabase
     .from("to_do_list")
     .upsert([{ 
@@ -71,7 +71,7 @@ const handleAddToDo = async (airdrop) => {
       slug: airdrop.slug, 
       content: `Airdrop: ${airdrop.project_name} - ${airdrop.details}`,
       created_at: new Date().toISOString()
-    }], { onConflict: ["user_id", "slug"] });  // ✅ Prevents duplicate entries
+    }], { onConflict: ["user_id", "slug"] });
 
   if (error) {
     console.error("❌ Error adding to To-Do List:", error);
@@ -81,7 +81,6 @@ const handleAddToDo = async (airdrop) => {
     setAddedProjects((prev) => new Set(prev).add(airdrop.slug)); 
   }
 };
-
 
   const filteredAirdrops = airdrops.filter((airdrop) => {
     return (
