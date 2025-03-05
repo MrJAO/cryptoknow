@@ -13,13 +13,17 @@ const Quests = () => {
   const [fbMessage, setFbMessage] = useState("");
   const [fbLoading, setFbLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchUser = async () => {
+useEffect(() => {
+  const fetchUser = async () => {
+    try {
       const { data, error } = await supabase.auth.getUser();
       if (error) {
         console.error("Error fetching user:", error);
         setMessage("⚠️ Failed to fetch user. Please log in again.");
-      } else if (data?.user) {
+        return;
+      }
+
+      if (data?.user) {
         const discordUsername =
           data.user.user_metadata?.user_name ||
           data.user.user_metadata?.full_name ||
@@ -30,39 +34,37 @@ const Quests = () => {
           discord_username: discordUsername,
         }));
 
-        if (discordUsername) {
-          // Fetch Twitter username if linked
-          const { data: twitterData } = await supabase
+        if (!discordUsername) return;
+
+        // Fetch Twitter and Facebook usernames in parallel
+        const [{ data: twitterData }, { data: facebookData }] = await Promise.all([
+          supabase
             .from("user_twitter_usernames")
             .select("twitter_username")
             .eq("discord_username", discordUsername)
-            .maybeSingle();
-
-          if (twitterData) {
-            setFormData((prevData) => ({
-              ...prevData,
-              twitter_username: twitterData.twitter_username,
-            }));
-          }
-
-          // Fetch Facebook username if linked
-          const { data: facebookData } = await supabase
+            .maybeSingle(),
+          supabase
             .from("user_facebook_usernames")
             .select("facebook_username")
             .eq("discord_username", discordUsername)
-            .maybeSingle();
+            .maybeSingle(),
+        ]);
 
-          if (facebookData) {
-            setFormData((prevData) => ({
-              ...prevData,
-              facebook_username: facebookData.facebook_username,
-            }));
-          }
-        }
+        setFormData((prevData) => ({
+          ...prevData,
+          twitter_username: twitterData?.twitter_username || "",
+          facebook_username: facebookData?.facebook_username || "",
+        }));
       }
-    };
-    fetchUser();
-  }, []);
+    } catch (err) {
+      console.error("Unexpected error:", err);
+      setMessage("⚠️ Something went wrong. Please try again.");
+    }
+  };
+
+  fetchUser();
+}, []);
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
