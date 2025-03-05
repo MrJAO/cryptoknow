@@ -13,24 +13,34 @@ const AvailableAirdrops = () => {
     device_needed: ""
   });
 
-	useEffect(() => {
-	  const fetchToDoList = async () => {
-		if (!user) return;
+useEffect(() => {
+  const getCurrentUserAndTasks = async () => {
+    const { data: { user }, error } = await supabase.auth.getUser();
+    if (error) {
+      console.error("Error fetching user:", error);
+      return;
+    }
+    if (user) {
+      setUser(user);  // ✅ First, set the user
+      fetchToDoList(user);  // ✅ Then fetch the to-do list
+    }
+  };
 
-		const { data: tasks, error } = await supabase
-		  .from("to_do_list")
-		  .select("slug")
-		  .eq("discord_username", user.user_metadata?.full_name || "");
+  const fetchToDoList = async (loggedInUser) => {
+    const { data: tasks, error } = await supabase
+      .from("to_do_list")
+      .select("slug")
+      .eq("discord_username", loggedInUser.user_metadata?.full_name || "");
 
-		if (error) {
-		  console.error("❌ Error fetching to-do list:", error);
-		  return;
-		}
-		setAddedProjects(new Set(tasks?.map((t) => t.slug) || []));
-	  };
+    if (error) {
+      console.error("❌ Error fetching to-do list:", error);
+      return;
+    }
+    setAddedProjects(new Set(tasks?.map((t) => t.slug) || []));
+  };
 
-	  fetchToDoList();
-	}, [user]);  // ✅ Runs whenever `user` changes
+  getCurrentUserAndTasks();
+}, []);  // ✅ Runs once when component mounts
 
   useEffect(() => {
     const channel = subscribeToAirdrops(setAirdrops);
