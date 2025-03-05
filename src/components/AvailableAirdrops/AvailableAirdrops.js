@@ -54,12 +54,14 @@ const AvailableAirdrops = () => {
 		return;
 	  }
 
-	  const user_id = user.id;  // Store Supabase user ID
+	  const user_id = user.id;
+	  const discord_username = user.user_metadata?.full_name || "Unknown User"; // Default value
 
 	  const { error } = await supabase
 		.from("to_do_list")
 		.insert([{ 
-		  user_id,  // Ensure this column exists in your to_do_list table!
+		  user_id,
+		  discord_username, // Include this if needed
 		  slug: airdrop.slug, 
 		  content: `Airdrop: ${airdrop.project_name} - ${airdrop.details}`,
 		  created_at: new Date().toISOString() 
