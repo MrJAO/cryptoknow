@@ -60,36 +60,18 @@ const handleAddToDo = async (airdrop) => {
   }
 
   const user_id = user.id;
-  const discord_username = user.user_metadata?.full_name || "Unknown User"; 
+  const discord_username = user.user_metadata?.full_name || "Unknown User";
 
-  // 🔍 Check if this user already added this project
-  const { data: existingEntry, error: fetchError } = await supabase
-    .from("to_do_list")
-    .select("user_id")  // ✅ Select an existing column
-    .eq("user_id", user_id)
-    .eq("slug", airdrop.slug)
-    .maybeSingle();  // ✅ Use maybeSingle() to avoid errors if no data is found
-
-  if (fetchError) {
-    console.error("❌ Error checking existing entry:", fetchError);
-    return;
-  }
-
-  if (existingEntry) {
-    alert("You've already added this project to your To-Do List!");
-    return;
-  }
-
-  // ✅ Insert only if it doesn't already exist
+  // ✅ Use upsert instead of insert to prevent duplicate errors
   const { error } = await supabase
     .from("to_do_list")
-    .insert([{ 
+    .upsert([{ 
       user_id,
       discord_username,
       slug: airdrop.slug, 
       content: `Airdrop: ${airdrop.project_name} - ${airdrop.details}`,
-      created_at: new Date().toISOString() 
-    }]);
+      created_at: new Date().toISOString()
+    }], { onConflict: ["user_id", "slug"] });  // ✅ Prevents duplicate entries
 
   if (error) {
     console.error("❌ Error adding to To-Do List:", error);
