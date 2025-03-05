@@ -65,12 +65,12 @@ const handleAddToDo = async (airdrop) => {
   // 🔍 Check if this user already added this project
   const { data: existingEntry, error: fetchError } = await supabase
     .from("to_do_list")
-    .select("id")  // Assuming you have an `id` column
+    .select("user_id")  // ✅ Select an existing column
     .eq("user_id", user_id)
     .eq("slug", airdrop.slug)
-    .single();  // Expect only one result
+    .maybeSingle();  // ✅ Use maybeSingle() to avoid errors if no data is found
 
-  if (fetchError && fetchError.code !== "PGRST116") {
+  if (fetchError) {
     console.error("❌ Error checking existing entry:", fetchError);
     return;
   }
@@ -99,6 +99,7 @@ const handleAddToDo = async (airdrop) => {
     setAddedProjects((prev) => new Set(prev).add(airdrop.slug)); 
   }
 };
+
 
   const filteredAirdrops = airdrops.filter((airdrop) => {
     return (
