@@ -34,13 +34,14 @@ const ToDoList = ({ currentUser }) => {
         created_at,
         available_airdrops (project_name, chain, airdrop_type, device_needed)
       `)
-      .eq('discord_username', discord_username);
+      .eq('discord_username', discord_username)
+      .maybeSingle();
 
     if (error) {
       console.error("❌ Error fetching tasks:", error.message);
     } else {
       console.log("✅ Fetched tasks:", data);
-      setTasks(data || []);
+      setTasks(data ? [data] : []);
     }
   };
 
@@ -49,10 +50,10 @@ const ToDoList = ({ currentUser }) => {
 
     const discord_username = currentUser.user_metadata?.user_name || currentUser.user_metadata?.full_name || '';
 
-	const { data, error } = await supabase
-	  .from('to_do_list')
-	  .select('*')  // Fetch everything for debugging
-	  .eq('discord_username', discord_username);
+    const { data, error } = await supabase
+      .from('finished_daily_tasks')
+      .select('slug')
+      .eq('discord_username', discord_username);
 
     if (error) {
       console.error("❌ Error fetching finished tasks:", error.message);
@@ -60,7 +61,7 @@ const ToDoList = ({ currentUser }) => {
       const finished = {};
       data.forEach(task => { finished[task.slug] = true; });
       setFinishedTasks(finished);
-      setDoneTasks(finished); // Ensure checkboxes reflect finished tasks
+      setDoneTasks(finished);
     }
   };
 
@@ -111,9 +112,9 @@ const ToDoList = ({ currentUser }) => {
     const inserts = newFinishedTasks.map(task => ({
       discord_username,
       slug: task.slug,
-      submitted_at: new Date().toISOString(), // Timestamp
-      points: 1, // Default value
-      content: task.available_airdrops?.project_name || 'Completed Task' // Using project_name for content
+      submitted_at: new Date().toISOString(),
+      points: 1,
+      content: task.available_airdrops?.project_name || 'Completed Task'
     }));
 
     const { error } = await supabase.from('finished_daily_tasks').insert(inserts);
